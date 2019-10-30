@@ -12,10 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.syp.Item;
-import com.syp.MapsActivity;
-import com.syp.MyAdapter;
-import com.syp.R;
+import com.beanleaf.Item;
+import com.beanleaf.MapsActivity;
+import com.beanleaf.MyAdapter;
+import com.beanleaf.R;
 
 import java.util.ArrayList;
 

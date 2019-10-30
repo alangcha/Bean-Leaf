@@ -13,9 +13,9 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.syp.Cafe;
-import com.syp.MapsActivity;
-import com.syp.R;
+import com.beanleaf.Cafe;
+import com.beanleaf.MapsActivity;
+import com.beanleaf.R;
 
 public class CafeFragment extends Fragment {
     private FloatingActionButton fabtn;

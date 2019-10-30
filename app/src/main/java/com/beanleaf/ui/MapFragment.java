@@ -20,9 +20,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.syp.Cafe;
-import com.syp.MapsActivity;
-import com.syp.R;
+import com.beanleaf.Cafe;
+import com.beanleaf.MapsActivity;
+import com.beanleaf.R;
 
 import java.util.ArrayList;
 
