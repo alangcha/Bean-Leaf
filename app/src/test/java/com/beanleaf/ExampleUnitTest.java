@@ -1,4 +1,4 @@
-package com.example.beanleaf;
+package com.beanleaf;
 
 import org.junit.Test;
 

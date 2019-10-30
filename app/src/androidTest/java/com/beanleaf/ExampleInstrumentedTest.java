@@ -1,4 +1,4 @@
-package com.example.beanleaf;
+package com.beanleaf;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.beanleaf", appContext.getPackageName());
+        assertEquals("com.beanleaf", appContext.getPackageName());
     }
 }
