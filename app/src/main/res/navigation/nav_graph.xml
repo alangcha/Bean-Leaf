@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.syp.ui.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_cafeFragment"
+            app:destination="@id/cafeFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"
+            app:exitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_mapFragment_to_userFragment"
+            app:destination="@id/userFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/cafeFragment"
+        android:name="com.syp.ui.CafeFragment"
+        android:label="fragment_cafe"
+        tools:layout="@layout/fragment_cafe" >
+        <action
+            android:id="@+id/action_cafeFragment_to_checkoutFragment"
+            app:destination="@+id/checkoutFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/cafeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.syp.ui.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.syp.ui.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
+</navigation>

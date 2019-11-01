@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0CFB1">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/food_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="12dp"
+                    android:text="Earl Grey Milk Tea"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:theme="@style/RatingBar"
+                    android:numStars="5"
+                    android:paddingHorizontal="12dp"
+                    android:rating="0"
+                    android:stepSize="0.5" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="11dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/food_description"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:lineSpacingMultiplier="1.5"
+                        android:padding="12dp"
+                        android:text="Steeped for three minutes, earl grey milk tea provides the perfect mixture between sweet and bitter. Perfect for any setting."
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="11dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/nutritional_description"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:lineSpacingMultiplier="1.5"
+                        android:padding="12dp"
+                        android:text="Nutritional Information \n
+  Calories: 230 Cal \n
+  Sugar: 41 g \n
+  Fat: 7 g \n
+  Protein: 4 g \n
+  Caffeine: 50 mg"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="5dp"
+                app:cardCornerRadius="11dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <LinearLayout
+                        android:id="@+id/layout_price"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/ic_attach_money_black_24dp"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/food_price"
+                            android:text="5.30"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="9"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/number_button"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginBottom="18dp"
+                        app:textSize="8sp"
+                        app:backGroundColor="@color/colorAccent"
+                        app:initialNumber="1"
+                        app:finalNumber="20"
+                        />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <com.marvinlabs.widget.slideshow.SlideShowView
+                android:id="@+id/menu_slideshow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_add_shopping_cart_black_24dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
