@@ -8,45 +8,45 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.syp.ui.MapFragment"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" >
+        android:label="Map"
+        tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_cafeFragment"
             app:destination="@id/cafeFragment"
-            app:enterAnim="@anim/nav_default_pop_enter_anim"
-            app:exitAnim="@anim/nav_default_pop_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/up_from_bottom"
+            app:popEnterAnim="@anim/up_from_bottom" />
         <action
             android:id="@+id/action_mapFragment_to_userFragment"
             app:destination="@id/userFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/up_from_bottom"
+            app:popEnterAnim="@anim/up_from_bottom" />
     </fragment>
     <fragment
         android:id="@+id/cafeFragment"
         android:name="com.syp.ui.CafeFragment"
-        android:label="fragment_cafe"
-        tools:layout="@layout/fragment_cafe" >
+        android:label="Cafe"
+        tools:layout="@layout/fragment_cafe">
         <action
             android:id="@+id/action_cafeFragment_to_checkoutFragment"
             app:destination="@+id/checkoutFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/up_from_bottom"
+            app:popEnterAnim="@anim/up_from_bottom"
             app:popUpTo="@+id/cafeFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
         android:name="com.syp.ui.UserFragment"
-        android:label="fragment_user"
+        android:label="User Profile"
         tools:layout="@layout/fragment_user" />
     <fragment
         android:id="@+id/checkoutFragment"
         android:name="com.syp.ui.CheckoutFragment"
-        android:label="fragment_checkout"
-        tools:layout="@layout/fragment_checkout" />
+        android:label="Checkout"
+        tools:layout="@layout/fragment_checkout">
+        <action
+            android:id="@+id/action_checkoutFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
+            app:enterAnim="@anim/up_from_bottom"
+            app:popEnterAnim="@anim/up_from_bottom" />
+    </fragment>
 </navigation>
