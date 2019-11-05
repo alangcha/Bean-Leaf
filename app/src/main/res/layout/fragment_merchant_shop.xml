@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp">
+
+            <TextView
+                android:id="@+id/cell_shop_name"
+                android:layout_marginTop="3dp"
+                android:padding="12dp"
+                android:text="Dong Cha"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/cell_shop_address"
+                android:layout_marginLeft="12dp"
+                android:text="935 W 30th Street, Los Angeles, CA"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/cell_shop_image"
+            android:layout_marginStart="30dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/matcha_latte">
+        </ImageView>
+
+        <ImageButton
+            android:id="@+id/shopEditButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="#FFFFFF"
+            android:src="@drawable/ic_edit_black_24dp">
+        </ImageButton>
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -5,6 +5,7 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
+App/.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
@@ -12,6 +13,10 @@
 /captures
 .externalNativeBuild
 .cxx
-app/.classpath
-.project
-.settings/
+App/.gradle
+App/app/app.iml
+App/.idea/
+App/local.properties
+App/.idea/caches/build_file_checksums.ser
+App/.idea/caches/gradle_models.ser
+App/app/src/main/java/com/syp/ApiKey.java

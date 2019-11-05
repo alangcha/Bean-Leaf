@@ -25,13 +25,30 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <activity
-            android:name=".MapsActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.FinishOrderPopUp"
+            android:theme="@style/AppTheme.PopUpTranslucent">
+        </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.PopUpTranslucent">
+        </activity>
+
+        <activity android:name=".DrawChart">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
             </intent-filter>
         </activity>
 

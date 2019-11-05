@@ -8,16 +8,11 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.syp.ui.MapFragment"
-        android:label="Map"
+        android:label="Syp"
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_cafeFragment"
             app:destination="@id/cafeFragment"
-            app:enterAnim="@anim/up_from_bottom"
-            app:popEnterAnim="@anim/up_from_bottom" />
-        <action
-            android:id="@+id/action_mapFragment_to_userFragment"
-            app:destination="@id/userFragment"
             app:enterAnim="@anim/up_from_bottom"
             app:popEnterAnim="@anim/up_from_bottom" />
     </fragment>
@@ -27,26 +22,97 @@
         android:label="Cafe"
         tools:layout="@layout/fragment_cafe">
         <action
-            android:id="@+id/action_cafeFragment_to_checkoutFragment"
-            app:destination="@+id/checkoutFragment"
-            app:enterAnim="@anim/up_from_bottom"
-            app:popEnterAnim="@anim/up_from_bottom"
-            app:popUpTo="@+id/cafeFragment" />
+            android:id="@+id/action_cafeFragment_to_orderItemFragment"
+            app:destination="@id/orderItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
         android:name="com.syp.ui.UserFragment"
         android:label="User Profile"
-        tools:layout="@layout/fragment_user" />
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_userFragment_to_merchantShopFragment"
+            app:destination="@id/merchantShopFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_addShopFragment"
+            app:destination="@id/addShopFragment" />
+    </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
         android:name="com.syp.ui.CheckoutFragment"
         android:label="Checkout"
         tools:layout="@layout/fragment_checkout">
         <action
-            android:id="@+id/action_checkoutFragment_to_mapFragment"
-            app:destination="@id/mapFragment"
-            app:enterAnim="@anim/up_from_bottom"
-            app:popEnterAnim="@anim/up_from_bottom" />
+            android:id="@+id/action_checkoutFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderItemFragment"
+        android:name="com.syp.ui.OrderItemFragment"
+        android:label="Order"
+        tools:layout="@layout/fragment_orderitem">
+        <action
+            android:id="@+id/action_orderItemFragment_to_cafeFragment"
+            app:destination="@id/cafeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemEditFragment"
+        android:name="com.syp.ui.ItemEditFragment"
+        android:label="fragment_itemedit"
+        tools:layout="@layout/fragment_itemedit" />
+    <fragment
+        android:id="@+id/merchantShopFragment"
+        android:name="com.syp.ui.MerchantShopFragment"
+        android:label="fragment_merchantshop"
+        tools:layout="@layout/fragment_merchantshop" >
+        <action
+            android:id="@+id/action_merchantShopFragment_to_itemEditFragment"
+            app:destination="@id/itemEditFragment" />
+        <action
+            android:id="@+id/action_merchantShopFragment_to_addItemExistingFragment"
+            app:destination="@id/addItemExistingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.syp.ui.StatisticsFragment"
+        android:label="StatisticsFragment" />
+    <fragment
+        android:id="@+id/addShopFragment"
+        android:name="com.syp.ui.AddShopFragment"
+        android:label="fragment_add_shop"
+        tools:layout="@layout/fragment_add_shop" >
+        <action
+            android:id="@+id/action_addShopFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_addShopFragment_to_addItemNewFragment"
+            app:destination="@id/addItemNewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/googleLoginFragment"
+        android:name="com.syp.ui.GoogleLoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_google_login">
+        <action
+            android:id="@+id/action_googleLoginFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItemExistingFragment"
+        android:name="com.syp.ui.AddItemExistingFragment"
+        android:label="fragment_add_item_existing"
+        tools:layout="@layout/fragment_add_item_existing" >
+        <action
+            android:id="@+id/action_addItemExistingFragment_to_merchantShopFragment"
+            app:destination="@id/merchantShopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItemNewFragment"
+        android:name="com.syp.ui.AddItemNewFragment"
+        android:label="fragment_add_item_new"
+        tools:layout="@layout/fragment_add_item_new" >
+        <action
+            android:id="@+id/action_addItemNewFragment_to_addShopFragment"
+            app:destination="@id/addShopFragment" />
     </fragment>
 </navigation>

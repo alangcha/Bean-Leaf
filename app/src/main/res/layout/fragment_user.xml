@@ -5,117 +5,179 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F0CFB1">
-
-    <LinearLayout
+    android:background="#FFFFFF">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary"
-        >
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:padding="10dp"
-            android:layout_gravity="center"
-            android:text="Profile"
-            android:textColor="#fff"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
-
-    </LinearLayout>
-    <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="40dp">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center">
+                android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="141dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/matcha_latte" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp">
 
-                <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_gravity="center"
-                    android:padding="12dp"
-                    android:text="Jordan Choi"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/profile_greetings"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Hello, Ethan Fridley :-) !"
+                        android:textSize="30dp"
+                        android:layout_marginTop="50dp">
+                    </TextView>
+
+
+                    <TextView
+                        android:id="@+id/profile_email_label"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="Email"
+                        android:textSize="30dp"
+                        android:layout_marginTop="50dp">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/profile_email"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="fridley@usc.edu"
+                        android:textSize="20dp">
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/profile_email_edit"
+                        android:visibility="gone"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="fridley@usc.edu"
+                        android:textSize="20dp">
+                    </EditText>
+
+                    <TextView
+                        android:id="@+id/profile_password_label"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="Password"
+                        android:textSize="30dp"
+                        android:layout_marginTop="30dp">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/profile_password"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="1234asdf"
+                        android:textSize="20dp">
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/profile_password_edit"
+                        android:visibility="gone"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:text="fridley@usc.edu"
+                        android:textSize="20dp">
+                    </EditText>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="30dp">
+
+                        <TextView
+                            android:id="@+id/profile_my_shops_label"
+                            android:layout_width="300dp"
+                            android:layout_height="50dp"
+                            android:text="My Shops"
+                            android:textSize="30dp">
+                        </TextView>
+
+                    </LinearLayout>
+
+
+
+
+                    <view
+                        android:id="@+id/myshops_recycle_view"
+                        class="androidx.recyclerview.widget.RecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:scrollbars="vertical"
+                        android:layout_marginTop="10dp" />
+
+                    <Button
+                        android:id="@+id/add_shop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:text="Add Shop">
+                    </Button>
+
+                </LinearLayout>
+            </ScrollView>
 
         </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <TextView
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnEditProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="username"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="5dp"/>
+            android:layout_gravity="bottom|end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
 
-        <TextView
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnDoneProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="thejordanchoi"
-            android:textColor="#000"
-            android:textSize="18sp"
-            android:paddingBottom="20dp"/>
+            android:layout_gravity="bottom|end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_done_black_24dp" />
+        
+        <TextView
+            android:id="@+id/profile_invalid_email"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:visibility="invisible"
+            android:text="Invalid email"
+            android:textColor="#FF0000"
+            android:layout_marginTop="205dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp">
+        </TextView>
 
         <TextView
+            android:id="@+id/profile_invalid_password"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="email"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="5dp"/>
+            android:layout_height="60dp"
+            android:visibility="invisible"
+            android:text="Invalid password"
+            android:textColor="#FF0000"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="334dp"
+            android:layout_marginEnd="20dp">
+        </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="thejordanchoi@email.com"
-            android:textColor="#000"
-            android:textSize="18sp"
-            android:paddingBottom="20dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="version"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="5dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.0.0"
-            android:textColor="#000"
-            android:textSize="18sp"/>
+    </RelativeLayout>
 
-    </LinearLayout>
 
-    </LinearLayout>
+</LinearLayout>

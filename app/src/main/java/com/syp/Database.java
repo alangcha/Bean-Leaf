@@ -2,23 +2,34 @@ package com.syp;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.syp.model.User;
 
-public class Database {
-    private DatabaseReference root;
+class TestUser {
 
-    public Database() {
-        root = FirebaseDatabase.getInstance().getReference().child("User");
+    public String username;
+    public String password;
+
+    public TestUser() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public void register_user(String username, String password, String email, String name) {
-        root = FirebaseDatabase.getInstance().getReference().child("User");
+    public TestUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
-        User user = new User();
-        user.set_username(username);
-        user.set_password(password);
-//        user.set_name(name);
-//        user.set_email(email);
+}
 
-//        root.child().setValue(user);
+public class Database {
+    private DatabaseReference mDatabase;
+
+    public Database() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    private void writeNewUser(String userId, String name, String email) {
+        TestUser user = new TestUser(name, email);
+
+        mDatabase.child("users").child(userId).setValue(user);
     }
 }

@@ -1,75 +1,135 @@
 package com.syp.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Button;
+import android.widget.TextView;
 
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.syp.Item;
-import com.syp.User;
-import com.syp.UserInfo;
-import com.syp.Order;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.syp.MainActivity;
 import com.syp.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.regex.Pattern;
 
 // hardcoded data:
 
 public class UserFragment extends Fragment {
+
+    private MainActivity mainActivity;
+    private TextView greetingsLabel;
+    private TextView email;
+    private TextView password;
+    private TextView errorEmail;
+    private TextView errorPassword;
+    private EditText email_edit;
+    private EditText password_edit;
+    private Button addShop;
+    private FloatingActionButton edit;
+    private FloatingActionButton done;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user, container, false);
+
+        mainActivity = (MainActivity) getActivity();
+        View v = inflater.inflate(R.layout.fragment_user, container, false);
+
+        greetingsLabel = v.findViewById(R.id.profile_greetings);
+        email = v.findViewById(R.id.profile_email);
+        email_edit = v.findViewById(R.id.profile_email_edit);
+        errorEmail = v.findViewById(R.id.profile_invalid_email);
+        password = v.findViewById(R.id.profile_password);
+        password_edit = v.findViewById(R.id.profile_password_edit);
+        errorPassword = v.findViewById(R.id.profile_invalid_password);
+        addShop = v.findViewById(R.id.add_shop);
+        edit = v.findViewById(R.id.btnEditProfile);
+        done = v.findViewById(R.id.btnDoneProfile);
+
+        done.hide();
+
+        final String originalEmail = email.getText().toString();
+        final String originalPassword = password.getText().toString();
+
+        addShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavDirections action = UserFragmentDirections.actionUserFragmentToAddShopFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                email.setVisibility(View.GONE);
+                email_edit.setVisibility(View.VISIBLE);
+                password.setVisibility(View.GONE);
+                password_edit.setVisibility(View.VISIBLE);
+                errorEmail.setVisibility(View.INVISIBLE);
+                errorPassword.setVisibility(View.INVISIBLE);
+                edit.hide();
+                done.show();
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newEmail = email_edit.getText().toString();
+                if(!isEmailFormat(newEmail)) {
+                    newEmail = originalEmail;
+                    errorEmail.setVisibility(View.VISIBLE);
+                }
+                String newPassword = password_edit.getText().toString();
+                if(newPassword.trim().length() == 0){
+                    newPassword = originalPassword;
+                    errorPassword.setVisibility(View.VISIBLE);
+                }
+
+                email.setVisibility(View.VISIBLE);
+                email.setText(newEmail);
+                email_edit.setVisibility(View.GONE);
+                email_edit.setText(newEmail);
+
+                password.setVisibility(View.VISIBLE);
+                password_edit.setVisibility(View.GONE);
+                password.setText(newPassword);
+                password_edit.setText(newPassword);
+
+                edit.show();
+                done.hide();
+                InputMethodManager imm = (InputMethodManager) done.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
+
+
+
+
+        return v;
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        //LineChart chart = (LineChart) getView().findViewById(R.id.chart); //retrieve from fragment
-//
-//        //hard coded user jordan:
-//
-//        User jordan = new User();
-//
-//
-//        ArrayList<Order> orders = getData(jordan);
-//        List<Entry> entries = new ArrayList<Entry>();
-//
-//        for (Order order : orders) {
-//            for(Item item : order.get_item_purchased()) {
-//                // turn your data into Entry objects
-//                Date d = order.get_date_purchased();
-//                long millis = d.getTime();
-//
-//
-//                entries.add(new Entry(millis, (float) item.get_normal_price())); //casted double to float
-//            }
-//        }
-//
-//        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-////        dataSet.setColor(...);
-////        dataSet.setValueTextColor(...); // styling, ...
-//
-//        LineData lineData = new LineData(dataSet);
-//        //chart.setData(lineData);
-//        //chart.invalidate(); // refresh
-//    }
-//
-//    // For purposes of implementation later, this returns an array of Item objects.
-//    //Query the database for array of Item objects
-//    public ArrayList<Order> getData(User user){
-//        //Query database for orders
-//        return user.get_info().get_previous_orders();
-//
-//    }
+    private boolean isEmailFormat(String s){
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (s == null)
+            return false;
+        return pat.matcher(s).matches();
+    }
 }
