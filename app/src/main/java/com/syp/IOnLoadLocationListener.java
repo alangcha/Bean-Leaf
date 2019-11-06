@@ -1,10 +1,8 @@
 package com.syp;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.List;
+import java.util.HashMap;
 
 public interface IOnLoadLocationListener {
-    void onLoadLocationSuccess(List<MyLatLng> latLngs);
+    void onLoadLocationSuccess(HashMap<String, MyLatLng> latLngs);
     void onLoadLocationFailure(String message);
 }

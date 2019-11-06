@@ -2,25 +2,46 @@ package com.syp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.syp.MainActivity;
 import com.syp.R;
+import com.syp.model.Cafe;
+import com.syp.model.Item;
+import com.syp.model.Singleton;
+import com.syp.model.User;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 // hardcoded data:
@@ -28,16 +49,14 @@ import java.util.regex.Pattern;
 public class UserFragment extends Fragment {
 
     private MainActivity mainActivity;
-    private TextView greetingsLabel;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private FirebaseRecyclerAdapter adapter;
+    private ImageButton addShop;
+    private TextView name;
     private TextView email;
-    private TextView password;
-    private TextView errorEmail;
-    private TextView errorPassword;
-    private EditText email_edit;
-    private EditText password_edit;
-    private Button addShop;
-    private FloatingActionButton edit;
-    private FloatingActionButton done;
+    private TextView gender;
+    private List<String> userCafeIds;
 
     @Nullable
     @Override
@@ -46,76 +65,92 @@ public class UserFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         View v = inflater.inflate(R.layout.fragment_user, container, false);
 
-        greetingsLabel = v.findViewById(R.id.profile_greetings);
-        email = v.findViewById(R.id.profile_email);
-        email_edit = v.findViewById(R.id.profile_email_edit);
-        errorEmail = v.findViewById(R.id.profile_invalid_email);
-        password = v.findViewById(R.id.profile_password);
-        password_edit = v.findViewById(R.id.profile_password_edit);
-        errorPassword = v.findViewById(R.id.profile_invalid_password);
-        addShop = v.findViewById(R.id.add_shop);
-        edit = v.findViewById(R.id.btnEditProfile);
-        done = v.findViewById(R.id.btnDoneProfile);
+        recyclerView = v.findViewById(R.id.myShopsRecycle);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
 
-        done.hide();
-
-        final String originalEmail = email.getText().toString();
-        final String originalPassword = password.getText().toString();
+        addShop = v.findViewById(R.id.shopAddButton);
+        name = v.findViewById(R.id.profileName);
+        email = v.findViewById(R.id.profileEmail);
+        gender = v.findViewById(R.id.profileGender);
 
         addShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Navigate to OrderItemFragment
                 NavDirections action = UserFragmentDirections.actionUserFragmentToAddShopFragment();
                 Navigation.findNavController(v).navigate(action);
             }
         });
 
-        edit.setOnClickListener(new View.OnClickListener() {
+        // Get cafe from firebase
+        DatabaseReference myRef = Singleton.get(mainActivity).getDatabase().child("users")
+                .child(Singleton.get(mainActivity).getUserId());
+
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                email.setVisibility(View.GONE);
-                email_edit.setVisibility(View.VISIBLE);
-                password.setVisibility(View.GONE);
-                password_edit.setVisibility(View.VISIBLE);
-                errorEmail.setVisibility(View.INVISIBLE);
-                errorPassword.setVisibility(View.INVISIBLE);
-                edit.hide();
-                done.show();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user =  dataSnapshot.getValue(User.class);
+                name.setText(user.getDisplayName());
+                Toast.makeText(mainActivity, user.getEmail(), Toast.LENGTH_SHORT).show();
+                email.setText(user.getEmail());
+                gender.setText("Male");
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+        Query query = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId()).child("cafes");
 
-        done.setOnClickListener(new View.OnClickListener() {
+        // Firebase Options
+        FirebaseRecyclerOptions<Cafe> options =
+                new FirebaseRecyclerOptions.Builder<Cafe>()
+                        .setQuery(query, new SnapshotParser<Cafe>() {
+                            @NonNull
+                            @Override
+                            public Cafe parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                Cafe cafe = snapshot.getValue(Cafe.class);
+                                return cafe;
+                            }
+                        })
+                        .build();
+
+
+        // Firebase Recycler View
+        adapter = new FirebaseRecyclerAdapter<Cafe, CafeViewHolder>(options) {
+            @NonNull
             @Override
-            public void onClick(View view) {
-                String newEmail = email_edit.getText().toString();
-                if(!isEmailFormat(newEmail)) {
-                    newEmail = originalEmail;
-                    errorEmail.setVisibility(View.VISIBLE);
-                }
-                String newPassword = password_edit.getText().toString();
-                if(newPassword.trim().length() == 0){
-                    newPassword = originalPassword;
-                    errorPassword.setVisibility(View.VISIBLE);
-                }
+            public CafeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.fragment_merchant_shop, parent, false);
 
-                email.setVisibility(View.VISIBLE);
-                email.setText(newEmail);
-                email_edit.setVisibility(View.GONE);
-                email_edit.setText(newEmail);
-
-                password.setVisibility(View.VISIBLE);
-                password_edit.setVisibility(View.GONE);
-                password.setText(newPassword);
-                password_edit.setText(newPassword);
-
-                edit.show();
-                done.hide();
-                InputMethodManager imm = (InputMethodManager) done.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                return new CafeViewHolder(view);
             }
-        });
+            @NonNull
+            @Override
+            protected void onBindViewHolder(CafeViewHolder holder, final int position, Cafe cafe) {
+                holder.setCafeName(cafe.getName());
+                ImageButton b = holder.getEditButton();
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Singleton.get(mainActivity).setCurrentCafeId(cafe.getId());
+                        Toast.makeText(mainActivity, "name: " + cafe.getName() + ", id: " + Singleton.get(mainActivity).getCurrentItemId(), Toast.LENGTH_SHORT).show();
+
+                        // Navigate to OrderItemFragment
+                        NavDirections action = UserFragmentDirections.actionUserFragmentToMerchantShopFragment();
+                        Navigation.findNavController(v).navigate(action);
+                    }
+                });
+            }
+        };
 
 
+        // specify an adapter
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
 
 
         return v;

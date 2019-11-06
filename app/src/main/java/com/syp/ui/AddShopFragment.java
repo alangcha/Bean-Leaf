@@ -1,12 +1,17 @@
 package com.syp.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +25,24 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.syp.LoginActivity;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
+import com.syp.model.Database;
 import com.syp.model.Item;
+import com.syp.model.Singleton;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class AddShopFragment extends Fragment {
 
@@ -53,25 +70,50 @@ public class AddShopFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         View v = inflater.inflate(R.layout.fragment_add_shop, container, false);
 
-        newCafe = mainActivity.getNewCafe();
-
         shopName = v.findViewById(R.id.addshop_shop_name);
         shopAddress = v.findViewById(R.id.addshop_shop_address);
         shopHours = v.findViewById(R.id.addshop_shop_hours);
-
         addItem = v.findViewById(R.id.addshop_add_item);
         addCafeImage = v.findViewById(R.id.addshop_add_cafe_images);
         addRegistrationForm = v.findViewById(R.id.addshop_add_registration_form_image);
         registerShop = v.findViewById(R.id.addshop_register_cafe);
-
 
         //Set up recycler view
         recyclerView = v.findViewById(R.id.addShop_currentItems);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
+        String userID = Singleton.get(mainActivity).getUserId();
+
+        // Cafe
+        DatabaseReference ref = Singleton.get(mainActivity).getDatabase().child("users").child(userID)
+                .child("currentCafe");
+
+        // Value Listener
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    return;
+                }
+                Cafe cafe = dataSnapshot.getValue(Cafe.class);
+                shopName.setText(cafe.getName());
+                shopAddress.setText(cafe.getAddress());
+                shopHours.setText(cafe.getHours());
+                Toast.makeText(mainActivity, shopName.getText().toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ASDF", shopName.getText().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         // Query
-        Query query = FirebaseDatabase.getInstance().getReference().child("Menu");
+        Query query = Singleton.get(mainActivity).getDatabase().child("users").child(userID)
+                .child("currentCafe")
+                .child("items");
 
         // Firebase Options
         FirebaseRecyclerOptions<Item> options =
@@ -80,15 +122,12 @@ public class AddShopFragment extends Fragment {
                             @NonNull
                             @Override
                             public Item parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                Item item = new Item();
-                                item.set_name(snapshot.child("beverage_name").getValue().toString());
-                                item.set_price(Double.parseDouble(snapshot.child("beverage_price").getValue().toString()));
-                                item.set_id(snapshot.child("beverage_caffeine_amt").getValue().toString());
+                                Item item = snapshot.getValue(Item.class);
+                                Log.d("ASDF", item.getName());
                                 return item;
                             }
                         })
                         .build();
-
 
         //Firebase Recycler View
         adapter = new FirebaseRecyclerAdapter<Item, MenuViewHolder>(options) {
@@ -98,24 +137,57 @@ public class AddShopFragment extends Fragment {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.fragment_menu_row_item, parent, false);
+                        .inflate(R.layout.fragment_cafe_menu_item, parent, false);
 
                 return new MenuViewHolder(view);
             }
             @NonNull
             @Override
             protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setBeverageName(item.get_name());
+                holder.setBeverageName(item.getName());
                 holder.setBeveragePrice(Double.toString(item.getPrice()));
-//                holder.setCaffeineAmt(Double.toString(item.get_caffeine_amt_in_mg()));
-//                holder.setBeverageImage();
             }
         };
+
+        // specify an adapter
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
 
 
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
+                        .child("users").child(userID)
+                        .child("currentCafe");
+
+                newCafe = new Cafe();
+                boolean failed = false;
+                newCafe.setName(shopName.getText().toString());
+                double latitude = 34.02686, longitude = -118.280857;
+
+//                try {
+//                    Log.d("Address", shopAddress.getText().toString().trim());
+//                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
+//                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
+//                    Address address = addresses.get(0);
+//                    Log.d("address", address.toString());
+//                    longitude = address.getLongitude();
+//                    latitude = address.getLatitude();
+//                } catch (IOException io){
+//                    Log.d("io", io.getMessage());
+//                    shopAddress.setHint("Invalid Address");
+//                    shopAddress.setText("");
+//                    failed = true;
+//                }
+
+                newCafe.setLatitude(latitude);
+                newCafe.setLongitude(longitude);
+                newCafe.setAddress(shopAddress.getText().toString());
+                newCafe.setHours(shopHours.getText().toString());
+                ref.setValue(newCafe);
+
                 NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment();
                 Navigation.findNavController(v).navigate(action);
             }
@@ -140,12 +212,103 @@ public class AddShopFragment extends Fragment {
         registerShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newCafe.set_name(shopName.getText().toString());
-                newCafe.set_address(shopAddress.getText().toString());
-                newCafe.set_hours(shopHours.getText().toString());
+                newCafe = new Cafe();
+                boolean failed = false;
 
-                NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToUserFragment();
-                Navigation.findNavController(v).navigate(action);
+                if(shopName.getText().toString().trim().length() == 0){
+                    shopName.setHintTextColor(Color.RED);
+                    shopName.setHint("Invalid Shop Name");
+                    shopName.setText("");
+                    failed = true;
+                }
+                else{
+                    newCafe.setName(shopName.getText().toString());
+                }
+
+                double latitude = 34.02686, longitude = -118.280857;
+
+//                try {
+//                    Log.d("Address", shopAddress.getText().toString().trim());
+//                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
+//                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
+//                    Address address = addresses.get(0);
+//                    Log.d("address", address.toString());
+//                    longitude = address.getLongitude();
+//                    latitude = address.getLatitude();
+//                } catch (IOException io){
+//                    Log.d("io", io.getMessage());
+//                    shopAddress.setHint("Invalid Address");
+//                    shopAddress.setText("");
+//                    failed = true;
+//                }
+
+                newCafe.setLatitude(latitude);
+                newCafe.setLongitude(longitude);
+
+                if(shopAddress.getText().toString().trim().length() == 0){
+                    shopAddress.setHintTextColor(Color.RED);
+                    shopAddress.setHint("Invalid Address");
+                    shopAddress.setText("");
+                    failed = true;
+                }
+                else{
+                    newCafe.setAddress(shopAddress.getText().toString());
+                }
+
+                if(shopHours.getText().toString().trim().length() == 0) {
+                    shopHours.setHintTextColor(Color.RED);
+                    shopHours.setHint("Invalid Hours");
+                    shopHours.setText("");
+                    failed = true;
+                }
+                else{
+                    newCafe.setHours(shopHours.getText().toString());
+                }
+
+                if(!failed){
+
+                    DatabaseReference ref = Singleton.get(mainActivity).getDatabase().child("users").child(userID)
+                            .child("currentCafe")
+                            .child("items");
+
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        Map<String, Item> items = new HashMap<>();
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot childSnapShot: dataSnapshot.getChildren()) {
+                                items.put(childSnapShot.getKey(), childSnapShot.getValue(Item.class));
+                            }
+                            newCafe.setItems(items);
+
+                            DatabaseReference newCafeRef = Singleton.get(mainActivity).getDatabase().
+                                    child("users").child(Singleton.get(mainActivity).getUserId())
+                                    .child("cafes");
+
+                            String id = newCafeRef.push().getKey();
+                            newCafe.setId(id);
+                            newCafeRef.child(id).setValue(newCafe);
+
+                            DatabaseReference newCafeRefCafe = Singleton.get(mainActivity).getDatabase()
+                                    .child("cafes");
+                            newCafeRefCafe.child(id).setValue(newCafe);
+
+                            Singleton.get(mainActivity).getDatabase().child("users").child(userID)
+                                    .child("currentCafe").removeValue();
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToUserFragment();
+                    Navigation.findNavController(v).navigate(action);
+                }
+
+
+
             }
         });
 

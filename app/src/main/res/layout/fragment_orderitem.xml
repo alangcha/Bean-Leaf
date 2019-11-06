@@ -68,157 +68,157 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/ice_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ice"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:textSize="25dp">
-            </TextView>
+<!--            <TextView-->
+<!--                android:id="@+id/ice_label"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Ice"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:textSize="25dp">-->
+<!--            </TextView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <CheckBox
-                    android:id="@+id/ice0CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/ice25CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/ice50CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
+<!--                <CheckBox-->
+<!--                    android:id="@+id/ice0CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="0%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginLeft="20dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/ice25CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="25%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/ice50CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="50%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
 
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/ice100CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/ice100CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="100%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
 
-                    android:textSize="18sp" />
+<!--                    android:textSize="18sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:id="@+id/item_sugar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sugar"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:textSize="25dp">
-            </TextView>
+<!--            <TextView-->
+<!--                android:id="@+id/item_sugar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Sugar"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:textSize="25dp">-->
+<!--            </TextView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <CheckBox
-                    android:id="@+id/sugar0CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/sugar25CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/sugar50CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
+<!--                <CheckBox-->
+<!--                    android:id="@+id/sugar0CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="0%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginLeft="20dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/sugar25CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="25%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/sugar50CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="50%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
 
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/sugar100CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100%"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/sugar100CheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="100%"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
 
-                    android:textSize="18sp" />
+<!--                    android:textSize="18sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:id="@+id/item_toppings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Topping"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:textSize="25dp">
-            </TextView>
+<!--            <TextView-->
+<!--                android:id="@+id/item_toppings"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Topping"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:textSize="25dp">-->
+<!--            </TextView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <CheckBox
-                    android:id="@+id/bobaCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Boba"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/jellyCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jelly"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
-                    android:textSize="18sp" />
-                <CheckBox
-                    android:id="@+id/miniBobaCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mini Boba"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="20dp"
+<!--                <CheckBox-->
+<!--                    android:id="@+id/bobaCheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Boba"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginLeft="20dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/jellyCheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Jelly"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:textSize="18sp" />-->
+<!--                <CheckBox-->
+<!--                    android:id="@+id/miniBobaCheckBox"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Mini Boba"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="20dp"-->
 
-                    android:textSize="18sp" />
+<!--                    android:textSize="18sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-        </LinearLayout>
+       </LinearLayout>
 
         <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
             android:id="@+id/item_stepper"

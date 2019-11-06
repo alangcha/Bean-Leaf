@@ -22,6 +22,7 @@
 //import com.firebase.geofire.GeoLocation;
 //import com.firebase.geofire.GeoQuery;
 //import com.firebase.geofire.GeoQueryDataEventListener;
+//
 //import com.google.android.gms.location.FusedLocationProviderClient;
 //import com.google.android.gms.location.LocationCallback;
 //import com.google.android.gms.location.LocationRequest;
@@ -35,25 +36,27 @@
 //import com.google.android.gms.maps.model.LatLng;
 //import com.google.android.gms.maps.model.Marker;
 //import com.google.android.gms.maps.model.MarkerOptions;
+//
 //import com.google.firebase.database.DataSnapshot;
 //import com.google.firebase.database.DatabaseError;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 //import com.google.firebase.database.ValueEventListener;
+//
 //import com.karumi.dexter.Dexter;
 //import com.karumi.dexter.PermissionToken;
 //import com.karumi.dexter.listener.PermissionDeniedResponse;
 //import com.karumi.dexter.listener.PermissionGrantedResponse;
 //import com.karumi.dexter.listener.PermissionRequest;
 //import com.karumi.dexter.listener.single.PermissionListener;
-//import com.syp.MyLatLng;
 //
-//import java.lang.reflect.Array;
 //import java.util.ArrayList;
+//import java.util.HashMap;
 //import java.util.List;
+//import java.util.Map;
 //import java.util.Random;
 //
-//public class GeofencingActivity extends FragmentActivity implements OnMapReadyCallback, GeoQueryDataEventListener, IOnLoadLocationListener {
+//public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GeoQueryDataEventListener, IOnLoadLocationListener {
 //
 //    private GoogleMap mMap;
 //    private LocationRequest locationRequest;
@@ -69,6 +72,8 @@
 //    private Location lastLocation;
 //    private GeoQuery geoQuery;
 //
+//    private Boolean isInCafe = false;
+//
 //
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +85,6 @@
 //                .withListener(new PermissionListener() {
 //                    @Override
 //                    public void onPermissionGranted(PermissionGrantedResponse response) {
-//
 //                        buildLocationRequest();
 //                        buildLocationCallback();
 //                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(GeofencingActivity.this);
@@ -103,10 +107,9 @@
 //
 //    private void initArea() {
 //        myCafe = FirebaseDatabase.getInstance()
-//                .getReference("CafesGeofences") //TODO: Change this
-//                .child("MyCafe"); //TODO: Change this
-//        listener = this;
+//                .getReference("cafes");
 //
+//        listener = this;
 ////        myCafe.addListenerForSingleValueEvent(new ValueEventListener() {
 ////                    @Override
 ////                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -126,10 +129,11 @@
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                //update cafeLocations list
-//                List<MyLatLng> latLngList = new ArrayList<>();
+//                HashMap<String, MyLatLng> latLngList = new HashMap<String, MyLatLng>();
+////                List<MyLatLng> latLngList = new ArrayList<>();
 //                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
 //                    MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
-//                    latLngList.add(latLng);
+//                    latLngList.put(locationSnapshot.getKey(), latLng);
 //                }
 //
 //                listener.onLoadLocationSuccess(latLngList);
@@ -228,22 +232,22 @@
 //
 //    @Override
 //    public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-//        sendNotification("USER". String.format("%s entered the cafe.", dataSnapshot.getKey()));
+//        sendNotification("USER", dataSnapshot.getKey() + "%s entered the cafe.");
 //    }
 //
 //    @Override
 //    public void onDataExited(DataSnapshot dataSnapshot) {
-//        sendNotification("USER". String.format("%s left the cafe.", dataSnapshot.getKey()));
+//        sendNotification("USER", dataSnapshot.getKey() + "%s left the cafe.");
 //    }
 //
 //    @Override
 //    public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-//        sendNotification("USER". String.format("%s moved within the cafe.", dataSnapshot.getKey()));
+//        sendNotification("USER", dataSnapshot.getKey() + "%s moved within the cafe.");
 //    }
 //
 //    @Override
 //    public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-//        sendNotification("USER". String.format("%s changed the cafe.", dataSnapshot.getKey()));
+//        sendNotification("USER", dataSnapshot.getKey() + "%s changed the cafe.");
 //    }
 //
 //    @Override
@@ -288,10 +292,10 @@
 //    }
 //
 //    @Override
-//    public void onLoadLocationSuccess(List<MyLatLng> latLngs) {
+//    public void onLoadLocationSuccess(HashMap<String, MyLatLng> latLngs) {
 //        cafeLocations = new ArrayList<>();
-//        for (MyLatLng myLatLng : latLngs) {
-//            LatLng convert = new LatLng(myLatLng.getLatitude(), myLatLng.getLongitude());
+//        for (Map.Entry<String, MyLatLng> myLatLng : latLngs.entrySet()) {
+//            LatLng convert = new LatLng(myLatLng.getValue().getLatitude(), myLatLng.getValue().getLongitude());
 //            cafeLocations.add(convert);
 //        }
 //        // Obtain the SupportMapFragment and get notified when the map is ready to be used.

@@ -43,4 +43,6 @@ public class CheckoutViewHolder extends RecyclerView.ViewHolder {
     public void setPrice(String price) {
         itemSubTitleTv.setText(price);
     }
+
+    public Button getRemoveBtn() { return removeButton; }
 }

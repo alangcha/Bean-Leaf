@@ -1,5 +1,7 @@
 package com.syp.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,14 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.syp.model.Item;
 import com.syp.MainActivity;
 import com.syp.R;
@@ -40,20 +45,21 @@ public class CheckoutFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private FirebaseRecyclerAdapter adapter;
+    private Singleton singleton;
 
     private TextView countTv;
-    private TextView title;
     private Button checkoutBtn;
-    int count = 0;
-
-    private ArrayList<Item> items;
+    private TextView subTotalTv;
+    private TextView discountTv;
+    private TextView taxTv;
+    private TextView totalTv;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_checkout, container, false);
         mainActivity = (MainActivity) getActivity();
-        Order curOrder = Singleton.get(mainActivity).getCurrentOrder();
+        singleton = Singleton.get(mainActivity);
 
 
         // Set up recycler view
@@ -61,11 +67,8 @@ public class CheckoutFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        title = v.findViewById(R.id.Title);
-        title.setText(curOrder.get_owner().get_name());
-
         // Query
-        Query query = FirebaseDatabase.getInstance().getReference().child("orders");
+        Query query = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder");
 
         // Firebase Options
         FirebaseRecyclerOptions<Item> options =
@@ -74,10 +77,7 @@ public class CheckoutFragment extends Fragment {
                             @NonNull
                             @Override
                             public Item parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                Item item = new Item();
-                                item.set_name(snapshot.child("title").getValue().toString());
-                                item.set_price(Double.parseDouble(snapshot.child("price").getValue().toString()));
-                                item.set_id(snapshot.child("id").getValue().toString());
+                                Item item = snapshot.getValue(Item.class);
                                 return item;
                             }
                         })
@@ -85,10 +85,9 @@ public class CheckoutFragment extends Fragment {
 
         // Firebase Recycler View
         adapter = new FirebaseRecyclerAdapter<Item, CheckoutViewHolder>(options) {
+
             @Override
             public CheckoutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                // Create a new instance of the ViewHolder, in this case we are using a custom
-                // layout called R.layout.message for each item
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.fragment_menu_row_item, parent, false);
 
@@ -97,38 +96,137 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(CheckoutViewHolder holder, final int position, Item item) {
-                Log.d("ITEM", item.get_name());
-                holder.setTitle(item.get_name());
+                holder.setTitle(item.getName() + " | x" + item.getCount());
                 holder.setPrice(Double.toString(item.getPrice()));
+                holder.getRemoveBtn().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Query query = singleton.getDatabase().child("users").child(singleton.getUserId())
+                                .child("currentOrder").child(item.getId());
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int currCount = Integer.parseInt(dataSnapshot.child("count").getValue().toString());
+
+                                if (currCount >=2 ) {
+                                    Toast.makeText(mainActivity, "item: " + item.getName() + ", count: " + currCount , Toast.LENGTH_SHORT).show();
+                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
+                                            .child("currentOrder").child(item.getId()).child("count");
+
+                                    ref.setValue(--currCount);
+                                } else {
+                                    Toast.makeText(mainActivity, "item removed", Toast.LENGTH_SHORT).show();
+                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
+                                            .child("currentOrder").child(item.getId());
+                                    ref.removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }});
             }
         };
 
         // Get data
         mainActivity = (MainActivity) getActivity();
-        items = mainActivity.getCurrentOrder().get_item_purchased();
 
         // specify an adapter
         recyclerView.setAdapter(adapter);
 
-        // Set item count
+        // Find views
         countTv = v.findViewById(R.id.SubTitle);
-        if(mainActivity.getCurrentOrder()!=null) {
-            count = mainActivity.getCurrentOrder().get_item_purchased().size();
-        }
-        countTv.setText(count + " Items");
         checkoutBtn = v.findViewById(R.id.confirmBtn);
+        subTotalTv = v.findViewById(R.id.priceTitle);
+        discountTv = v.findViewById(R.id.discountTitle);
+        taxTv = v.findViewById(R.id.taxTitle);
+        totalTv = v.findViewById(R.id.totalTitle);
+
+        // Calculate totals
+        Query totalQuery = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder");
+        totalQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                double subtotal = 0;
+                int totalCount = 0;
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    double price = Double.parseDouble(child.child("price").getValue().toString());
+                    int count = Integer.parseInt(child.child("count").getValue().toString());
+                    subtotal += price * count;
+                    totalCount += count;
+                }
+                countTv.setText(totalCount + " Items");
+                subTotalTv.setText("$ " + String.format("%.2f", subtotal));
+                discountTv.setText("$ " + String.format("%.2f", 0.0));
+                taxTv.setText("$ " + String.format("%.2f", subtotal*0.08));
+                totalTv.setText("$ " + String.format("%.2f", subtotal * 1.08));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Singleton.get(mainActivity).completeOrder();
-                NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToUserFragment();
-                Navigation.findNavController(view).navigate(action);
+                DatabaseReference checkoutQuery = singleton.getDatabase().child("users").child(singleton.getUserId())
+                        .child("currentOrder");
+                checkoutQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    Map<String, Item> items = new HashMap<>();
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Order order = new Order();
+                        for(DataSnapshot childSnapShot: dataSnapshot.getChildren()) {
+                            items.put(childSnapShot.getKey(), childSnapShot.getValue(Item.class));
+                        }
+                        order.setCafe(singleton.getCurrentCafeId());
+                        order.setUser(singleton.getUserId());
+                        order.setTimestamp(System.currentTimeMillis());
+                        order.setItems(items);
+
+                        if(items.size() == 0) {
+                            Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Delete current order
+                        checkoutQuery.removeValue();
+
+                        // Insert order into user
+                        DatabaseReference checkoutRef = singleton.getDatabase().child("users").child(singleton.getUserId())
+                                .child("orders");
+                        String id = checkoutRef.push().getKey();
+                        order.setId(id);
+                        checkoutRef.child(id).setValue(order);
+
+                        // Insert order into cafe
+                        checkoutRef = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId())
+                                .child("orders");
+                        id = checkoutRef.push().getKey();
+                        checkoutRef.child(id).setValue(order);
+
+                        Toast.makeText(mainActivity, "Checkout Successful", Toast.LENGTH_SHORT).show();
+
+                        NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
+                        Navigation.findNavController(view).navigate(action);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         adapter.startListening();
         return v;
     }
-
 
 }

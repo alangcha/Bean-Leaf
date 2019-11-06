@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.syp.model.Cafe;
 import com.syp.MainActivity;
 import com.syp.R;
+import com.syp.model.Database;
 import com.syp.model.Singleton;
 
 import java.util.ArrayList;
@@ -43,7 +45,9 @@ public class MapFragment extends Fragment {
     private DatabaseReference ref;
     private LinearLayout infoBox;
     private Button viewCafeButton;
-    private View v;
+    private TextView shopName;
+    private TextView shopAddress;
+    private TextView shopHours;
     private MainActivity mainActivity;
 
     @Nullable
@@ -51,27 +55,17 @@ public class MapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         // Inflate view
-        v = inflater.inflate(R.layout.fragment_map, container, false);
-
-        // Get data base reference
-        ref = Singleton.get(mainActivity).getDatabase().getReference("Cafes ");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Log.d("FIREBASE DATA",dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        View v = inflater.inflate(R.layout.fragment_map, container, false);
 
         // Ref to mainactivity
         mainActivity = (MainActivity) getActivity();
 
         // link views to variables
         infoBox = v.findViewById(R.id.cafe_infobox);
+        shopName = v.findViewById(R.id.map_shopName);
+        shopAddress = v.findViewById(R.id.map_shopAddress);
+        shopHours = v.findViewById(R.id.map_shopTime);
+
         viewCafeButton = v.findViewById(R.id.view_cafe_button);
         viewCafeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,18 +102,18 @@ public class MapFragment extends Fragment {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Cafe cafe = new Cafe();
-                        cafe.set_id(dataSnapshot.child("id").getValue().toString());
-                        cafe.set_name(dataSnapshot.child("name").getValue().toString());
-                        cafe.set_address(dataSnapshot.child("address").getValue().toString());
-                        cafe.set_latitude((double) dataSnapshot.child("latitude").getValue());
-                        cafe.set_longitude((double) dataSnapshot.child("longitude").getValue());
+                        cafe.setId(dataSnapshot.child("id").getValue().toString());
+                        cafe.setName(dataSnapshot.child("name").getValue().toString());
+                        cafe.setAddress(dataSnapshot.child("address").getValue().toString());
+                        cafe.setLatitude((double) dataSnapshot.child("latitude").getValue());
+                        cafe.setLongitude((double) dataSnapshot.child("longitude").getValue());
 
                         Marker marker = mMap.addMarker(
-                                new MarkerOptions().position(new LatLng(cafe.get_latitude(), cafe.get_longitude()))
-                                        .title(cafe.get_name()));
-                        Log.d("ID", cafe.get_id());
-                        marker.setTag(cafe.get_id());
-                        Singleton.get(mainActivity).addCafeIfNotExist(cafe.get_id(), cafe);
+                                new MarkerOptions().position(new LatLng(cafe.getLatitude(), cafe.getLongitude()))
+                                        .title(cafe.getName()));
+                        Log.d("ID", cafe.getId());
+                        marker.setTag(cafe.getId());
+                        Singleton.get(mainActivity).addCafeIfNotExist(cafe.getId(), cafe);
                     }
 
                     @Override
@@ -151,6 +145,27 @@ public class MapFragment extends Fragment {
                         Singleton.get(mainActivity).setCurrentCafeId(id);
                         marker.showInfoWindow();
                         infoBox.setVisibility(View.VISIBLE);
+
+                        DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
+                            .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId());
+
+                        ref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Cafe cafe = dataSnapshot.getValue(Cafe.class);
+                                shopName.setText(cafe.getName());
+                                shopAddress.setText(cafe.getAddress());
+                                shopHours.setText(cafe.getHours());
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                         return false;
                     }
                 });

@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if (account != null) {
                     firebaseAuthWithGoogle(account);
-                    finish();
                 }
             } catch (ApiException e) {
                 e.printStackTrace();
@@ -90,10 +89,9 @@ public class LoginActivity extends AppCompatActivity {
                 .getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
+                    Log.d("Tag", "Sign in credential");
                     if (task.isSuccessful()) {
                         Log.d("Tag", "signin success");
-                        Toast.makeText(this, "SignIn Success!", Toast.LENGTH_SHORT).show();
-
                         // Get firebase user
                         FirebaseUser fbuser = mAuth.getCurrentUser();
 

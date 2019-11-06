@@ -1,13 +1,11 @@
 package com.syp.model;
 
-import android.media.Image;
 import android.net.Uri;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,10 +15,9 @@ public class Item implements Serializable {
     private String id;
     private String name;
     private double price;
-    private double caffeine_amt_in_mg;
-    private Uri image;
-    private Cafe owner;
-    private User user;
+    private double caffeine;
+    private String image;
+    private int count; // Only used to keep track of how many items ordered
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -28,35 +25,43 @@ public class Item implements Serializable {
         result.put("id", id);
         result.put("name", name);
         result.put("price", price);
-        result.put("caffeine", caffeine_amt_in_mg);
+        result.put("caffeine", caffeine);
         return result;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     // Default Constructor
     public Item(){ }
 
     // setter for id
-    public void set_id(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     // Getter for id
-    public String get_id() {
+    public String getId() {
         return id;
     }
 
     // setter for firstName
-    public void set_name(String name){
+    public void setName(String name){
         this.name = name;
     }
 
     // Getter for firstName
-    public String get_name() {
+    public String getName() {
         return name;
     }
 
     // setter of price
-    public void set_price(double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -66,38 +71,23 @@ public class Item implements Serializable {
     }
 
     // setter for caffeine amt
-    public void set_caffeine(double caffeine_amt_in_mg) {
-        this.caffeine_amt_in_mg = caffeine_amt_in_mg;
+    public void setCaffeine(double caffeine_amt_in_mg) {
+        this.caffeine = caffeine_amt_in_mg;
     }
 
     // Getter for caffeine amount
-    public double get_caffeine() {
-        return caffeine_amt_in_mg;
+    public double getCaffeine() {
+        return caffeine;
     }
 
     // Getter for images
-    public Uri getImage() {
+    public String getImage() {
         return image;
     }
 
     // Add image
-    public void setImage(Uri image) {
+    public void setImage(String image) {
         this.image = image;
-    }
-
-    // Getter for owner of item
-    public Cafe getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Cafe c) { owner = c; }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     // Equals operator overload for Item
@@ -106,10 +96,6 @@ public class Item implements Serializable {
 
         // Check firstName
         if(!this.name.equals(other.name))
-            return false;
-
-        // Check location
-        if(!this.owner.equals(other.owner))
             return false;
 
         return true;

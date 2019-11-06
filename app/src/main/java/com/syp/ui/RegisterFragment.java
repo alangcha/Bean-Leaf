@@ -100,7 +100,7 @@ public class RegisterFragment extends Fragment {
 //                u.set_password(email.getText().toString());
 
                 // Add user to main activity
-                mainActivity.addUser(u);
+                //mainActivity.addUser(u);
 
                 // Redirect to maps page is all pass
 //                NavDirections action = RegisterFragmentDirections.actionRegisterFragmentToMapFragment();

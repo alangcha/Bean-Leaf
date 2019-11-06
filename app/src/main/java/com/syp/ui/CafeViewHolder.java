@@ -2,6 +2,7 @@ package com.syp.ui;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,30 +14,18 @@ public class CafeViewHolder extends RecyclerView.ViewHolder {
     // Your holder should contain a member variable
     // for any view that will be set as you render a row
     private TextView cafeName;
-    private TextView cafeAddress;
-    private ImageView cafeImage;
-    private Button editButton;
+    private ImageButton editButton;
 
     public CafeViewHolder(View cafeView) {
         super(cafeView);
-        cafeName = cafeView.findViewById(R.id.cell_shop_name);
-        cafeAddress = cafeView.findViewById(R.id.cell_shop_address);
-        cafeImage = cafeView.findViewById(R.id.cell_shop_image);
+        cafeName = cafeView.findViewById(R.id.cellShopName);
         editButton = cafeView.findViewById(R.id.shopEditButton);
-
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     public void setCafeName(String name) {
         cafeName.setText(name);
     }
-    public void setCafeAddress(String address) {
-        cafeAddress.setText(address);
+    public ImageButton getEditButton(){
+        return editButton;
     }
-//    public void setCafeImage(Image image) { cafeImage.setImageDrawable(image); }
 }

@@ -2,7 +2,9 @@ package com.syp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +19,14 @@ import androidx.fragment.app.Fragment;
 import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.syp.MainActivity;
 import com.syp.R;
+import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
@@ -41,7 +49,7 @@ public class ItemEditFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_itemedit, container, false);
         mainActivity = (MainActivity) getActivity();
-        Item i = Singleton.get(mainActivity).getCurrentMerchantItem();
+        Item i = new Item();
 
         itemName = v.findViewById(R.id.merchantitem_title);
         itemPrice = v.findViewById(R.id.merchantitem_price);
@@ -52,17 +60,45 @@ public class ItemEditFragment extends Fragment {
         image = v.findViewById(R.id.item_image);
 
         changeImage = v.findViewById(R.id.edititem_addimage);
-        edit = v.findViewById(R.id.btnEditShop);
-        done = v.findViewById(R.id.btnDoneShop);
+        edit = v.findViewById(R.id.btnEditItem);
+        done = v.findViewById(R.id.btnDoneItem);
         done.hide();
 
-        itemName.setText(i.get_name());
+        itemName.setText(i.getName());
         itemPrice.setText(String.valueOf(i.getPrice()));
-        itemCaffeine.setText(String.valueOf(i.get_caffeine_amt_in_mg()));
-        itemNameEdit.setText(i.get_name());
+        itemCaffeine.setText(String.valueOf(i.getCaffeine()));
+        itemNameEdit.setText(i.getName());
         itemPriceEdit.setText(String.valueOf(i.getPrice()));
-        itemCaffeineEdit.setText(String.valueOf(i.get_caffeine_amt_in_mg()));
-        image.setImageURI(i.getImage());
+        itemCaffeineEdit.setText(String.valueOf(i.getCaffeine()));
+//        image.setImageURI(i.getImage());
+
+        String userID = Singleton.get(mainActivity).getUserId();
+        String cafeID = Singleton.get(mainActivity).getCurrentCafeId();
+        String itemID = Singleton.get(mainActivity).getCurrentItemId();
+
+        DatabaseReference cafeRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(userID)
+                .child("cafes").child(cafeID)
+                .child("items").child(itemID);
+
+        cafeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Item item = dataSnapshot.getValue(Item.class);
+                itemName.setText(item.getName());
+                itemPrice.setText(Double.toString(item.getPrice()));
+                itemCaffeine.setText(Double.toString(item.getCaffeine()));
+                itemNameEdit.setText(item.getName());
+                itemPriceEdit.setText(Double.toString(item.getPrice()));
+                itemCaffeineEdit.setText(Double.toString(item.getCaffeine()));
+                Log.d("CAFE NAME", item.getName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,33 +125,65 @@ public class ItemEditFragment extends Fragment {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Set visibility
-                itemName.setVisibility(View.VISIBLE);
-                itemPrice.setVisibility(View.VISIBLE);
-                itemCaffeine.setVisibility(View.VISIBLE);
-                itemCaffeineEdit.setVisibility(View.GONE);
-                itemPriceEdit.setVisibility(View.GONE);
-                itemNameEdit.setVisibility(View.GONE);
 
-                // Set Text
-                itemName.setText(itemNameEdit.getText());
-                itemPrice.setText(itemPriceEdit.getText());
-                itemCaffeine.setText(itemCaffeineEdit.getText());
+                boolean failed = false;
+                DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
+                        .child("users").child(Singleton.get(mainActivity).getUserId())
+                        .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId())
+                        .child("items").child(Singleton.get(mainActivity).getCurrentItemId());
 
-                // Visibility
-                edit.show();
-                done.hide();
+                DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase()
+                        .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId())
+                        .child("items").child(Singleton.get(mainActivity).getCurrentItemId());
 
-                // Edit in Singleton
-                Item i = Singleton.get(mainActivity).getCurrentMerchantItem();
-                i.set_name(itemNameEdit.getText().toString());
-                i.set_price(Double.parseDouble(itemPriceEdit.getText().toString()));
-                i.set_caffeine_amt_in_mg(Double.parseDouble((itemNameEdit.getText().toString())));
-                i.setImage(Singleton.get(mainActivity).getCurrentMerchantItem().getImage());
-                Singleton.get(mainActivity).editItem(i);
+                if(itemNameEdit.getText().toString().trim().length() == 0){
+                    itemNameEdit.setHint("Invalid Name");
+                    itemNameEdit.setHintTextColor(Color.RED);
+                    itemNameEdit.setText("");
+                    failed = true;
+                }
+                else{
+                    ref.child("name").setValue(itemNameEdit.getText().toString());
+                    cafeRef.child("name").setValue(itemNameEdit.getText().toString());
+                    itemName.setVisibility(View.VISIBLE);
+                    itemNameEdit.setVisibility(View.GONE);
+                    itemName.setText(itemNameEdit.getText().toString());
+                }
+
+                try{
+                    ref.child("price").setValue(Double.valueOf(itemPriceEdit.getText().toString()));
+                    cafeRef.child("price").setValue(Double.valueOf(itemPriceEdit.getText().toString()));
+                    itemPrice.setVisibility(View.VISIBLE);
+                    itemPriceEdit.setVisibility(View.GONE);
+                    itemPrice.setText(itemPriceEdit.getText().toString());
+                }catch(NumberFormatException nfe){
+                    itemPriceEdit.setText("");
+                    itemPriceEdit.setHint("Invalid Number");
+                    itemPriceEdit.setHintTextColor(Color.RED);
+                    failed = true;
+                }
+
+                try{
+                    ref.child("caffeine").setValue(Double.valueOf(itemCaffeineEdit.getText().toString()));
+                    cafeRef.child("caffeine").setValue(Double.valueOf(itemCaffeineEdit.getText().toString()));
+                    itemCaffeine.setVisibility(View.VISIBLE);
+                    itemCaffeineEdit.setVisibility(View.GONE);
+                }catch(NumberFormatException nfe){
+                    itemCaffeineEdit.setText("");
+                    itemCaffeineEdit.setHint("Invalid Number");
+                    itemCaffeineEdit.setHintTextColor(Color.RED);
+                    failed = true;
+                }
+
+                if(!failed){
+                    // Visibility
+                    edit.show();
+                    done.hide();
+                }
 
                 InputMethodManager imm = (InputMethodManager) done.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
             }
         });
 

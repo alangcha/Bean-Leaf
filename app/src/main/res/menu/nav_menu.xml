@@ -16,8 +16,4 @@
         android:id="@+id/checkoutFragment"
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:title="View Cart" />
-    <item
-        android:id="@+id/googleLoginFragment"
-        android:icon="@drawable/ic_person_black_24dp"
-        android:title="Login" />
 </menu>

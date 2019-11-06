@@ -1,51 +1,85 @@
 package com.syp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.app.Activity;
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Menu;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryDataEventListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
 
 import com.google.android.material.navigation.NavigationView;
 
 import com.syp.model.*;
-import com.syp.model.Database;
 import com.syp.ui.AddItemExistingFragment;
 import com.syp.ui.AddItemNewFragment;
 import com.syp.ui.AddShopFragment;
 import com.syp.ui.MerchantShopFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback, GeoQueryDataEventListener, IOnLoadLocationListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     protected LocationManager locationManager;
@@ -105,6 +139,34 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+
+        // TODO: DOESNT WORK CUZ NULLPTREXCEPTION??? NEED TO EXTEND FRAGMENTACTIVITY???
+        // TODO: UNCOMMENT TO START GEOFENCING
+//        Dexter.withActivity(this)
+//                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+//                .withListener(new PermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted(PermissionGrantedResponse response) {
+//                        buildLocationRequest();
+//                        buildLocationCallback();
+//                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+//
+//                        initArea();
+//                        settingGeoFire();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied(PermissionDeniedResponse response) {
+//                        Toast.makeText(MainActivity.this, "You must enable permission", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+//
+//                    }
+//                }).check();
     }
 
     public boolean checkLocationPermission() {
@@ -179,7 +241,38 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if(requestCode == 10 && resultCode == RESULT_OK && null != data){
             String email = data.getStringExtra("email");
             String displayName = data.getStringExtra("displayName");
-            // Query database for email
+            Toast.makeText(this, email, Toast.LENGTH_LONG).show();
+            // Check if user exists
+            Query query = Singleton.get(this).getDatabase().child("users").orderByChild("email").equalTo(email);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot!=null && dataSnapshot.getChildren()!=null &&
+                            dataSnapshot.getChildren().iterator().hasNext()) {
+                        for(DataSnapshot child: dataSnapshot.getChildren()) {
+                            String id = child.getKey();
+                            Toast.makeText(MainActivity.this, "Sign in successfully", Toast.LENGTH_LONG).show();
+                            Singleton.get(MainActivity.this).setUserId(id);
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "New user created with email " + email, Toast.LENGTH_LONG).show();
+                        DatabaseReference userRef = Singleton.get(MainActivity.this).getDatabase().child("users");
+                        String id = userRef.push().getKey();
+                        User user = new User();
+                        user.setEmail(email);
+                        user.setDisplayName(displayName!=null ? displayName : "");
+                        user.setGender(true);
+                        user.setMerchant(false);
+                        userRef.child(id).setValue(user);
+                        Singleton.get(MainActivity.this).setUserId(id);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -189,71 +282,241 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 
-    // -----------------------------------------------------------
-    // Functions for retrieving and pushing data to main
-    // -----------------------------------------------------------
 
-    public void addUser(User u){
-        user = u;
-        Database.createUser(u);
+
+
+
+
+    // GEOFENCING FUNCTIONS
+
+    private GoogleMap mMap;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Marker currentUser;
+    private DatabaseReference myLocationRef;
+    private GeoFire geoFire;
+    private List<LatLng> cafeLocations;
+    private IOnLoadLocationListener listener;
+
+    private DatabaseReference myCafe;
+    private Location lastLocation;
+    private GeoQuery geoQuery;
+
+    private Boolean isInCafe = false;
+
+    private void initArea() {
+        myCafe = FirebaseDatabase.getInstance()
+                .getReference("cafes");
+
+        listener = this;
+//        myCafe.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        List<MyLatLng> latLngList = new ArrayList<>();
+//                        for (DataSnapshot locationSnapShot : dataSnapshot.getChildren()) {
+//                            MyLatLng latLng = locationSnapShot.getValue(LatLng(class));
+//                            latLngList.add(latLng);
+//                        }
+//                        listener.onLoadLocationSuccess(latLngList);
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        listener.onLoadLocationFailed(databaseError.getMessage());
+//                    }
+//                });
+        myCafe.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //update cafeLocations list
+                HashMap<String, MyLatLng> latLngList = new HashMap<String, MyLatLng>();
+//                List<MyLatLng> latLngList = new ArrayList<>();
+                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                    MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
+                    latLngList.put(locationSnapshot.getKey(), latLng);
+                }
+
+                listener.onLoadLocationSuccess(latLngList);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    public void setUser(User u){
-        user = u;
+    private void addUserMarker() {
+        geoFire.setLocation("You", new GeoLocation(lastLocation.getLatitude(),
+                lastLocation.getLongitude()), new GeoFire.CompletionListener() {
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                if (currentUser != null) currentUser.remove();
+                currentUser = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lastLocation.getLatitude(),
+                                lastLocation.getLongitude()))
+                        .title("You"));
+
+                mMap.animateCamera(CameraUpdateFactory
+                        .newLatLngZoom(currentUser.getPosition(), 12.0f));
+            }
+        });
     }
 
-    public void addOrder(){
-        Database.addOrderToUser(currentOrder, user);
-        currentOrder = new Order();
-        currentOrder.setUser(user);
+    private void settingGeoFire() {
+        myLocationRef = FirebaseDatabase.getInstance().getReference("MyLocation");
+        geoFire = new GeoFire(myLocationRef);
     }
 
-    public void editUserEmail(String email){
-        //user.set_email(email);
-        Database.editUserEmail(email);
+    private void buildLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(final LocationResult locationResult) {
+                if (mMap != null) {
+                    lastLocation = locationResult.getLastLocation();
+                    addUserMarker();
+                };
+            };
+        };
     }
 
-    public void editUserPassword(String password){
-        //user.set_password(password);
-        Database.editUserPassword(password);
+    private void buildLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setSmallestDisplacement(10f);
     }
 
-    public ArrayList<Cafe> getCafes() {
-        return cafes;
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        if (fusedLocationProviderClient != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+            }
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+        }
+        addCircleArea();
     }
 
-    public Cafe getCafeByPos(int pos) {
-        return cafes.get(pos);
-    }
+    private void addCircleArea() {
+        if (geoQuery != null) {
+            geoQuery.removeGeoQueryEventListener(this);
+            geoQuery.removeAllListeners();
+        }
+        for (LatLng latLng : cafeLocations) {
+            mMap.addCircle(new CircleOptions().center(latLng)
+                    .radius(500)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(0x220000FF)
+                    .strokeWidth(5.0f)
+            );
 
-    public void setCurrentCafeIndex(int index) {
-        this.currentCafeIndex = index;
-    }
-
-    public Integer getCurrentCafeIndex() {
-        return currentCafeIndex;
-    }
-
-    public int getCurrentItemIndex() {
-        return currentItemIndex;
-    }
-
-    public void setCurrentItemIndex(int index){ this.currentItemIndex = index; }
-
-    public Order getCurrentOrder(){ return currentOrder; }
-
-    public void addItemToOrder(ArrayList<Item> items) {
-        for(Item i : items){
-            currentOrder.add_item(i);
+            //Creates GeoQuery when user is in cafe location
+            geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 0.1f);
+            geoQuery.addGeoQueryDataEventListener(MainActivity.this);
         }
     }
 
-    public Cafe getNewCafe(){
-        return newCafe;
+    @Override
+    protected void onStop() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        super.onStop();
     }
 
-    public void createNewCafe(){
-        newCafe.set_owner(user);
+    @Override
+    public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+        sendNotification("USER", dataSnapshot.getKey() + "%s entered the cafe.");
+    }
+
+    @Override
+    public void onDataExited(DataSnapshot dataSnapshot) {
+        sendNotification("USER", dataSnapshot.getKey() + "%s left the cafe.");
+    }
+
+    @Override
+    public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+        sendNotification("USER", dataSnapshot.getKey() + "%s moved within the cafe.");
+    }
+
+    @Override
+    public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+        sendNotification("USER", dataSnapshot.getKey() + "%s changed the cafe.");
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+
+    }
+
+    @Override
+    public void onGeoQueryError(DatabaseError error) {
+        Toast.makeText(this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void sendNotification(String title, String content) {
+
+        Toast.makeText(this, ""+content, Toast.LENGTH_SHORT).show();
+
+        String NOTIFICATION_CHANNEL_ID = "cafe_multiple_location";
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notification",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configuration
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0,1000,500,1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        builder.setContentTitle(title)
+                .setContentText(content)
+                .setAutoCancel(false)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+
+        Notification notification = builder.build();
+        notificationManager.notify(new Random().nextInt(), notification);
+    }
+
+    @Override
+    public void onLoadLocationSuccess(HashMap<String, MyLatLng> latLngs) {
+        cafeLocations = new ArrayList<>();
+        for (Map.Entry<String, MyLatLng> myLatLng : latLngs.entrySet()) {
+            LatLng convert = new LatLng(myLatLng.getValue().getLatitude(), myLatLng.getValue().getLongitude());
+            cafeLocations.add(convert);
+        }
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(MainActivity.this);
+
+        //clear map and add again
+        if (mMap != null) {
+            mMap.clear();
+            //Add user Marker
+            addUserMarker();
+
+            //Add circle
+            addCircleArea();
+        }
+    }
+
+    @Override
+    public void onLoadLocationFailure(String message) {
+        Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
     }
 
 }

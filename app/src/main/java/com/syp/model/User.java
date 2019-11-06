@@ -5,29 +5,53 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
-
     String email;
     String displayName;
     boolean merchant;
     boolean gender;
-    ArrayList<Cafe> cafes;
-    ArrayList<Order> orders;
+    Map<String, Cafe> cafes;
+    Map<String, Order> orders;
+    Order currentOrder;
 
     public User(){
-        orders = new ArrayList<Order>();
+        cafes = new HashMap<>();
+        orders = new HashMap<>();
     }
 
-    public void add_order(Order order){
-        orders.add(order);
+    public Order getCurrentOrder() {
+        return currentOrder;
     }
 
-    public ArrayList<Order> get_all_orders(){
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
+    }
+
+    public Map<String, Order> getOrders(){
         return orders;
+    }
+
+    public void setOrders(Map<String, Order> orders){
+        this.orders = orders;
+    }
+
+    public List<Order> getOrdersAsList(){
+        ArrayList<Order> ordersList = new ArrayList<>();
+
+        for(String key : orders.keySet()){
+            ordersList.add(orders.get(key));
+        }
+
+        return ordersList;
+
     }
 
     public String getEmail() {
@@ -62,34 +86,16 @@ public class User implements Serializable {
         this.displayName = displayName;
     }
 
-    public ArrayList<Order> get_previous_orders() {
-        return orders;
-    }
-
-    public void add_previous_order(Order previous_order){
-        this.orders.add(previous_order);
-    }
-
-    public void remove_previous_order(Order previous_order){
-        this.orders.remove(previous_order);
-    }
-
-    public void addCafe(Cafe c){
-        cafes.add(c);
-    }
-
-    public void removeCafe(Cafe c){
-        this.cafes.remove(c);
-    }
-
-    public ArrayList<Cafe> getCafes(){
+    public Map<String, Cafe> getCafes(){
         return this.cafes;
     }
 
-    public ArrayList<Order> get_today_orders(){
+    public void setCafes(Map<String, Cafe> cafes) {this.cafes = cafes;}
+
+    public ArrayList<Order> getTodayOrders(){
         ArrayList<Order> today = new ArrayList<Order>();
 
-        for(Order order: orders){
+        for(Order order: this.getOrdersAsList()){
             if(DateUtils.isSameDay(new Date(order.getTimestamp()), new Date())){
                 today.add(order);
             }
@@ -97,13 +103,13 @@ public class User implements Serializable {
         return today;
     }
 
-    public double get_caffeine_today_in_mg(){
+    public double getCaffeineTodayInMg(){
         double total = 0;
-        ArrayList<Order> today_order = get_today_orders();
+        ArrayList<Order> today_order = getTodayOrders();
 
         for(Order order: today_order){
-            for(Item item: order.get_item_purchased()){
-                total += item.get_caffeine();
+            for(Item item: order.getItemsAsList()){
+                total += item.getCaffeine();
             }
         }
 

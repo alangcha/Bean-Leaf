@@ -78,7 +78,7 @@
                     android:textSize="25dp">
                 </TextView>
 
-                <TextView
+                <EditText
                     android:id="@+id/merchantitem_price_edit"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="20dp"
                     android:textSize="25dp">
-                </TextView>
+                </EditText>
 
             </LinearLayout>
 
@@ -132,7 +132,7 @@
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnEditProfile"
+            android:id="@+id/btnEditItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -144,7 +144,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnDoneProfile"
+            android:id="@+id/btnDoneItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

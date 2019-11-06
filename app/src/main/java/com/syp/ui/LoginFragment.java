@@ -68,8 +68,8 @@ public class LoginFragment extends Fragment {
                 // Set query invalid bool
                 if(!u.isPresent())
                     query_invalid = true;
-                else
-                    mainActivity.setUser(u.get());
+//                else
+//                    mainActivity.setUser(u.get());
 
                 // If anything is invalid :
                 // Make error visible

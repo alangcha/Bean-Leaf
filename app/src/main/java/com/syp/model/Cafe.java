@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -18,20 +19,16 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Cafe implements Serializable {
 
-    String id;
-    double rating;
-    int phone_number;
-    ArrayList<String> details;
-    ArrayList<Item> menu;
-    String name;
-    String address;
-    String hours;
-    User owner;
-    double longitude;
-    double latitude;
-    Uri image;
+    private String id;
+    private Map<String, Item> items;
+    private String name;
+    private String address;
+    private String hours;
+    private double longitude;
+    private double latitude;
+    private String image;
 
-    @Exclude
+
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", id);
@@ -43,108 +40,73 @@ public class Cafe implements Serializable {
     }
 
     public Cafe() {
-        menu = new ArrayList<Item>();
     }
 
-    // Getter for id
-    public String get_id() {
+    public String getId() {
         return id;
     }
 
-    // Getter for rating
-    public double get_rating() {
-        return rating;
-    }
-
-    // Getter for phone number
-    public int get_phone_number() {
-        return phone_number;
-    }
-
-    // Getter for Details in form of ArrayList<Pair<String, Boolean>>
-    public ArrayList<String> get_details() {
-        return details;
-    }
-
-    // Add detail
-    public void add_detail(String s) {
-        details.add(s);
-    }
-
-    // Remove detail
-    public void remove_detail(String s) {
-        details.remove(s);
-    }
-
-    // Getter for firstName
-    public String get_name() {
-        return name;
-    }
-
-    public void set_hours(String s) {
-        hours = s;
-    }
-
-    public String get_hours() {
-        return this.hours;
-    }
-    // Get address
-    public String get_address() {
-        return address;
-    }
-
-    // Get owner
-    public User get_owner() {
-        return owner;
-    }
-
-    // Get longitude
-    public double get_longitude() {
-        return longitude;
-    }
-
-    // Get latitude
-    public double get_latitude() {
-        return latitude;
-    }
-
-    // Setter for id
-    public void set_id(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    // Setter for firstName
-    public void set_name(String name) {
+    public Map<String, Item> getItems() {
+        return items;
+    }
+
+    public void setItems(Map<String, Item> items) {
+        this.items = items;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    // Setter for address
-    public void set_address(String address) {
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    // Setter for owner
-    public void set_owner(User owner) {
-        this.owner = owner;
+    public String getHours() {
+        return hours;
     }
 
-    // Setter for longitude
-    public void set_longitude(double longitude) {
+    public void setHours(String hours) {
+        this.hours = hours;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    // Setter for latitude
-    public void set_latitude(double latitude) {
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    // get all images
-    public Uri getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void removeItem(Item i) {menu.remove(i);}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
+    @Exclude
     // Equals object to compare two cafes
     public boolean equals(Object o) {
         Cafe other = (Cafe) o;
@@ -168,6 +130,7 @@ public class Cafe implements Serializable {
         return true;
     }
 
+    @Exclude
     public boolean distance_from(double latitude, double longitude) {
         if (this.longitude <= longitude + .5 || this.longitude >= longitude - .5) {
             if (this.latitude <= latitude + .5 || this.latitude >= latitude - .5)
