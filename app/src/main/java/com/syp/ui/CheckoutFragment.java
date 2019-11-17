@@ -1,9 +1,7 @@
 package com.syp.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +15,18 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.syp.DangerCaffeine;
+import com.syp.ExceedCaffeineActivity;
 import com.syp.model.Item;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Order;
 import com.syp.model.Cafe;
 import com.syp.model.Singleton;
+import com.syp.model.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -186,8 +185,19 @@ public class CheckoutFragment extends Fragment {
                         for(DataSnapshot childSnapShot: dataSnapshot.getChildren()) {
                             items.put(childSnapShot.getKey(), childSnapShot.getValue(Item.class));
                         }
-                        order.setCafe(singleton.getCurrentCafeId());
-                        order.setUser(singleton.getUserId());
+
+                        DatabaseReference cafeId = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId());
+                        cafeId.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Cafe cafe = dataSnapshot.getValue(Cafe.class);
+                                order.setUser(cafe.getName());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
                         order.setTimestamp(System.currentTimeMillis());
                         order.setItems(items);
 
@@ -195,6 +205,27 @@ public class CheckoutFragment extends Fragment {
                             Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
+                        DatabaseReference userRef = singleton.getDatabase().child("users").child(singleton.getUserId());
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                double caffeine = dataSnapshot.getValue(User.class).getTodayCaffeine();
+                                if(caffeine > 300 && caffeine < 400){
+                                    Intent i = new Intent(mainActivity, DangerCaffeine.class);
+                                    startActivity(i);
+                                }
+                                if(caffeine > 400){
+                                    Intent i = new Intent(mainActivity, ExceedCaffeineActivity.class);
+                                    startActivity(i);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
 
                         // Delete current order
                         checkoutQuery.removeValue();
@@ -212,10 +243,11 @@ public class CheckoutFragment extends Fragment {
                         id = checkoutRef.push().getKey();
                         checkoutRef.child(id).setValue(order);
 
-                        Toast.makeText(mainActivity, "Checkout Successful", Toast.LENGTH_SHORT).show();
 
                         NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
                         Navigation.findNavController(view).navigate(action);
+
+
                     }
 
                     @Override

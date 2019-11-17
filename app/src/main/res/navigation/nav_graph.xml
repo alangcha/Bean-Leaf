@@ -12,9 +12,7 @@
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_cafeFragment"
-            app:destination="@id/cafeFragment"
-            app:enterAnim="@anim/up_from_bottom"
-            app:popEnterAnim="@anim/up_from_bottom" />
+            app:destination="@id/cafeFragment" />
     </fragment>
     <fragment
         android:id="@+id/cafeFragment"
@@ -23,7 +21,9 @@
         tools:layout="@layout/fragment_cafe">
         <action
             android:id="@+id/action_cafeFragment_to_orderItemFragment"
-            app:destination="@id/orderItemFragment" />
+            app:destination="@id/orderItemFragment"
+            app:popUpTo="@+id/cafeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
@@ -43,11 +43,10 @@
         android:label="Checkout"
         tools:layout="@layout/fragment_checkout">
         <action
-            android:id="@+id/action_checkoutFragment_to_userFragment"
-            app:destination="@id/userFragment" />
-        <action
             android:id="@+id/action_checkoutFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            app:destination="@id/mapFragment"
+            app:exitAnim="@anim/fui_slide_out_left"
+            app:popExitAnim="@anim/fui_slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/orderItemFragment"
@@ -56,7 +55,9 @@
         tools:layout="@layout/fragment_orderitem">
         <action
             android:id="@+id/action_orderItemFragment_to_cafeFragment"
-            app:destination="@id/cafeFragment" />
+            app:destination="@id/cafeFragment"
+            app:popUpTo="@+id/mapFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/itemEditFragment"
@@ -107,7 +108,9 @@
         tools:layout="@layout/fragment_add_item_existing" >
         <action
             android:id="@+id/action_addItemExistingFragment_to_merchantShopFragment"
-            app:destination="@id/merchantShopFragment" />
+            app:destination="@id/merchantShopFragment"
+            app:popUpTo="@+id/merchantShopFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/addItemNewFragment"

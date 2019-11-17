@@ -1,17 +1,24 @@
 package com.syp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,8 +42,11 @@ import com.syp.model.Singleton;
 
 import java.util.Map;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -107,8 +117,28 @@ public class CafeFragment extends Fragment {
                         directionButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+
                                 Uri gmmIntentUri = Uri.parse("geo:" + cafe.getLatitude()+"," + cafe.getLongitude() +
                                         "?q="+cafe.getName());
+
+                                Singleton.get(mainActivity).setStartTime(System.currentTimeMillis());
+                                LocationManager lm = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
+                                try{
+                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    double latitude = location.getLatitude();
+                                    double longitude = location.getLongitude();
+                                    float[] dist = new float[1];
+                                    Location.distanceBetween(cafe.getLatitude(), cafe.getLongitude(), latitude, longitude, dist);
+
+                                    Singleton.get(mainActivity).getDatabase()
+                                            .child("users").child(Singleton.get(mainActivity).getUserId())
+                                            .child("currentOrder")
+                                            .child("distance").setValue((double)dist[0]);
+
+                                } catch (SecurityException e){
+                                }
+
+
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
@@ -178,7 +208,6 @@ public class CafeFragment extends Fragment {
         // specify an adapter
         recyclerView.setAdapter(adapter);
         adapter.startListening();
-
         return v;
     }
 }

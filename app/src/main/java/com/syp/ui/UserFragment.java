@@ -27,6 +27,7 @@ import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
 import com.syp.model.Item;
+import com.syp.model.Order;
 import com.syp.model.Singleton;
 import com.syp.model.User;
 
@@ -38,6 +39,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +52,15 @@ public class UserFragment extends Fragment {
 
     private MainActivity mainActivity;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView orderRecycleView;
+
+    private RecyclerView.LayoutManager layoutManagerShops;
+    private RecyclerView.LayoutManager layoutManagerOrders;
+
     private FirebaseRecyclerAdapter adapter;
-    private ImageButton addShop;
+    private FirebaseRecyclerAdapter adapterO;
+
+    private Button addShop;
     private TextView name;
     private TextView email;
     private TextView gender;
@@ -66,8 +74,8 @@ public class UserFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
 
         recyclerView = v.findViewById(R.id.myShopsRecycle);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        layoutManagerShops = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManagerShops);
 
         addShop = v.findViewById(R.id.shopAddButton);
         name = v.findViewById(R.id.profileName);
@@ -95,15 +103,14 @@ public class UserFragment extends Fragment {
                 Toast.makeText(mainActivity, user.getEmail(), Toast.LENGTH_SHORT).show();
                 email.setText(user.getEmail());
                 gender.setText("Male");
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-        Query query = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId()).child("cafes");
 
+        Query query = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId()).child("cafes");
         // Firebase Options
         FirebaseRecyclerOptions<Cafe> options =
                 new FirebaseRecyclerOptions.Builder<Cafe>()
@@ -116,7 +123,6 @@ public class UserFragment extends Fragment {
                             }
                         })
                         .build();
-
 
         // Firebase Recycler View
         adapter = new FirebaseRecyclerAdapter<Cafe, CafeViewHolder>(options) {
@@ -147,11 +153,61 @@ public class UserFragment extends Fragment {
             }
         };
 
-
         // specify an adapter
         recyclerView.setAdapter(adapter);
         adapter.startListening();
 
+
+
+
+
+
+
+        orderRecycleView = v.findViewById(R.id.myOrdersRecycle);
+        layoutManagerOrders = new LinearLayoutManager(getActivity());
+        orderRecycleView.setLayoutManager(layoutManagerOrders);
+
+        Query queryO = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId()).child("orders");
+        // Firebase Options
+        FirebaseRecyclerOptions<Order> optionsO =
+                new FirebaseRecyclerOptions.Builder<Order>()
+                        .setQuery(queryO, new SnapshotParser<Order>() {
+                            @NonNull
+                            @Override
+                            public Order parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                Order order = snapshot.getValue(Order.class);
+                                return order;
+                            }
+                        })
+                        .build();
+
+        // Firebase Recycler View
+        adapterO = new FirebaseRecyclerAdapter<Order, OrderCell>(optionsO) {
+
+            @NonNull
+            @Override
+            public OrderCell onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.order_cell, parent, false);
+                return new OrderCell(view);
+            }
+            @NonNull
+            @Override
+            protected void onBindViewHolder(OrderCell holder, final int position, Order order) {
+
+                holder.setOrderCafeName(order.getCafe());
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("mm-dd-yyyy");
+
+                holder.setOrderCafeDate(dateFormat.format(order.getTimestampAsDate()));
+                holder.setOrderPrice(Double.toString(order.getTotalSpent()));
+                holder.setOrderCaffeine(Double.toString(order.getTotalCaffeine()));
+            }
+        };
+
+        // specify an adapter
+        orderRecycleView.setAdapter(adapterO);
+        adapterO.startListening();
 
         return v;
     }

@@ -35,5 +35,4 @@
     <style name="AppTheme.PopUpTranslucent">
         <item name="android:windowIsTranslucent">true</item>
     </style>
-
 </resources>

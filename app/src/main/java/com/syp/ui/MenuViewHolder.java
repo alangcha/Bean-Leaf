@@ -31,7 +31,7 @@ public class MenuViewHolder extends RecyclerView.ViewHolder {
         itemBeveragePrice.setText( "$" + price);
     }
     public void setCaffeineAmt(String title) {
-        itemCaffeineAmt.setText(title + " mg");
+        itemCaffeineAmt.setText(title + " mg of caffeine");
     }
 //    public void setBeverageImage(String price) { itemImage.setImageDrawable(price); }
 }

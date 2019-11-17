@@ -34,7 +34,6 @@ import com.syp.LoginActivity;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
-import com.syp.model.Database;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
@@ -100,7 +99,6 @@ public class AddShopFragment extends Fragment {
                 shopName.setText(cafe.getName());
                 shopAddress.setText(cafe.getAddress());
                 shopHours.setText(cafe.getHours());
-                Toast.makeText(mainActivity, shopName.getText().toString(), Toast.LENGTH_SHORT).show();
                 Log.d("ASDF", shopName.getText().toString());
             }
 

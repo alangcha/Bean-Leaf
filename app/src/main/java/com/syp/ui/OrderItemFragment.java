@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.syp.ExceedCaffeineActivity;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
@@ -62,6 +63,7 @@ public class OrderItemFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         singleton = Singleton.get(mainActivity);
 
+
         // Get current item from database
         DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId());
         cafeRef.addValueEventListener(new ValueEventListener() {
@@ -71,7 +73,7 @@ public class OrderItemFragment extends Fragment {
                 // load data into views
                 itemTitle.setText(currentItem.getName());
                 itemPrice.setText((Double.toString(currentItem.getPrice())));
-                itemCaffine.setText(((currentItem.getCaffeine()) + "mg"));
+                itemCaffine.setText(((currentItem.getCaffeine()) + " mg of caffeine"));
 
                 addToCartButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -84,7 +86,6 @@ public class OrderItemFragment extends Fragment {
                                 int stepperCount = Integer.parseInt(stepper.getNumber());
 
                                 if(stepperCount <= 0) {
-                                    Toast.makeText(mainActivity, "Invalid item count", Toast.LENGTH_SHORT).show();
                                     return;
                                 };
 
@@ -100,7 +101,6 @@ public class OrderItemFragment extends Fragment {
                                             int itemCount = Integer.parseInt(dataSnapshot.getValue().toString());
                                             ref.setValue(itemCount + stepperCount);
                                             Toast.makeText(mainActivity, stepperCount + " \"" + currentItem.getName() + "\" " + "added to your order", Toast.LENGTH_SHORT).show();
-                                            //startActivity(new Intent(OrderItemFragment.this.getContext(), FinishOrderPopUp.class));
 
                                             NavDirections action = OrderItemFragmentDirections.actionOrderItemFragmentToCafeFragment();
                                             Navigation.findNavController(view).navigate(action);
@@ -164,6 +164,7 @@ public class OrderItemFragment extends Fragment {
 //        toppingsButtons.add((CheckBox) v.findViewById(R.id.miniBobaCheckBox));
         stepper = v.findViewById(R.id.item_stepper);
         addToCartButton = v.findViewById(R.id.addToCart);
+
 
         return v;
     }

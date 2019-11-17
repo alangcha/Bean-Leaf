@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -47,6 +48,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -79,9 +81,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback, GeoQueryDataEventListener, IOnLoadLocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback,
+        GeoQueryDataEventListener, IOnLoadLocationListener{
 
     private AppBarConfiguration mAppBarConfiguration;
+    private LocationCallback locationCallback;
     protected LocationManager locationManager;
     protected double latitude;
     protected double longitude;
@@ -94,14 +98,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Order currentOrder;
     Cafe newCafe;
 
+    MarkerOptions userMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize singleton
         Singleton.get(this);
+        setTitle("Bean and Leaf");
 
-        // Insert fake data
-//        Singleton.get(this).insertCafes();
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    userMarker = new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()));
+                    userMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 20));
+                    mMap.addMarker(userMarker);
+                }
+            };
+        };
 
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         MainActivity.this.startActivityForResult(i, 10);
@@ -139,34 +159,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-
-
-        // TODO: DOESNT WORK CUZ NULLPTREXCEPTION??? NEED TO EXTEND FRAGMENTACTIVITY???
-        // TODO: UNCOMMENT TO START GEOFENCING
-//        Dexter.withActivity(this)
-//                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-//                .withListener(new PermissionListener() {
-//                    @Override
-//                    public void onPermissionGranted(PermissionGrantedResponse response) {
-//                        buildLocationRequest();
-//                        buildLocationCallback();
-//                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-//
-//                        initArea();
-//                        settingGeoFire();
-//                    }
-//
-//                    @Override
-//                    public void onPermissionDenied(PermissionDeniedResponse response) {
-//                        Toast.makeText(MainActivity.this, "You must enable permission", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-//
-//                    }
-//                }).check();
     }
 
     public boolean checkLocationPermission() {
@@ -231,10 +223,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             else
                 imageView = (ImageView) findViewById(R.id.addshop_cafe_image);
 
-//            if(imageView != null){
-//                dataInstance.uploadFile(selectedImage, getFileExtension(selectedImage));
-//            }
-
             Picasso.get().load(selectedImage).into(imageView);
         }
 
@@ -253,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             String id = child.getKey();
                             Toast.makeText(MainActivity.this, "Sign in successfully", Toast.LENGTH_LONG).show();
                             Singleton.get(MainActivity.this).setUserId(id);
+
                         }
                     } else {
                         Toast.makeText(MainActivity.this, "New user created with email " + email, Toast.LENGTH_LONG).show();
@@ -291,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     private GoogleMap mMap;
     private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Marker currentUser;
     private DatabaseReference myLocationRef;
@@ -355,7 +343,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 currentUser = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(lastLocation.getLatitude(),
                                 lastLocation.getLongitude()))
-                        .title("You"));
+                        .title("You")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
 
                 mMap.animateCamera(CameraUpdateFactory
                         .newLatLngZoom(currentUser.getPosition(), 12.0f));
@@ -426,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     protected void onStop() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        //fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         super.onStop();
     }
 
@@ -457,12 +447,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onGeoQueryError(DatabaseError error) {
-        Toast.makeText(this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     public void sendNotification(String title, String content) {
 
-        Toast.makeText(this, ""+content, Toast.LENGTH_SHORT).show();
 
         String NOTIFICATION_CHANNEL_ID = "cafe_multiple_location";
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -516,7 +504,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLoadLocationFailure(String message) {
-        Toast.makeText(this, ""+message, Toast.LENGTH_SHORT).show();
     }
+
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//        startLocationUpdates();
+//    }
+//
+//    private void startLocationUpdates() {
+//        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+//                locationCallback,
+//                Looper.getMainLooper());
+//    }
 
 }

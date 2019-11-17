@@ -1,45 +1,36 @@
 package com.syp.ui;
 
-
+// Fragment imports
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import java.text.SimpleDateFormat;
+// Data Structure imports
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.PriorityQueue;
 
+// Android View Imports
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+// Grpahing API imports
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-
-
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -47,538 +38,315 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+// Import Package
 import com.syp.MainActivity;
-import com.syp.model.Item;
+import com.syp.model.DateFormats;
+import com.syp.model.FilterOrders;
 import com.syp.model.Order;
 import com.syp.R;
 import com.syp.model.Singleton;
 import com.syp.model.User;
 
+// ---------------------------------------------------------
+// Fragment for page showing all user statistics and graphs
+// ---------------------------------------------------------
 public class StatisticsFragment extends Fragment {
 
-    final float dailyLimit = 400;
-    final String[] weekDays = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu",
-            "Fri", "Sat"};
+    // Colors for grpahs
+    private int lightGreen = Color.rgb(102, 255, 178);
+    private int gray = Color.rgb(230, 230, 230);
+    private int lightRed = Color.rgb( 255, 102, 102 );
 
-    final String[] monthNames = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"
-            , "Aug", "Sep", "Oct", "Nov", "Dec"};
-
+    // Views & Activities
     private MainActivity mainActivity;
     private View v;
-    private List<Order> dailyOrders;
-    private List<Order> weeklyOrders;
-    private List<Order> monthlyOrders;
     private TextView dailyTotal;
     private TextView weeklyTotal;
     private TextView monthlyTotal;
+    private TextView totalCaffeine;
+    private PieChart caffeinePieChart;
+    private BarChart dailySpendingBarChart;
+    private BarChart weeklySpendingBarChart;
+    private BarChart monthlySpendingBarChart;
 
 
-
-
+    // ---------------------------------------
+    // On Create (Fragment Override Required)
+    // ---------------------------------------
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         v = inflater.inflate(R.layout.fragment_statistics, container, false);
+
+        // Find all views
+        mainActivity = (MainActivity) this.getActivity();
         dailyTotal = v.findViewById(R.id.totalDay);
         weeklyTotal = v.findViewById(R.id.totalWeek);
         monthlyTotal = v.findViewById(R.id.totalMonth);
+        totalCaffeine = v.findViewById(R.id.caffeineTotal);
+        caffeinePieChart = v.findViewById(R.id.pieChartCaffeine);
+        dailySpendingBarChart = v.findViewById(R.id.barChartPriceDaily);
+        weeklySpendingBarChart = v.findViewById(R.id.barChartPriceWeekly);
+        monthlySpendingBarChart = v.findViewById(R.id.barChartPriceMonthly);
 
-        DatabaseReference ref = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId());
-
-        ref.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                setupPieChart(user.getCaffeineTodayInMg());
-
-                configureDailyBarChart((ArrayList<Order>)user.getOrdersAsList());
-                configureWeeklyBarChart((ArrayList<Order>)user.getOrdersAsList());
-                configureMonthlyBarChart((ArrayList<Order>)user.getOrdersAsList());
-
-                ArrayList<Order> orders = (ArrayList<Order>)user.getOrdersAsList();
-                ArrayList<Order> dailyOrders = returnDailyList(orders);
-                ArrayList<Order> weeklyOrders = returnWeeklyList(orders);
-                ArrayList<Order> monthlyOrders = returnWeeklyList(orders);
-
-                dailyTotal.setText("$" + Double.toString(sumMoney(dailyOrders)));
-                weeklyTotal.setText("$" + Double.toString(sumMoney(weeklyOrders)));
-                monthlyTotal.setText("$" + Double.toString(sumMoney(monthlyOrders)));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-       });
-
+        // Add event
+        addFireBaseUserEventListenerForGraphs();
         return v;
     }
 
+    // ------------------------------------------------------------------------------------------
+    // Add Event Listener when we retrieve / update a value for User class (Firebase Interaction)
+    // -------------------------------------------------------------------------------------------
+    private void addFireBaseUserEventListenerForGraphs(){
+        // Get reference in database
+        DatabaseReference userRef = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId());
 
-    public void configureDailyBarChart(ArrayList<Order> userOrders) {
+        // Add on Change listener for reference
+        userRef.addValueEventListener(new ValueEventListener() {
 
-        ArrayList<Order> userTodayOrder = returnDailyList(userOrders);
-        setupDailyBarChart(userTodayOrder);
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-    }
-
-    public void configureWeeklyBarChart(ArrayList<Order> userOrders)
-    {
-        ArrayList<Order> userThisWeekOrder = returnWeeklyList(userOrders);
-        setupWeeklyBarChart(userThisWeekOrder);
-
-    }
-
-    public void configureMonthlyBarChart(ArrayList<Order> userOrders)
-    {
-        ArrayList<Order> userThisMonthOrder = returnMonthlyList(userOrders);
-        setupMonthlyBarChart(userThisMonthOrder);
-    }
-
-
-    private void setupPieChart(double intake)
-    {
-        // Populating a list of PieEntries
-        List<PieEntry> pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry((float)intake , ""));
-        pieEntries.add(new PieEntry(dailyLimit - (float)intake, ""));
-
-        PieDataSet dataSet = new PieDataSet(pieEntries, "");
-        dataSet.setColors(new int[] { Color.rgb(250, 250, 250),
-                Color.rgb(102, 255, 178)});
-        PieData data = new PieData(dataSet);
-        PieChart chart = (PieChart) v.findViewById(R.id.pieChartCaffeine);
-        Description description = chart.getDescription();
-        Legend legend = chart.getLegend();
-        legend.setEnabled(false);
-        description.setEnabled(false);
-        chart.setData(data);
-        chart.animateY(1000);
-        chart.invalidate();
-    }
-
-    private void setupDailyBarChart(ArrayList<Order> userOrders)
-    {
-        BarChart mChart;
-        mChart = v.findViewById(R.id.barChartPriceDaily);
-        mChart.getDescription().setEnabled(false);
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-        HashMap <String, Float> chartMap = new HashMap<>();
-
-        for(int i = 0; i < userOrders.size(); i++)
-        {
-            for(int j = 0; j < userOrders.get(i).getItemsAsList().size(); j++)
-            {
-                Log.d("myTag", "here the ITEM: " + userOrders.get(i).getItemsAsList().get(j).getName());
-                if(!chartMap.containsKey(userOrders.get(i).getItemsAsList().get(j).getName()))
-                {
-                    chartMap.put(userOrders.get(i).getItemsAsList().get(j).getName(),
-                            (float) userOrders.get(i).getItemsAsList().get(j).getPrice()); // change to actual price later
-                }
-                else
-                {
-                    float currentPrice = chartMap.get(userOrders.get(i).getItemsAsList().get(j).getName());
-                    currentPrice += userOrders.get(i).getItemsAsList().get(j).getPrice();
-                    chartMap.put(userOrders.get(i).getItemsAsList().get(j).getName(), currentPrice);
-                }
+                // Get snapshot as User object
+                User user = dataSnapshot.getValue(User.class);
+                // If valid create graphs on page
+                if(user != null)
+                    createGraphs(user);
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+
+        });
+    }
+
+    // ---------------------------------------------------------------------
+    // Fills in graphs with data from user -- ONLY CALLED IN EVENT LISTENER
+    // ---------------------------------------------------------------------
+    private void createGraphs(User user){
+        // Get all orders
+        ArrayList<Order> orders = (ArrayList<Order>)user.getOrdersAsList();
+
+        // Get Daily, Weekly, Monthly Orders
+        ArrayList<Order> dailyOrders = FilterOrders.filterOrderByToday(orders);
+        ArrayList<Order> weeklyOrders = FilterOrders.filterOrderByCurrentWeek(orders);
+        ArrayList<Order> monthlyOrders = FilterOrders.filterOrderByCurrentWeek(orders);
+
+        // Set up Charts
+        initializeDailySpendingBarChart(dailyOrders);
+        initializeWeeklySpendingBarChart(weeklyOrders);
+        initializeMonthlySpendingBarChart(monthlyOrders);
+        initializeCaffeinePieChart(user.getTodayCaffeine());
+
+        // Set Views
+        totalCaffeine.setText(String.format(Locale.ENGLISH, "%.2f mg", user.getTodayCaffeine()));
+        dailyTotal.setText(String.format(Locale.ENGLISH, "$%.2f", Order.getOrdersTotal(dailyOrders)));
+        weeklyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  Order.getOrdersTotal(weeklyOrders)));
+        monthlyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  Order.getOrdersTotal(monthlyOrders)));
+    }
+
+    // ---------------------------------------------------------------------
+    // Creating settings for Caffeine Pie Chart
+    // ---------------------------------------------------------------------
+    private void initializeCaffeinePieChart(double caffeineIntake) {
+        // Populating a list of PieEntries
+        List<PieEntry> pieEntries = new ArrayList<>();
+
+        // Add appropriate entries in
+        // If caffeine is larger than 400 only add one of caffeine
+        int[] colors = new int[] {lightRed};
+        pieEntries.add(new PieEntry((float)caffeineIntake , ""));
+        if(caffeineIntake < Singleton.dailyCaffeineLimit){
+            pieEntries.add(new PieEntry(Singleton.dailyCaffeineLimit - (float)caffeineIntake, ""));
+            colors = new int []{lightGreen, gray};
         }
 
-        Log.d("myTag", "here comes the hashMAP: ");
+        // Create data set out of pie entries
+        PieDataSet dataSet = new PieDataSet(pieEntries, "");
+
+        // Settings of dataSet
+        dataSet.setColors(colors);
+        dataSet.setDrawValues(false);
+
+        // Create data out of data set
+        // Set Legend and Description to none
+        PieData data = new PieData(dataSet);
+        caffeinePieChart.getDescription().setEnabled(false);
+        caffeinePieChart.getLegend().setEnabled(false);
+        caffeinePieChart.setData(data);
+        caffeinePieChart.invalidate();
+        caffeinePieChart.animate();
+        caffeinePieChart.setHoleRadius(80);
+
+    }
+
+    // ---------------------------------------------------------------------
+    // Creating settings for Daily Spending Bar Chart
+    // ---------------------------------------------------------------------
+    private void initializeDailySpendingBarChart(ArrayList<Order> userOrders) {
+
+        // Get Item Mapping & Dec YValues in grpah
+        ArrayList<BarEntry> yVals = new ArrayList<>();
+        Map<String, Float> itemTotals = FilterOrders.getOrdersItemTotalMap(userOrders);
+
+        // Push everything to two separate arrays
         ArrayList<String> chartItemNames = new ArrayList<>();
         ArrayList<Float> chartItemPrices = new ArrayList<>();
-
-
-
-        for(Map.Entry<String, Float> entry : chartMap.entrySet())
-        {
-            Log.d("myTag", entry.getKey()+ " " + entry.getValue());
+        for(Map.Entry<String, Float> entry : itemTotals.entrySet()) {
             chartItemNames.add(entry.getKey());
             chartItemPrices.add(entry.getValue());
         }
-
-        for(int i = 0; i < chartItemPrices.size(); i++)
-        {
+        for(int i = 0; i < chartItemPrices.size(); i++) {
             yVals.add(new BarEntry(i, chartItemPrices.get(i)));
         }
+
+        // Create new set with yValues
         BarDataSet set = new BarDataSet(yVals, "daily total spending");
+
+        // Settings for set of data
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         set.setDrawValues(true);
 
-
-
+        // Data out of set
         BarData data = new BarData(set);
-        //BarData data = new BarData(labels, set);
+        data.setBarWidth(0.1f);
+        dailySpendingBarChart.setData(data);
 
+        // Format X Axis
         ValueFormatter xAxisFormatter = new IndexAxisValueFormatter(chartItemNames);
+        dailySpendingBarChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        dailySpendingBarChart.getXAxis().setGranularity(1);
+        dailySpendingBarChart.getXAxis().setLabelCount(chartItemNames.size());
+        dailySpendingBarChart.getXAxis().setValueFormatter(xAxisFormatter);
+        dailySpendingBarChart.setFitBars(false);
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelCount(chartItemNames.size());
-        xAxis.setValueFormatter(xAxisFormatter);
 
-        YAxis lAxis = mChart.getAxisLeft();
-        YAxis rAxis = mChart.getAxisRight();
-        lAxis.setEnabled(false);
-        rAxis.setEnabled(false);
+        // Format Y Axis
+        dailySpendingBarChart.getAxisLeft().setGranularity(5);
+        dailySpendingBarChart.getAxisLeft().setDrawGridLines(false);
+        dailySpendingBarChart.getAxisLeft().setAxisMinimum(0);
+        dailySpendingBarChart.getAxisRight().setEnabled(false);
 
-        mChart.setData(data);
-        mChart.invalidate();
+        // Set Graph settings
+        dailySpendingBarChart.getDescription().setEnabled(false);
+        dailySpendingBarChart.invalidate();
     }
 
-    private void setupWeeklyBarChart(ArrayList<Order> userOrders) {
-        BarChart mChart;
-        mChart = v.findViewById(R.id.barChartPriceWeekly);
-        mChart.getDescription().setEnabled(false);
+    // ---------------------------------------------------------------------
+    // Creating settings for Weekly Spending Bar Chart
+    // ---------------------------------------------------------------------
+    private void initializeWeeklySpendingBarChart(ArrayList<Order> userOrders) {
+
+        // Get Item Mapping & Dec YValues in grpah
         ArrayList<BarEntry> yVals = new ArrayList<>();
-        HashMap <String, Float> chartMap = new HashMap<>();
+        Map<String, Float> chartMap = FilterOrders.getOrdersDayAmountForWeekMap(userOrders);
 
-        for(int i = 0; i < userOrders.size(); i++)
-        {
-            String weekdayOfOrder = getWeekDay(userOrders.get(i).getTimestampAsDate());
-            if(!chartMap.containsKey(weekdayOfOrder))
-            {
-                float price = 0;
-                for(int j = 0; j < userOrders.get(i).getItemsAsList().size(); j++)
-                {
-                    price += userOrders.get(i).getItemsAsList().get(j).getPrice();
-                }
-                chartMap.put(weekdayOfOrder, price);
-            }
-            else
-            {
-                float price = chartMap.get(weekdayOfOrder);
-                for(int j = 0; j < userOrders.get(i).getItemsAsList().size(); j++)
-                {
-                    price += userOrders.get(i).getItemsAsList().get(j).getPrice();
-                }
-                chartMap.put(weekdayOfOrder, price);
-            }
-
-        }
-
-
+        // Push everything to two separate arrays
         ArrayList<String> weekDayNames = new ArrayList<>();
         ArrayList<Float> chartWeekSum = new ArrayList<>();
-
-
-        for(int i = 0; i < weekDays.length; i++)
-        {
-
-            if(chartMap.containsKey(weekDays[i]))
-            {
-                weekDayNames.add(weekDays[i]);
-                chartWeekSum.add(chartMap.get(weekDays[i]));
+        for(int i = 0; i < DateFormats.weekDays.length; i++) {
+            if(chartMap.containsKey(DateFormats.weekDays[i])) {
+                weekDayNames.add(DateFormats.weekDays[i]);
+                chartWeekSum.add(chartMap.get(DateFormats.weekDays[i]));
             }
         }
-
-
-
-        for(int i = 0; i < chartWeekSum.size(); i++)
-        {
+        for(int i = 0; i < chartWeekSum.size(); i++) {
             yVals.add(new BarEntry(i, chartWeekSum.get(i)));
         }
+
+        // Create new set with yValues
         BarDataSet set = new BarDataSet(yVals, "weekly total spending");
+
+        // Settings for set of data
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         set.setDrawValues(true);
 
-
-
+        // Data out of set
         BarData data = new BarData(set);
-        //BarData data = new BarData(labels, set);
 
+        data.setBarWidth(0.1f);
+        weeklySpendingBarChart.setData(data);
+
+        // Format X Axis
         ValueFormatter xAxisFormatter = new IndexAxisValueFormatter(weekDayNames);
+        weeklySpendingBarChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        weeklySpendingBarChart.getXAxis().setGranularity(1);
+        weeklySpendingBarChart.getXAxis().setLabelCount(weekDayNames.size());
+        weeklySpendingBarChart.getXAxis().setValueFormatter(xAxisFormatter);
+        weeklySpendingBarChart.setFitBars(false);
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelCount(chartWeekSum.size());
-        xAxis.setValueFormatter(xAxisFormatter);
 
-        YAxis lAxis = mChart.getAxisLeft();
-        YAxis rAxis = mChart.getAxisRight();
-        lAxis.setEnabled(false);
-        rAxis.setEnabled(false);
+        // Format Y Axis
+        weeklySpendingBarChart.getAxisLeft().setGranularity(5);
+        weeklySpendingBarChart.getAxisLeft().setDrawGridLines(false);
+        weeklySpendingBarChart.getAxisLeft().setAxisMinimum(0);
+        weeklySpendingBarChart.getAxisRight().setEnabled(false);
 
-        mChart.setData(data);
-        mChart.invalidate();
+        // Set Graph settings
+        weeklySpendingBarChart.getDescription().setEnabled(false);
+        weeklySpendingBarChart.invalidate();
     }
 
-    private void setupMonthlyBarChart(ArrayList<Order> userOrders) {
-        BarChart mChart;
-        mChart = v.findViewById(R.id.barChartPriceMonthly);
-        mChart.getDescription().setEnabled(false);
+    // ---------------------------------------------------------------------
+    // Creating settings for Weekly Spending Bar Chart
+    // ---------------------------------------------------------------------
+    private void initializeMonthlySpendingBarChart(ArrayList<Order> userOrders) {
+
+        // Get Item Mapping & Dec YValues in grpah
         ArrayList<BarEntry> yVals = new ArrayList<>();
-        HashMap <String, Float> chartMap = new HashMap<>();
-        // PriorityQueue<String> pQueue = new PriorityQueue<>();
+        Map <String, Float> chartMap = FilterOrders.getOrdersDayAmountForMonthMap(userOrders);
 
-        for(int i = 0; i < userOrders.size(); i++)
-        {
-            String monthdayOfOrder = returnDate(userOrders.get(i).getTimestampAsDate());;
-            if(!chartMap.containsKey(monthdayOfOrder))
-            {
-                float price = 0;
-                for(int j = 0; j < userOrders.get(i).getItems().size(); j++)
-                {
-                    price += userOrders.get(i).getItemsAsList().get(j).getPrice();
-                }
-                chartMap.put(monthdayOfOrder, price);
-            }
-            else
-            {
-                float price = chartMap.get(monthdayOfOrder);
-                for(int j = 0; j < userOrders.get(i).getItemsAsList().size(); j++)
-                {
-                    price += userOrders.get(i).getItemsAsList().get(j).getPrice();
-                }
-                chartMap.put(monthdayOfOrder, price);
-            }
-
-        }
-
-        Date todayDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(todayDate);
-
-        Integer month = calendar.get(calendar.MONTH);
-        ArrayList<String> MonthDayNames = new ArrayList<>();
+        // Create date list for the month and add values for each date to a separate array
+        ArrayList<String> monthDayNames = new ArrayList<>();
         ArrayList<Float> chartMonthDaySum = new ArrayList<>();
 
-        Log.d("myTag", "iterating month: ");
-        for(int i = 1; i <= 31; i++)
-        {
-            StringBuilder iterateMonth = new StringBuilder();
-            iterateMonth.append(monthNames[month]);
-            iterateMonth.append(" ");
-            iterateMonth.append(i);
-            if(chartMap.containsKey(iterateMonth.toString()))
-            {
-                MonthDayNames.add(iterateMonth.toString());
-                chartMonthDaySum.add(chartMap.get(iterateMonth.toString()));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        for(int i = 1; i <= 31; i++) {
+            String date = DateFormats.monthNames[calendar.get(Calendar.MONTH)] + " " + i;
+            if(chartMap.containsKey(date)) {
+                monthDayNames.add(date);
+                chartMonthDaySum.add(chartMap.get(date));
             }
-            Log.d("myTag", iterateMonth.toString());
         }
-
-        Log.d("myTag", "here comes the hashMAP: ");
-
-
-        Log.d("myTag", "Hello Bruhs read through the week :D ");
-
-
-
-        for(int i = 0; i < chartMonthDaySum.size(); i++)
-        {
+        for(int i = 0; i < chartMonthDaySum.size(); i++) {
             yVals.add(new BarEntry(i, chartMonthDaySum.get(i)));
         }
+
+        // Create new set with yValues
         BarDataSet set = new BarDataSet(yVals, "monthly total spending");
+
+        // Settings for set of data
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         set.setDrawValues(true);
 
-
-
-
-
+        // Data out of set
         BarData data = new BarData(set);
-        //BarData data = new BarData(labels, set);
 
-        ValueFormatter xAxisFormatter = new IndexAxisValueFormatter(MonthDayNames);
+        // Data Settings
+        data.setBarWidth(0.1f);
+        monthlySpendingBarChart.setData(data);
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelCount(chartMonthDaySum.size());
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        YAxis lAxis = mChart.getAxisLeft();
-        YAxis rAxis = mChart.getAxisRight();
-        lAxis.setEnabled(false);
-        rAxis.setEnabled(false);
-
-        mChart.setData(data);
-        mChart.invalidate();
-    }
+        // Format X Axis
+        ValueFormatter xAxisFormatter = new IndexAxisValueFormatter(monthDayNames);
+        monthlySpendingBarChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        monthlySpendingBarChart.getXAxis().setGranularity(1);
+        monthlySpendingBarChart.getXAxis().setLabelCount(monthDayNames.size());
+        monthlySpendingBarChart.getXAxis().setValueFormatter(xAxisFormatter);
+        monthlySpendingBarChart.setFitBars(false);
 
 
-    /////////////////////////Return Order List by Specified Period ////////////////////
+        // Format Y Axis
+        monthlySpendingBarChart.getAxisLeft().setGranularity(5);
+        monthlySpendingBarChart.getAxisLeft().setDrawGridLines(false);
+        monthlySpendingBarChart.getAxisLeft().setAxisMinimum(0);
+        monthlySpendingBarChart.getAxisRight().setEnabled(false);
 
-    public ArrayList<Order> returnDailyList(ArrayList<Order> userOrder)
-    {
-        Date todayDate = new Date();
-
-        ArrayList<Order> userTodayOrder = new ArrayList<>();
-        for(int i = 0; i < userOrder.size(); i++)
-        {
-            if(isSameDay(todayDate, userOrder.get(i).getTimestampAsDate()))
-            {
-                userTodayOrder.add(userOrder.get(i));
-            }
-        }
-        return userTodayOrder;
-    }
-
-
-
-    public ArrayList<Order> returnDailyList(ArrayList<Order> userOrder, Date todayDate)
-    {
-
-        ArrayList<Order> userTodayOrder = new ArrayList<>();
-        for(int i = 0; i < userOrder.size(); i++)
-        {
-            if(isSameDay(todayDate, userOrder.get(i).getTimestampAsDate()))
-            {
-                userTodayOrder.add(userOrder.get(i));
-            }
-        }
-        return userTodayOrder;
-    }
-
-    public ArrayList<Order> returnWeeklyList(ArrayList<Order> userOrder)
-    {
-        Date todayDate = new Date();
-        ArrayList<Order> userThisWeekOrder = new ArrayList<>();
-        for(int i = 0; i < userOrder.size(); i++)
-        {
-            if(isSameWeek(todayDate, userOrder.get(i).getTimestampAsDate()))
-            {
-                userThisWeekOrder.add(userOrder.get(i));
-                //Log.d("myTag" , "adding... " + Integer.toString(i) );
-            }
-        }
-        return userThisWeekOrder;
-    }
-
-
-
-    public ArrayList<Order> returnMonthlyList(ArrayList<Order> userOrder)
-    {
-
-
-        Date todayDate = new Date();
-
-
-        ArrayList<Order> userThisMonthOrder = new ArrayList<>();
-        for(int i = 0; i < userOrder.size(); i++)
-        {
-            if(isSameMonth(todayDate, userOrder.get(i).getTimestampAsDate()))
-            {
-                userThisMonthOrder.add(userOrder.get(i));
-            }
-
-        }
-        return userThisMonthOrder;
-    }
-
-    ///////////////////////// Time Logics ////////////////////
-
-
-    private boolean isSameDay(Date date1, Date date2)
-    {
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(date1);
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTime(date2);
-        boolean sameYear = calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR);
-        boolean sameMonth = calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH);
-        boolean sameDay = calendar1.get(Calendar.DAY_OF_MONTH) == calendar2.get(Calendar.DAY_OF_MONTH);
-        return (sameDay && sameMonth && sameYear);
-    }
-
-
-    private boolean isSameWeek(Date date1, Date date2)
-    {
-
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(date1);
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTime(date2);
-
-        Integer year1 = calendar1.get(calendar1.YEAR);
-        Integer week1 = calendar1.get(calendar1.WEEK_OF_YEAR);
-        Integer year2 = calendar2.get(calendar2.YEAR);
-        Integer week2 = calendar2.get(calendar2.WEEK_OF_YEAR);
-
-        if(year1.equals(year2))
-        {
-            if(week1.equals(week2))
-            {
-                Log.d("myTag" , "Am I ever here in the check same week?");
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private String getWeekDay(Date date)
-    {
-
-        //Log.d("myTag", "Hellos are u here?");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        //Log.d("myTag", "Hellos, here is Day of Week: " + weekDays[calendar.get(calendar.DAY_OF_WEEK)-1]);
-        return weekDays[calendar.get(calendar.DAY_OF_WEEK)-1];
-    }
-
-    private boolean isSameMonth(Date date1, Date date2)
-    {
-
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(date1);
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTime(date2);
-
-        Integer year1 = calendar1.get(calendar1.YEAR);
-        Integer month1 = calendar1.get(calendar1.MONTH);
-        Integer year2 = calendar2.get(calendar2.YEAR);
-        Integer month2 = calendar2.get(calendar2.MONTH);
-
-
-        Log.d("myTag" , "this is the year1: " + year1);
-        Log.d("myTag" , "this is the year2: " + year2);
-        Log.d("myTag" , "this is the month1: " + month1);
-        Log.d("myTag" , "this is the month2: " + month2);
-
-        if(year1.equals(year2))
-        {
-            if(month1.equals(month2))
-            {
-                Log.d("myTag" , "Am I ever here in the check same month?");
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    String returnDate(Date date)
-    {
-        StringBuilder dateBuilder = new StringBuilder();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        Integer month = calendar.get(calendar.MONTH);
-        Integer day =calendar.get(calendar.DAY_OF_MONTH);
-        Log.d("myTag" , "this is month: " + month.toString());
-        dateBuilder.append(monthNames[month]);
-        dateBuilder.append(" ");
-        dateBuilder.append(day);
-        //Log.d("myTag" , "this is date about to return: " + dateBuilder.toString());
-        return dateBuilder.toString();
-    }
-
-    double sumMoney(ArrayList<Order> orders){
-        double total = 0;
-        for(Order o: orders){
-            for(Item i: o.getItemsAsList()){
-                total+=i.getPrice();
-            }
-        }
-        return total;
+        // Set Graph settings
+        monthlySpendingBarChart.getDescription().setEnabled(false);
+        monthlySpendingBarChart.invalidate();
     }
 
 }

@@ -15,6 +15,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+
+
+
         <LinearLayout
             android:id="@+id/cafe_infobox"
             android:layout_width="400dp"
@@ -38,8 +41,6 @@
                     android:layout_height="125dp"
                     android:background="#FFFFFF"
                     android:orientation="vertical">
-
-
 
                     <TextView
                         android:id="@+id/map_shopName"

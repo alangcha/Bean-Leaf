@@ -21,7 +21,10 @@ import java.util.HashMap;
 
 public class Singleton {
 
+    public static float dailyCaffeineLimit = 400;
+
     private static Singleton singleton;
+
     private Context context;
     private DatabaseReference database;
     private FirebaseStorage storage;
@@ -31,8 +34,8 @@ public class Singleton {
     private String currentUserId;
     private String currentCafeId;
     private String currentItemId;
-    private Cafe currentNewCafe;
-    private Order currentNewOrder;
+    private long startTime;
+    private long endTime;
 
     // --------------------
     // Singleton functions
@@ -42,6 +45,8 @@ public class Singleton {
         database = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         cafes = new HashMap<>();
+        startTime = 0;
+        endTime = 0;
     }
 
     public static Singleton get(Context context) {
@@ -188,6 +193,35 @@ public class Singleton {
     }
 
     public String getCurrentItemId() { return currentItemId; }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+
+        DatabaseReference ref = database.getDatabase().getReference().child("user").child(currentUserId)
+                .child("currentOrder");
+
+        if(startTime == 0) {
+            ref.child("travelTime").setValue(0);
+            ref.child("distance").setValue(0);
+            return;
+        }
+        else{
+            long timeSpent = endTime - startTime;
+            ref.child("travelTime").setValue(timeSpent);
+        }
+    }
 
     // --------------------
     // Adding / Removing / Editing objects

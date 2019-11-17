@@ -11,19 +11,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/shopImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@drawable/honey_green_milk_tea">
-            </ImageView>
+                <ImageView
+                    android:id="@+id/shopImage"
+                    android:layout_width="400dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/honey_green_milk_tea">
+                </ImageView>
 
-            <Button
-                android:id="@+id/shopChangeImage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Change Image">
-            </Button>
+                <Button
+                    android:id="@+id/shopChangeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Image">
+                </Button>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -34,8 +34,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -129,7 +127,7 @@
             android:layout_margin="16dp"
             app:elevation="6dp"
             app:pressedTranslationZ="12dp"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
+            app:srcCompat="@drawable/ic_edit_white_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnDoneShop"

@@ -24,7 +24,8 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"/>
 
             <LinearLayout
                 android:id="@+id/layout_price"
@@ -39,7 +40,8 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="13sp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"/>
                 <TextView
                     android:id="@+id/food_price_seperator"
                     android:layout_marginLeft="10dp"

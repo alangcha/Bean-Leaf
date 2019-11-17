@@ -114,13 +114,11 @@ public class GoogleLoginFragment extends Fragment {
                         progressBar.setVisibility(View.INVISIBLE);
 
                         Log.d("Tag", "signin success");
-                        Toast.makeText(mainActivity, "Login Success!", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                     } else {
                         progressBar.setVisibility(View.INVISIBLE);
 
                         Log.d("Tag", "signin failure");
-                        Toast.makeText(mainActivity, "Login Failed!", Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
                 });
