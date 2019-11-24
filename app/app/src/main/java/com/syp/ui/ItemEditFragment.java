@@ -26,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.syp.MainActivity;
 import com.syp.R;
-import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
@@ -57,7 +56,7 @@ public class ItemEditFragment extends Fragment {
         itemNameEdit = v.findViewById(R.id.merchantitem_title_edit);
         itemPriceEdit = v.findViewById(R.id.merchantitem_price_edit);
         itemCaffeineEdit = v.findViewById(R.id.merchantitem_caffeine_edit);
-        image = v.findViewById(R.id.item_image);
+        image = v.findViewById(R.id.orderItemItemImage);
 
         changeImage = v.findViewById(R.id.edititem_addimage);
         edit = v.findViewById(R.id.btnEditItem);

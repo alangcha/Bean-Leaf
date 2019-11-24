@@ -52,7 +52,7 @@ public class CafeFragment extends Fragment {
     private TextView cafeHours;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    private FirebaseRecyclerAdapter<Item, MenuViewHolder> adapter;
+    private FirebaseRecyclerAdapter<Item, RowUserItemFragment> adapter;
 
     @Nullable
     @Override
@@ -166,18 +166,18 @@ public class CafeFragment extends Fragment {
 
 
         // Firebase Recycler View
-        adapter = new FirebaseRecyclerAdapter<Item, MenuViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Item, RowUserItemFragment>(options) {
             @NonNull
             @Override
-            public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public RowUserItemFragment onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.fragment_cafe_menu_item, parent, false);
-                return new MenuViewHolder(view);
+                return new RowUserItemFragment(view);
             }
             @NonNull
             @Override
-            protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setCafeItemInfo(item, mainActivity, CafeFragmentDirections.actionCafeFragmentToOrderItemFragment());
+            protected void onBindViewHolder(RowUserItemFragment holder, final int position, Item item) {
+                holder.setUserItemInfo(item, mainActivity, CafeFragmentDirections.actionCafeFragmentToOrderItemFragment());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -2,7 +2,6 @@ package com.syp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -21,14 +19,12 @@ import com.syp.MainActivity;
 import com.syp.R;
 
 public class LogoutFragment extends Fragment {
-//    FirebaseAuth mFirebaseAuth;
-//    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Inflate View with statistics fragment
+        // Inflate View with logout fragment
         View v = inflater.inflate(R.layout.fragment_logout, container, false);
         MainActivity mainActivity = (MainActivity) getActivity();
 
@@ -37,8 +33,10 @@ public class LogoutFragment extends Fragment {
 
         NavDirections action = LogoutFragmentDirections.actionLogoutFragmentToMapFragment();
         Navigation.findNavController(mainActivity, R.id.nav_host_fragment).navigate(action);
+
         Intent intToLogin = new Intent(mainActivity, LoginActivity.class);
         startActivity(intToLogin);
+
         return v;
     }
 }

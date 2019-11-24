@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:background="#FFFFFF"
-            android:src="@drawable/ic_edit_black_24dp">
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp">
         </ImageButton>
 
     </RelativeLayout>

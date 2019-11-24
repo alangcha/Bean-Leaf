@@ -39,7 +39,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:text="300 mg"
-                        android:textSize="28dp">
+                        android:textSize="30dp">
 
                     </TextView>
 
@@ -63,21 +63,23 @@
 
                         <TextView
                             android:id="@+id/totalDay"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="$24"
-                            android:textSize="40dp"
+                            android:textSize="30dp"
                             android:layout_marginTop="10dp"
+                            android:gravity="center_horizontal"
                             android:layout_centerHorizontal="true">
                         </TextView>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:text="today"
                             android:textSize="22dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="30dp"
+                            android:gravity="center_horizontal"
                             android:layout_alignParentBottom="true">
                         </TextView>
 
@@ -88,6 +90,7 @@
                         android:id="@+id/barChartPriceDaily"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         />
 
@@ -108,20 +111,22 @@
 
                         <TextView
                             android:id="@+id/totalWeek"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="$234"
-                            android:textSize="40dp"
+                            android:textSize="30dp"
+                            android:gravity="center_horizontal"
                             android:layout_marginTop="10dp">
                         </TextView>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:text="this week"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="30dp"
                             android:textSize="22dp"
+                            android:gravity="center_horizontal"
                             android:layout_alignParentBottom="true">
                         </TextView>
 
@@ -133,6 +138,7 @@
                         android:layout_height="110dp"
                         android:layout_width="match_parent"
                         android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
                         />
 
                 </LinearLayout>
@@ -155,20 +161,22 @@
 
                         <TextView
                             android:id="@+id/totalMonth"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="$420"
-                            android:textSize="40dp"
+                            android:textSize="30dp"
                             android:layout_marginTop="10dp"
+                            android:gravity="center_horizontal"
                             android:layout_centerHorizontal="true">
                         </TextView>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="this month"
                             android:textSize="22dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="30dp"
+                            android:gravity="center_horizontal"
                             android:layout_alignParentBottom="true">
                         </TextView>
 
@@ -179,6 +187,8 @@
                         android:id="@+id/barChartPriceMonthly"
                         android:layout_height="110dp"
                         android:layout_width="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         />
 
                 </LinearLayout>
@@ -209,17 +219,20 @@
                             android:gravity="center_horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:id="@+id/totalSpending"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="$1,563"
-                                android:textSize="80sp"
+                                android:textSize="60sp"
+                                android:gravity="center_horizontal"
                                 android:layout_marginTop="20dp">
                             </TextView>
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="all time total"
+                                android:gravity="center_horizontal"
                                 android:textSize="20sp">
                             </TextView>
 

@@ -30,7 +30,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/orderShopeName"
+                    android:id="@+id/userOrderRowCafeName"
                     android:layout_marginTop="3dp"
                     android:text="Dong Cha"
                     android:textSize="24sp"
@@ -47,21 +47,21 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/orderDate"
+                    android:id="@+id/userOrderRowOrderDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Date">
                 </TextView>
 
                 <TextView
-                    android:id="@+id/orderTotal"
+                    android:id="@+id/userOrderRowOrderTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Spent">
                 </TextView>
 
                 <TextView
-                    android:id="@+id/orderCaffeineTotal"
+                    android:id="@+id/userOrderRowOrderCaffeineTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Caffeine">

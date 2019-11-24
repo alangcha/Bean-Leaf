@@ -20,10 +20,10 @@ import java.util.Locale;
 public class RowUserOrder extends RecyclerView.ViewHolder {
 
     // Views
-    private TextView orderCafeName;
-    private TextView orderCafeDate;
-    private TextView orderTotal;
-    private TextView caffeine;
+    private TextView userOrderRowCafeName;
+    private TextView userOrderRowOrderDate;
+    private TextView userOrderRowOrderTotal;
+    private TextView userOrderRowOrderCaffeineTotal;
 
     // Order associated with row
     private Order order;
@@ -33,10 +33,10 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // --------------------------
     public RowUserOrder(View itemView) {
         super(itemView);
-        orderCafeName = itemView.findViewById(R.id.orderShopeName);
-        orderCafeDate = itemView.findViewById(R.id.orderDate);
-        orderTotal = itemView.findViewById(R.id.orderTotal);
-        caffeine = itemView.findViewById(R.id.orderCaffeineTotal);
+        userOrderRowCafeName = itemView.findViewById(R.id.userOrderRowCafeName);
+        userOrderRowOrderDate = itemView.findViewById(R.id.userOrderRowOrderDate);
+        userOrderRowOrderTotal = itemView.findViewById(R.id.userOrderRowOrderTotal);
+        userOrderRowOrderCaffeineTotal = itemView.findViewById(R.id.userOrderRowOrderCaffeineTotal);
     }
 
     // ------------------------------------------------------
@@ -54,16 +54,16 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // Setters for order informations on UI Views
     // -------------------------------------------
     private void setOrderCafeName() {
-        orderCafeName.setText(order.getCafe());
+        userOrderRowCafeName.setText(order.getCafe());
     }
     private void setOrderCafeDate() {
-        orderCafeDate.setText(DateFormats.getDateString(order.getTimestampAsDate()));
+        userOrderRowOrderDate.setText(DateFormats.getDateString(order.getTimestampAsDate()));
     }
     private void setOrderPrice() {
-        orderTotal.setText(String.format(Locale.ENGLISH, "$%.2f", order.getTotalSpent()));
+        userOrderRowOrderTotal.setText(String.format(Locale.ENGLISH, "$%.2f", order.getTotalSpent()));
     }
     private void setOrderCaffeine() {
-        caffeine.setText(String.format(Locale.ENGLISH, "%.2f mg", order.getTotalCaffeine()));
+        userOrderRowOrderCaffeineTotal.setText(String.format(Locale.ENGLISH, "%.2f mg", order.getTotalCaffeine()));
     }
 
 }

@@ -30,7 +30,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/cafeEditCafeName"
+                            android:id="@+id/viewMerchantCafeCafeName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -40,7 +40,7 @@
                             android:textSize="28sp" />
 
                         <TextView
-                            android:id="@+id/cafeEditCafeAddress"
+                            android:id="@+id/viewMerchantCafeCafeAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="935 W 30th Street"
@@ -48,7 +48,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/cafeEditCafeHours"
+                            android:id="@+id/viewMerchantCafeCafeHours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="M-S 11:00 am - 12:00 am"
@@ -83,7 +83,7 @@
                             android:layout_height="match_parent" >
 
                             <TextView
-                                android:id="@+id/cafeEditTotalSales"
+                                android:id="@+id/viewMerchantCafeCafeTotal"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="65dp"
@@ -118,16 +118,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:background="@drawable/bgitems"
-                    android:orientation="vertical"
-                    android:paddingTop="20dp">
+                    android:orientation="vertical">
 
                     <view
-                        android:id="@+id/cafeEditUserCafes"
+                        android:id="@+id/viewMerchantCafeCafeItemStatistics"
                         class="androidx.recyclerview.widget.RecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="vertical"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginHorizontal="10dp"/>
 
                 </LinearLayout>
 
@@ -165,7 +164,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/cafeEditEditButton"
+        android:id="@+id/viewMerchantCafeEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_edit_white_24dp"

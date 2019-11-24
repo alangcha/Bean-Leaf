@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 // Package class imports
 import com.syp.MainActivity;
 import com.syp.R;
-import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
@@ -37,19 +36,19 @@ public class OrderItemFragment extends Fragment {
     // Main Activity
     private MainActivity mainActivity;
 
+    // Views on page
+    private TextView orderItemItemTitle;
+    private TextView orderItemItemPrice;
+    private TextView orderItemItemCaffeine;
+    private ImageView orderItemItemImage;
+    private Button orderItemAddToCart;
+    private ElegantNumberButton orderItemCountStepper;
+
     // Item on Page
     private Item item;
 
-    // Views on page
-    private ImageView itemImage;
-    private TextView itemTitle;
-    private TextView itemPrice;
-    private TextView itemCaffine;
-    private Button addToCartButton;
-    private ElegantNumberButton stepper;
-
     // ---------------------------------------------
-    // On Create for View ( Fragment required)
+    // On Create for View (Fragment required)
     // ---------------------------------------------
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -60,14 +59,14 @@ public class OrderItemFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
 
         // Connect views to variables
-        itemImage = v.findViewById(R.id.item_image);
-        itemTitle = v.findViewById(R.id.item_title);
-        itemPrice = v.findViewById(R.id.item_price);
-        itemCaffine = v.findViewById(R.id.item_caffine);
-        stepper = v.findViewById(R.id.item_stepper);
+        orderItemItemImage = v.findViewById(R.id.orderItemItemImage);
+        orderItemItemTitle = v.findViewById(R.id.orderItemItemTitle);
+        orderItemItemPrice = v.findViewById(R.id.orderItemItemPrice);
+        orderItemItemCaffeine = v.findViewById(R.id.orderItemItemCaffeine);
+        orderItemCountStepper = v.findViewById(R.id.orderItemCountStepper);
 
         // Add to cart button & listener
-        addToCartButton = v.findViewById(R.id.addToCart);
+        orderItemAddToCart = v.findViewById(R.id.orderItemAddToCart);
         setAddToCartOnClickListener();
 
         // Populate Data
@@ -82,7 +81,7 @@ public class OrderItemFragment extends Fragment {
     private void setAddToCartOnClickListener(){
 
         // Add On Click Listener to add to cart button
-        addToCartButton.setOnClickListener((View view) -> {
+        orderItemAddToCart.setOnClickListener((View view) -> {
             addItemCountToCurrentOrder();
             NavDirections action = OrderItemFragmentDirections.actionOrderItemFragmentToCafeFragment();
             Navigation.findNavController(view).navigate(action);
@@ -107,8 +106,8 @@ public class OrderItemFragment extends Fragment {
             @Override
             public void onDataChange(@Nullable DataSnapshot dataSnapshot) {
 
-                // Get current value at stepper
-                int stepperCount = Integer.parseInt(stepper.getNumber());
+                // Get current value at orderItemCountStepper
+                int stepperCount = Integer.parseInt(orderItemCountStepper.getNumber());
 
                 // Check for zero items
                 if(stepperCount <= 0)
@@ -136,9 +135,9 @@ public class OrderItemFragment extends Fragment {
     // ---------------------------------------------
     private void setCafeItemInfo(Item item){
         this.item = new Item(item);
-        itemTitle.setText(this.item.getName());
-        itemPrice.setText("$" + (Double.toString(this.item.getPrice())));
-        itemCaffine.setText(((this.item.getCaffeine()) + "mg of caffeine"));
+        orderItemItemTitle.setText(this.item.getName());
+        orderItemItemPrice.setText("$" + (Double.toString(this.item.getPrice())));
+        orderItemItemCaffeine.setText(((this.item.getCaffeine()) + " mg of caffeine"));
     }
 
     // ---------------------------------------------

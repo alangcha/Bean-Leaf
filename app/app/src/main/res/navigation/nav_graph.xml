@@ -29,7 +29,7 @@
         android:id="@+id/userFragment"
         android:name="com.syp.ui.UserProfileFragment"
         android:label="User Profile"
-        tools:layout="@layout/fragment_user" >
+        tools:layout="@layout/fragment_user_profile" >
         <action
             android:id="@+id/action_userFragment_to_addShopFragment"
             app:destination="@id/addShopFragment" />
@@ -134,7 +134,7 @@
         android:id="@+id/viewMerchantCafeFragment"
         android:name="com.syp.ui.ViewMerchantCafeFragment"
         android:label="fragment_merchant_cafe"
-        tools:layout="@layout/fragment_merchant_cafe" >
+        tools:layout="@layout/fragment_view_merchant_cafe" >
         <action
             android:id="@+id/action_viewMerchantCafeFragment_to_merchantShopFragment"
             app:destination="@id/editMerchantCafeFragment" />

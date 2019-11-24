@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if(requestCode == 10 && resultCode == RESULT_OK && null != data){
             String email = data.getStringExtra("email");
             String displayName = data.getStringExtra("displayName");
-            Toast.makeText(this, email, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, email, Toast.LENGTH_LONG).show();
             // Check if user exists
             Query query = Singleton.get(this).getDatabase().child("users").orderByChild("email").equalTo(email);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             dataSnapshot.getChildren().iterator().hasNext()) {
                         for(DataSnapshot child: dataSnapshot.getChildren()) {
                             String id = child.getKey();
-                            Toast.makeText(MainActivity.this, "Sign in successfully", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Sign in successful", Toast.LENGTH_LONG).show();
                             Singleton.get(MainActivity.this).setUserId(id);
 
                         }

@@ -2,8 +2,6 @@ package com.syp.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,20 +24,15 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.syp.LoginActivity;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class AddShopFragment extends Fragment {
@@ -60,7 +52,7 @@ public class AddShopFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    private FirebaseRecyclerAdapter<Item, MenuViewHolder> adapter;
+    private FirebaseRecyclerAdapter<Item, RowUserItemFragment> adapter;
 
     @Nullable
     @Override
@@ -128,21 +120,21 @@ public class AddShopFragment extends Fragment {
                         .build();
 
         //Firebase Recycler View
-        adapter = new FirebaseRecyclerAdapter<Item, MenuViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Item, RowUserItemFragment>(options) {
             @NonNull
             @Override
-            public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public RowUserItemFragment onCreateViewHolder(ViewGroup parent, int viewType) {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.fragment_cafe_menu_item, parent, false);
 
-                return new MenuViewHolder(view);
+                return new RowUserItemFragment(view);
             }
             @NonNull
             @Override
-            protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setCafeItemInfo(item, mainActivity, AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment());
+            protected void onBindViewHolder(RowUserItemFragment holder, final int position, Item item) {
+                holder.setUserItemInfo(item, mainActivity, AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment());
             }
         };
 

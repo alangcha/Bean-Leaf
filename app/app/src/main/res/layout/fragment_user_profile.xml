@@ -39,7 +39,7 @@
                         </ImageView>
 
                         <TextView
-                            android:id="@+id/profileName"
+                            android:id="@+id/userProfileUserDisplayName"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:text="Jackie Dong"
@@ -64,7 +64,7 @@
                         </ImageView>
 
                         <TextView
-                            android:id="@+id/profileEmail"
+                            android:id="@+id/userProfileUserEmail"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:text="eldong@usc.edu"
@@ -91,7 +91,7 @@
 
 
                         <TextView
-                            android:id="@+id/profileGender"
+                            android:id="@+id/userProfileUserGender"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:text="Non-binary"
@@ -103,7 +103,7 @@
                     </LinearLayout>
 
                     <view
-                        android:id="@+id/myShopsRecycle"
+                        android:id="@+id/userProfileUserCafes"
                         class="androidx.recyclerview.widget.RecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                         android:layout_marginTop="20dp" />
 
                        <Button
-                           android:id="@+id/shopAddButton"
+                           android:id="@+id/userProfileAddShop"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:layout_marginTop="10dp"
@@ -119,7 +119,7 @@
                        </Button>
 
                     <view
-                        android:id="@+id/myOrdersRecycle"
+                        android:id="@+id/userProfileUserOrders"
                         class="androidx.recyclerview.widget.RecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -102,7 +102,7 @@ public class CheckoutFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Query query = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                .child("currentOrder").child(item.getId());
+                                .child("currentOrder").child("items").child(item.getId());
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -112,13 +112,13 @@ public class CheckoutFragment extends Fragment {
                                 if (currCount >=2 ) {
                                     Toast.makeText(mainActivity, "item: " + item.getName() + ", count: " + currCount , Toast.LENGTH_SHORT).show();
                                     DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child(item.getId()).child("count");
+                                            .child("currentOrder").child("items").child(item.getId()).child("count");
 
                                     ref.setValue(--currCount);
                                 } else {
                                     Toast.makeText(mainActivity, "item removed", Toast.LENGTH_SHORT).show();
                                     DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child(item.getId());
+                                            .child("currentOrder").child("items").child(item.getId());
                                     ref.removeValue();
                                 }
                             }
@@ -177,7 +177,7 @@ public class CheckoutFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 DatabaseReference checkoutQuery = singleton.getDatabase().child("users").child(singleton.getUserId())
-                        .child("currentOrder");
+                        .child("currentOrder").child("items");
                 checkoutQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     Map<String, Item> items = new HashMap<>();
                     @Override

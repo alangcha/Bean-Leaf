@@ -48,11 +48,11 @@ public class UserProfileFragment extends Fragment {
     // View variables
     private View v;
     private Button addShop;
-    private TextView name;
-    private TextView email;
-    private TextView gender;
-    private RecyclerView userCafes;
-    private RecyclerView userOrders;
+    private TextView userProfileUserDisplayName;
+    private TextView userProfileUserEmail;
+    private TextView userProfileUserGender;
+    private RecyclerView userProfileUserCafes;
+    private RecyclerView userProfileUserOrders;
 
     // ---------------------------------------
     // On Create (Fragment Override Required)
@@ -62,30 +62,30 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // Inflate view tih user fragment xml
-        v = inflater.inflate(R.layout.fragment_user, container, false);
+        v = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         // Assign each view to variables
         mainActivity = (MainActivity) getActivity();
         layoutInflater = inflater;
 
         // User Info Section
-        name = v.findViewById(R.id.profileName);
-        email = v.findViewById(R.id.profileEmail);
-        gender = v.findViewById(R.id.profileGender);
+        userProfileUserDisplayName = v.findViewById(R.id.userProfileUserDisplayName);
+        userProfileUserEmail = v.findViewById(R.id.userProfileUserEmail);
+        userProfileUserGender = v.findViewById(R.id.userProfileUserGender);
         fetchUserInfo();
 
         // Recycle View, LayoutManager, & Init for User Shops
-        userCafes = v.findViewById(R.id.myShopsRecycle);
-        userCafes.setLayoutManager(new LinearLayoutManager(mainActivity));
+        userProfileUserCafes = v.findViewById(R.id.userProfileUserCafes);
+        userProfileUserCafes.setLayoutManager(new LinearLayoutManager(mainActivity));
         fetchUserCafes();
 
         // Add Shop Button
-        addShop = v.findViewById(R.id.shopAddButton);
+        addShop = v.findViewById(R.id.userProfileAddShop);
         setAddShopOnClickListener();
 
         // Recycle View, Layout Manager, & Init for User Orders
-        userOrders = v.findViewById(R.id.myOrdersRecycle);
-        userOrders.setLayoutManager(new LinearLayoutManager(mainActivity));
+        userProfileUserOrders = v.findViewById(R.id.userProfileUserOrders);
+        userProfileUserOrders.setLayoutManager(new LinearLayoutManager(mainActivity));
         fetchUserOrders();
 
         return v;
@@ -109,9 +109,9 @@ public class UserProfileFragment extends Fragment {
     // -------------------------------------------------------------
     private void setUserInfo(User user){
         // Set appropriate views
-        name.setText(user.getDisplayName());
-        email.setText(user.getEmail());
-        gender.setText(user.getGender());
+        userProfileUserDisplayName.setText(user.getDisplayName());
+        userProfileUserEmail.setText(user.getEmail());
+        userProfileUserGender.setText(user.getGender());
     }
 
     // ------------------------------------------
@@ -169,7 +169,7 @@ public class UserProfileFragment extends Fragment {
         };
 
         // Set Adapter and start listening
-        userCafes.setAdapter(userCafeAdapter);
+        userProfileUserCafes.setAdapter(userCafeAdapter);
         userCafeAdapter.startListening();
 
     }
@@ -204,7 +204,7 @@ public class UserProfileFragment extends Fragment {
         };
 
         // specify an adapter
-        userOrders.setAdapter(userOrdersAdapter);
+        userProfileUserOrders.setAdapter(userOrdersAdapter);
         userOrdersAdapter.startListening();
     }
 }

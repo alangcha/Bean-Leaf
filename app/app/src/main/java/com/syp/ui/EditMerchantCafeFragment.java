@@ -131,14 +131,14 @@ public class EditMerchantCafeFragment extends Fragment {
 
 
         //Firebase Recycler View
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Item, MenuViewHolder>(options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Item, RowUserItemFragment>(options) {
             @Override
-            public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MenuViewHolder(layoutInflater.inflate(R.layout.fragment_cafe_menu_item, parent, false));
+            public RowUserItemFragment onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new RowUserItemFragment(layoutInflater.inflate(R.layout.fragment_cafe_menu_item, parent, false));
             }
             @Override
-            protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setCafeItemInfo(item, mainActivity, EditMerchantCafeFragmentDirections.actionMerchantShopFragmentToItemEditFragment());
+            protected void onBindViewHolder(RowUserItemFragment holder, final int position, Item item) {
+                holder.setUserItemInfo(item, mainActivity, EditMerchantCafeFragmentDirections.actionMerchantShopFragmentToItemEditFragment());
             }
         };
 

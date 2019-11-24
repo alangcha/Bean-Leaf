@@ -66,6 +66,7 @@ public class StatisticsFragment extends Fragment {
     private TextView weeklyTotal;
     private TextView monthlyTotal;
     private TextView totalCaffeine;
+    private TextView totalSpendingText;
     private PieChart caffeinePieChart;
     private BarChart dailySpendingBarChart;
     private BarChart weeklySpendingBarChart;
@@ -92,6 +93,7 @@ public class StatisticsFragment extends Fragment {
         dailySpendingBarChart = v.findViewById(R.id.barChartPriceDaily);
         weeklySpendingBarChart = v.findViewById(R.id.barChartPriceWeekly);
         monthlySpendingBarChart = v.findViewById(R.id.barChartPriceMonthly);
+        totalSpendingText = v.findViewById(R.id.totalSpending);
 
         // Add event
         fetchUser();
@@ -134,6 +136,11 @@ public class StatisticsFragment extends Fragment {
         // Get all orders
         ArrayList<Order> orders = (ArrayList<Order>)user.getOrdersAsList();
 
+        double totalSum = 0;
+        for (Order order : orders) {
+            totalSum += order.getTotalSpent();
+        }
+
         // Get Daily, Weekly, Monthly Orders
         ArrayList<Order> dailyOrders = FilterOrders.filterOrderByToday(orders);
         ArrayList<Order> weeklyOrders = FilterOrders.filterOrderByCurrentWeek(orders);
@@ -150,6 +157,7 @@ public class StatisticsFragment extends Fragment {
         dailyTotal.setText(String.format(Locale.ENGLISH, "$%.2f", FilterOrders.getOrdersTotal(dailyOrders)));
         weeklyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(weeklyOrders)));
         monthlyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(monthlyOrders)));
+        totalSpendingText.setText("$" + Double.toString(totalSum));
     }
 
     // ---------------------------------------------------------------------
