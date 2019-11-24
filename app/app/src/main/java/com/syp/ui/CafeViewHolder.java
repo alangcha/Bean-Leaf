@@ -6,26 +6,44 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.syp.MainActivity;
 import com.syp.R;
+import com.syp.model.Cafe;
+import com.syp.model.Singleton;
 
 public class CafeViewHolder extends RecyclerView.ViewHolder {
-    // Your holder should contain a member variable
-    // for any view that will be set as you render a row
+
+    Cafe cafe;
+    private View cafeRow;
     private TextView cafeName;
-    private ImageButton editButton;
 
     public CafeViewHolder(View cafeView) {
         super(cafeView);
         cafeName = cafeView.findViewById(R.id.cellShopName);
-        editButton = cafeView.findViewById(R.id.shopEditButton);
+        cafeRow = cafeView.findViewById(R.id.cafeRowButton);
     }
 
-    public void setCafeName(String name) {
-        cafeName.setText(name);
+    public void setCafeInfo(Cafe cafe, MainActivity mainActivity, NavDirections action){
+        this.cafe = cafe;
+        this.setCafeName();
+
+        if(action == null)
+            return;
+
+        setViewCafeOnClickListener(mainActivity, action);
     }
-    public ImageButton getEditButton(){
-        return editButton;
+    private void setCafeName() {
+        cafeName.setText(cafe.getName());
+    }
+
+    private void setViewCafeOnClickListener(MainActivity mainActivity, NavDirections action){
+        cafeRow.setOnClickListener((View v) -> {
+            Singleton.get(mainActivity).setCurrentCafeId(cafe.getId());
+            Navigation.findNavController(v).navigate(action);
+        });
     }
 }

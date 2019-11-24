@@ -24,7 +24,7 @@ public class User implements Serializable {
     private String email;
     private String displayName;
     private boolean merchant;
-    private boolean gender;
+    private String gender;
     private Map<String, Cafe> cafes;
     private Map<String, Order> orders;
     private Order currentOrder;
@@ -52,7 +52,7 @@ public class User implements Serializable {
     public boolean getMerchant() {
         return merchant;
     }
-    public boolean getGender() {
+    public String getGender() {
         return gender;
     }
     public Map<String, Cafe> getCafes(){
@@ -81,7 +81,7 @@ public class User implements Serializable {
     public void setMerchant(boolean merchant) {
         this.merchant = merchant;
     }
-    public void setGender(boolean gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
     public void setCafes(Map<String, Cafe> cafes) {this.cafes = cafes;}

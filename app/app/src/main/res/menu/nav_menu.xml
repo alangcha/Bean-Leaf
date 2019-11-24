@@ -16,4 +16,8 @@
         android:id="@+id/checkoutFragment"
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:title="View Cart" />
+    <item
+        android:id="@+id/logoutFragment"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="Logout" />
 </menu>

@@ -24,16 +24,24 @@ public class Item implements Serializable {
     private String image;
     private int count; // Only used to keep track of how many items ordered
 
-    // ----------------------------------------------
-    // Public Default Constructor (Firebase Required)
-    // ----------------------------------------------
+    // -----------------------------------------------------
+    // Constructors (Default Constructor Firebase Required)
+    // -----------------------------------------------------
     public Item(){ }
+    public Item(Item other) {
+        this.id = other.getId();
+        this.name = other.getName();
+        this.price = other.getPrice();
+        this.caffeine = other.getCaffeine();
+        this.image = other.getImage();
+        this.count = 0;
+    }
 
     // ----------------------------------------------------
     // Getters for all Variable Members (Firebase Required)
     // ----------------------------------------------------
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
     public String getId() {
@@ -42,13 +50,13 @@ public class Item implements Serializable {
     public String getName() {
         return name;
     }
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
     public String getImage() {
         return image;
     }
-    public double getCaffeine() {
+    public Double getCaffeine() {
         return caffeine;
     }
 

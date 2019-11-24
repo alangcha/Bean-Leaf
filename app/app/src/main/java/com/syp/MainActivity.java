@@ -32,7 +32,6 @@ import android.view.Menu;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -43,7 +42,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,12 +57,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
 
 import com.google.android.material.navigation.NavigationView;
@@ -73,7 +65,7 @@ import com.syp.model.*;
 import com.syp.ui.AddItemExistingFragment;
 import com.syp.ui.AddItemNewFragment;
 import com.syp.ui.AddShopFragment;
-import com.syp.ui.MerchantShopFragment;
+import com.syp.ui.EditMerchantCafeFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         // Creating top level destinations in nav graph hierarchy
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.mapFragment, R.id.userFragment, R.id.statisticsFragment, R.id.checkoutFragment)
+                R.id.mapFragment, R.id.userFragment, R.id.statisticsFragment, R.id.checkoutFragment, R.id.logoutFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -218,8 +210,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 imageView = (ImageView) findViewById(R.id.additemexisting_image);
             else if(resultCode == AddShopFragment.RESULT_LOAD_IMAGE_REG)
                 imageView = (ImageView) findViewById(R.id.addshop_reg_image);
-            else if(resultCode == MerchantShopFragment.RESULT_LOAD_IMAGE_CHANGESHOP)
-                imageView = (ImageView) findViewById(R.id.shopImage);
+            else if(resultCode == EditMerchantCafeFragment.RESULT_LOAD_IMAGE_CHANGESHOP)
+                imageView = (ImageView) findViewById(R.id.editMerchantCafeCafeImage);
             else
                 imageView = (ImageView) findViewById(R.id.addshop_cafe_image);
 
@@ -244,13 +236,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "New user created with email " + email, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "New user created with email " + email, Toast.LENGTH_LONG).show();
                         DatabaseReference userRef = Singleton.get(MainActivity.this).getDatabase().child("users");
                         String id = userRef.push().getKey();
                         User user = new User();
                         user.setEmail(email);
                         user.setDisplayName(displayName!=null ? displayName : "");
-                        user.setGender(true);
+                        user.setGender("Male");
                         user.setMerchant(false);
                         userRef.child(id).setValue(user);
                         Singleton.get(MainActivity.this).setUserId(id);

@@ -30,7 +30,7 @@ public class CheckoutViewHolder extends RecyclerView.ViewHolder {
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NavDirections action = UserFragmentDirections.actionUserFragmentToMerchantShopFragment();
+                    NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
                     Navigation.findNavController(v).navigate(action);
                 }
             });

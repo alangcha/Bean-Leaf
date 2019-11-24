@@ -142,8 +142,7 @@ public class AddShopFragment extends Fragment {
             @NonNull
             @Override
             protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setBeverageName(item.getName());
-                holder.setBeveragePrice(Double.toString(item.getPrice()));
+                holder.setCafeItemInfo(item, mainActivity, AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment());
             }
         };
 

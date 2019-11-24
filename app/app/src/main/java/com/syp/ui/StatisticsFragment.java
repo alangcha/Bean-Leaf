@@ -1,3 +1,4 @@
+//Package
 package com.syp.ui;
 
 // Fragment imports
@@ -77,6 +78,8 @@ public class StatisticsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Inflate View with statistics fragment
         v = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Find all views
@@ -91,16 +94,19 @@ public class StatisticsFragment extends Fragment {
         monthlySpendingBarChart = v.findViewById(R.id.barChartPriceMonthly);
 
         // Add event
-        addFireBaseUserEventListenerForGraphs();
+        fetchUser();
         return v;
     }
 
     // ------------------------------------------------------------------------------------------
     // Add Event Listener when we retrieve / update a value for User class (Firebase Interaction)
     // -------------------------------------------------------------------------------------------
-    private void addFireBaseUserEventListenerForGraphs(){
+    private void fetchUser(){
+
         // Get reference in database
-        DatabaseReference userRef = Singleton.get(mainActivity).getDatabase().child("users").child(Singleton.get(mainActivity).getUserId());
+        DatabaseReference userRef = Singleton.get(mainActivity).getDatabase()
+                .child(Singleton.firebaseUserTag)
+                .child(Singleton.get(mainActivity).getUserId());
 
         // Add on Change listener for reference
         userRef.addValueEventListener(new ValueEventListener() {
@@ -131,7 +137,7 @@ public class StatisticsFragment extends Fragment {
         // Get Daily, Weekly, Monthly Orders
         ArrayList<Order> dailyOrders = FilterOrders.filterOrderByToday(orders);
         ArrayList<Order> weeklyOrders = FilterOrders.filterOrderByCurrentWeek(orders);
-        ArrayList<Order> monthlyOrders = FilterOrders.filterOrderByCurrentWeek(orders);
+        ArrayList<Order> monthlyOrders = FilterOrders.filterOrderByCurrentMonth(orders);
 
         // Set up Charts
         initializeDailySpendingBarChart(dailyOrders);
@@ -141,9 +147,9 @@ public class StatisticsFragment extends Fragment {
 
         // Set Views
         totalCaffeine.setText(String.format(Locale.ENGLISH, "%.2f mg", user.getTodayCaffeine()));
-        dailyTotal.setText(String.format(Locale.ENGLISH, "$%.2f", Order.getOrdersTotal(dailyOrders)));
-        weeklyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  Order.getOrdersTotal(weeklyOrders)));
-        monthlyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  Order.getOrdersTotal(monthlyOrders)));
+        dailyTotal.setText(String.format(Locale.ENGLISH, "$%.2f", FilterOrders.getOrdersTotal(dailyOrders)));
+        weeklyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(weeklyOrders)));
+        monthlyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(monthlyOrders)));
     }
 
     // ---------------------------------------------------------------------

@@ -1,5 +1,14 @@
+// Package
 package com.syp.ui;
 
+// View Imports
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,22 +21,20 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
+// Firebase GeoLocation Imports
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryDataEventListener;
-import com.firebase.ui.auth.viewmodel.RequestCodes;
+
+// Google GeoLocation Imports
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,27 +44,29 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.CameraPosition;
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
+
+// Firebase Database Imports
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+
+// Internal Class Imports
 import com.syp.IOnLoadLocationListener;
 import com.syp.MyLatLng;
 import com.syp.model.Cafe;
@@ -65,32 +74,25 @@ import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Singleton;
 
+// Data Structure Imports
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-
-import javax.security.auth.callback.Callback;
-
+// -----------------------------------------------
+// Fragment for showing map and markers for cafes
+// -----------------------------------------------
 public class MapFragment extends Fragment implements GeoQueryDataEventListener, IOnLoadLocationListener {
 
     private static final int REQUEST_CODE = 101;
-    private DatabaseReference ref;
+
     private LinearLayout infoBox;
     private Button viewCafeButton;
     private TextView shopName;
     private TextView shopAddress;
     private TextView shopHours;
-    private TextView caffeine;
     private MainActivity mainActivity;
     private LocationRequest locationRequest;
     private Location lastLocation;
@@ -110,137 +112,170 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate view
+        // Inflate View
         v = inflater.inflate(R.layout.fragment_map, container, false);
 
-        // Ref to mainactivity
+        // Get Main Activity
         mainActivity = (MainActivity) getActivity();
 
-        // link views to variables
+        // Assign views to variables
         infoBox = v.findViewById(R.id.cafe_infobox);
         shopName = v.findViewById(R.id.map_shopName);
         shopAddress = v.findViewById(R.id.map_shopAddress);
         shopHours = v.findViewById(R.id.map_shopTime);
 
+        // View Cafe Button & On Click Listener
         viewCafeButton = v.findViewById(R.id.view_cafe_button);
-        viewCafeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavDirections action = MapFragmentDirections.actionMapFragmentToCafeFragment();
-                Navigation.findNavController(v).navigate(action);
-            }
-        });
+        setViewCafeOnClickListener();
 
         // Create Map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
+        mapFragment.getMapAsync((GoogleMap map) -> {
+
+            // Set map & settings
+            mMap = map;
+            setMapSettings();
+
+            fetchCafes();
+            setAllMarkerOnClickListeners();
+
+            // Get user permission
+            Dexter.withActivity(mainActivity)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        buildLocationRequest();
+                        buildLocationCallback();
+                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity);
+                        fetchLastLocation();
+
+                        listener = MapFragment.this;
+                        settingGeoFire();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {}
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {}
+                }).check();
+        });
+        return v;
+    }
+
+    private void setMapSettings(){
+
+        // Clear Previous markers
+        mMap.clear();
+
+        // Map Type & Zoom
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        setMapCamera();
+        mMap.setMyLocationEnabled(true);
+    }
+
+    private void setMapCamera(){
+
+        // Set max min
+        mMap.setMinZoomPreference(8.0f);
+        mMap.setMaxZoomPreference(20.0f);
+
+        // Camera settings & start spot
+        CameraPosition googlePlex = CameraPosition.builder()
+                .target(getUserLatitudeLongitude()).zoom(12)
+                .build();
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
+    }
+
+    //TODO get user location dynamically
+    private LatLng getUserLatitudeLongitude(){
+        //fetchLastLocation();
+        return new LatLng(37.400403, -122.113402);
+    }
+
+    private void setViewCafeOnClickListener(){
+        viewCafeButton.setOnClickListener((View v) ->
+            Navigation.findNavController(v).navigate(MapFragmentDirections.actionMapFragmentToCafeFragment())
+        );
+    }
+
+    private void fetchCafes(){
+
+        // Get Database Reference to cafes
+        DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase()
+                .child("cafes");
+
+        // Add Listener when info is recieved or changed
+        cafeRef.addValueEventListener(new ValueEventListener() {
+
             @Override
-            public void onMapReady(GoogleMap map) {
-                mMap = map;
-                // Map Type & Zoom
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                mMap.setMinZoomPreference(8.0f);
-                mMap.setMaxZoomPreference(20.0f);
-                mMap.setMyLocationEnabled(true);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, MyLatLng> latLngList = new HashMap<>();
 
-                // Clear Previous markers
-                mMap.clear();
+                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
 
-                ArrayList<Cafe> cafes = new ArrayList<>();
+                    MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
+                    Cafe cafe = locationSnapshot.getValue(Cafe.class);
 
-                // Camera settings & start spot
-                CameraPosition googlePlex = CameraPosition.builder().target(new LatLng(37.400403, -122.113402)).zoom(12)
-                        .build();
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
+                    latLngList.put(locationSnapshot.getKey(), latLng);
 
-                // Get Cafe and add markers
-                DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase().child("cafes");
-                cafeRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        //update cafeLocations list
-                        HashMap<String, MyLatLng> latLngList = new HashMap<>();
-                        for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                            MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
-                            latLngList.put(locationSnapshot.getKey(), latLng);
-
-                            Cafe cafe = locationSnapshot.getValue(Cafe.class);
-
-                            Marker marker = mMap.addMarker(
-                                    new MarkerOptions().position(new LatLng(cafe.getLatitude(), cafe.getLongitude()))
-                                            .title(cafe.getName()));
-                            marker.setTag(cafe.getId());
-                        }
-
-                        listener.onLoadLocationSuccess(latLngList);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                // Get user permission
-                Dexter.withActivity(mainActivity)
-                        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                buildLocationRequest();
-                                buildLocationCallback();
-                                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity);
-                                fetchLastLocation();
-
-                                listener = MapFragment.this;
-                                settingGeoFire();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-
-                            }
-                        }).check();
-
-                // Set onClickListener for each marker
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        String id = marker.getTag().toString();
-                        Singleton.get(mainActivity).setCurrentCafeId(id);
-                        marker.showInfoWindow();
-                        infoBox.setVisibility(View.VISIBLE);
-
-                        DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
-                                .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId());
-
-                        ref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Cafe cafe = dataSnapshot.getValue(Cafe.class);
-                                shopName.setText(cafe.getName());
-                                shopAddress.setText(cafe.getAddress());
-                                shopHours.setText(cafe.getHours());
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        return false;
-                    }
-                });
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(cafe.getLatitude(), cafe.getLongitude())).title(cafe.getName()));
+                    marker.setTag(cafe.getId());
+                    marker.showInfoWindow();
+                }
+                //listener.onLoadLocationSuccess(latLngList);
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
-        return v;
+    }
+
+    private void setAllMarkerOnClickListeners(){
+
+        // Set onClickListener for each marker
+        mMap.setOnMarkerClickListener((Marker marker)->{
+            Singleton.get(mainActivity).setCurrentCafeId((String) marker.getTag());
+            showInfoBox();
+            return false;
+        });
+    }
+
+    private void showInfoBox(){
+        fetchCafeInfo();
+        infoBox.setVisibility(View.VISIBLE);
+    }
+
+    private void fetchCafeInfo(){
+        DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
+                .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId());
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                // Get cafe as snapshot
+                Cafe cafe = dataSnapshot.getValue(Cafe.class);
+
+                // Check cafe null
+                if(cafe == null)
+                    return;
+
+                // Set cafe info
+                setCafeInfo(cafe);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+    }
+
+    private void setCafeInfo(Cafe cafe){
+        shopName.setText(cafe.getName());
+        shopAddress.setText(cafe.getAddress());
+        shopHours.setText(cafe.getHours());
     }
 
     private void buildLocationRequest() {
@@ -255,8 +290,8 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(final LocationResult locationResult) {
-                lastLocation = locationResult.getLastLocation();
-                addUserMarker();
+            lastLocation = locationResult.getLastLocation();
+            addUserMarker();
             }
         };
     }

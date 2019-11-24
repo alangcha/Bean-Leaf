@@ -12,14 +12,14 @@
             android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/shopImage"
+                    android:id="@+id/editMerchantCafeCafeImage"
                     android:layout_width="400dp"
                     android:layout_height="200dp"
                     android:src="@drawable/honey_green_milk_tea">
                 </ImageView>
 
                 <Button
-                    android:id="@+id/shopChangeImage"
+                    android:id="@+id/editMerchantCafeSetCafeImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Change Image">
@@ -43,7 +43,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/merchantshop_shopname"
+                        android:id="@+id/editMerchantCafeCafeName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -60,7 +60,7 @@
                         android:visibility="gone"></EditText>
 
                     <TextView
-                        android:id="@+id/merchantshop_shopaddress"
+                        android:id="@+id/editMerchantCafeCafeAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -78,7 +78,7 @@
                         android:visibility="gone"></EditText>
 
                     <TextView
-                        android:id="@+id/merchantshop_shophours"
+                        android:id="@+id/editMerchantCafeCafeHours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -86,7 +86,7 @@
                         android:textSize="20dp"></TextView>
 
                     <EditText
-                        android:id="@+id/merchantshop_shophours_edit"
+                        android:id="@+id/editMerchantCafeEditCafeHours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -95,7 +95,7 @@
                         android:visibility="gone"></EditText>
 
                     <view
-                        android:id="@+id/recycler_view_merchantshopitems"
+                        android:id="@+id/editMerchantCafeCafeItems"
                         class="androidx.recyclerview.widget.RecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
@@ -103,7 +103,7 @@
                         android:scrollbars="vertical" />
 
                     <Button
-                        android:id="@+id/merchantshop_add_item"
+                        android:id="@+id/editMerchantCafeAddItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Add Item">
@@ -118,7 +118,7 @@
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnEditShop"
+            android:id="@+id/editMerchantCafeEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -130,7 +130,7 @@
             app:srcCompat="@drawable/ic_edit_white_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnDoneShop"
+            android:id="@+id/editMerchantCafeDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

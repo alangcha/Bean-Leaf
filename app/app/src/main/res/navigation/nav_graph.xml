@@ -27,15 +27,15 @@
     </fragment>
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.syp.ui.UserFragment"
+        android:name="com.syp.ui.UserProfileFragment"
         android:label="User Profile"
         tools:layout="@layout/fragment_user" >
         <action
-            android:id="@+id/action_userFragment_to_merchantShopFragment"
-            app:destination="@id/merchantShopFragment" />
-        <action
             android:id="@+id/action_userFragment_to_addShopFragment"
             app:destination="@id/addShopFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_viewMerchantCafeFragment"
+            app:destination="@id/viewMerchantCafeFragment" />
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
@@ -65,8 +65,8 @@
         android:label="fragment_itemedit"
         tools:layout="@layout/fragment_itemedit" />
     <fragment
-        android:id="@+id/merchantShopFragment"
-        android:name="com.syp.ui.MerchantShopFragment"
+        android:id="@+id/editMerchantCafeFragment"
+        android:name="com.syp.ui.EditMerchantCafeFragment"
         android:label="fragment_merchantshop"
         tools:layout="@layout/fragment_merchantshop" >
         <action
@@ -108,8 +108,8 @@
         tools:layout="@layout/fragment_add_item_existing" >
         <action
             android:id="@+id/action_addItemExistingFragment_to_merchantShopFragment"
-            app:destination="@id/merchantShopFragment"
-            app:popUpTo="@+id/merchantShopFragment"
+            app:destination="@id/editMerchantCafeFragment"
+            app:popUpTo="@+id/editMerchantCafeFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -120,5 +120,23 @@
         <action
             android:id="@+id/action_addItemNewFragment_to_addShopFragment"
             app:destination="@id/addShopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/logoutFragment"
+        android:name="com.syp.ui.LogoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout" >
+        <action
+            android:id="@+id/action_logoutFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewMerchantCafeFragment"
+        android:name="com.syp.ui.ViewMerchantCafeFragment"
+        android:label="fragment_merchant_cafe"
+        tools:layout="@layout/fragment_merchant_cafe" >
+        <action
+            android:id="@+id/action_viewMerchantCafeFragment_to_merchantShopFragment"
+            app:destination="@id/editMerchantCafeFragment" />
     </fragment>
 </navigation>

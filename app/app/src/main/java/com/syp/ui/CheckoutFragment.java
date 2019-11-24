@@ -67,7 +67,8 @@ public class CheckoutFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // Query
-        Query query = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder");
+        Query query = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder")
+                .child("items");
 
         // Firebase Options
         FirebaseRecyclerOptions<Item> options =
@@ -146,7 +147,7 @@ public class CheckoutFragment extends Fragment {
         totalTv = v.findViewById(R.id.totalTitle);
 
         // Calculate totals
-        Query totalQuery = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder");
+        Query totalQuery = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder").child("items");
         totalQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

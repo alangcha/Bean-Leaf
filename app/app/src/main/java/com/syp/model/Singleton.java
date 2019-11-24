@@ -21,7 +21,14 @@ import java.util.HashMap;
 
 public class Singleton {
 
-    public static float dailyCaffeineLimit = 400;
+    public final static float dailyCaffeineLimit = 400;
+    public final static String firebaseUserTag = "users";
+    public final static String firebaseCafeTag = "cafes";
+    public final static String firebaseOrderTag = "orders";
+    public final static String firebaseItemsTag = "items";
+    public final static String firebaseItemCountTag = "count";
+    public final static String firebaseCurrentOrderTag = "currentOrder";
+    public final static String firebaseCafeHoursTag = "hours";
 
     private static Singleton singleton;
 
@@ -134,39 +141,6 @@ public class Singleton {
              }
          });
      }
-
-    // --------------------
-    // Data base push pull
-    // --------------------
-    // public User getUserFromDatabase(String email) {
-    // User u = new User();
-    //
-    // DatabaseReference userDocument = database.getReference("Users");
-    // Query q = userDocument.orderByChild("email").equalTo(email);
-    //
-    // q.addValueEventListener(new ValueEventListener() {
-    // @Override
-    // public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-    // if (dataSnapshot.exists()) {
-    // dataSnapshot.getValue(User.class);
-    // }
-    // }
-    //
-    // @Override
-    // public void onCancelled(@NonNull DatabaseError databaseError) {
-    //
-    // }
-    // });
-    //
-    // return u;
-    // }
-
-    public void pushUserToDatabase() {
-        User u = new User();
-        u.setEmail(firebaseUser.getEmail());
-        u.setDisplayName(firebaseUser.getDisplayName());
-        u.setMerchant(false);
-    }
 
     // --------------------
     // Current items / shop indexes

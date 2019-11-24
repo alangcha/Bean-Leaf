@@ -1,172 +1,177 @@
+// Package
 package com.syp.ui;
 
-import android.net.Uri;
+// View & Navigation Imports
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.Intent;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+// Firebase Imports
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.syp.ExceedCaffeineActivity;
+
+// Package class imports
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
-import com.syp.model.User;
 
-import java.util.ArrayList;
-import java.util.Map;
-
+// ---------------------------------------------
+// Page where users can add items to their cart
+// ---------------------------------------------
 public class OrderItemFragment extends Fragment {
 
+    // Main Activity
     private MainActivity mainActivity;
+
+    // Item on Page
+    private Item item;
+
+    // Views on page
     private ImageView itemImage;
     private TextView itemTitle;
     private TextView itemPrice;
     private TextView itemCaffine;
-    private ArrayList<CheckBox> iceButtons;
-    private ArrayList<CheckBox> sugarButtons;
-    private ArrayList<CheckBox> toppingsButtons;
     private Button addToCartButton;
     private ElegantNumberButton stepper;
-    private Singleton singleton;
-    private Item currentItem;
 
-
+    // ---------------------------------------------
+    // On Create for View ( Fragment required)
+    // ---------------------------------------------
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        // Inflate view
         View v = inflater.inflate(R.layout.fragment_orderitem, container, false);
+
+        // Get MainActivity
         mainActivity = (MainActivity) getActivity();
-        singleton = Singleton.get(mainActivity);
-
-
-        // Get current item from database
-        DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId());
-        cafeRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentItem = dataSnapshot.getValue(Item.class);
-                // load data into views
-                itemTitle.setText(currentItem.getName());
-                itemPrice.setText((Double.toString(currentItem.getPrice())));
-                itemCaffine.setText(((currentItem.getCaffeine()) + " mg of caffeine"));
-
-                addToCartButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        DatabaseReference orderRef = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                .child("currentOrder").child(currentItem.getId());
-                        orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int stepperCount = Integer.parseInt(stepper.getNumber());
-
-                                if(stepperCount <= 0) {
-                                    return;
-                                };
-
-                                if (dataSnapshot != null && dataSnapshot.getChildren() != null &&
-                                        dataSnapshot.getChildren().iterator().hasNext()) {
-                                    Toast.makeText(mainActivity, "Current item exists", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child(currentItem.getId()).child("count");
-
-                                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            int itemCount = Integer.parseInt(dataSnapshot.getValue().toString());
-                                            ref.setValue(itemCount + stepperCount);
-                                            Toast.makeText(mainActivity, stepperCount + " \"" + currentItem.getName() + "\" " + "added to your order", Toast.LENGTH_SHORT).show();
-
-                                            NavDirections action = OrderItemFragmentDirections.actionOrderItemFragmentToCafeFragment();
-                                            Navigation.findNavController(view).navigate(action);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(mainActivity, "Current item does not exist", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child(currentItem.getId());
-                                    currentItem.setCount(stepperCount);
-                                    ref.setValue(currentItem);
-                                    Toast.makeText(mainActivity, stepperCount + " \"" + currentItem.getName() + "\" " + "added to your order", Toast.LENGTH_SHORT).show();
-                                    //startActivity(new Intent(OrderItemFragment.this.getContext(), FinishOrderPopUp.class));
-
-                                    NavDirections action = OrderItemFragmentDirections.actionOrderItemFragmentToCafeFragment();
-                                    Navigation.findNavController(view).navigate(action);
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("CANCEL", "Failed to read value.", error.toException());
-            }
-        });
 
         // Connect views to variables
         itemImage = v.findViewById(R.id.item_image);
         itemTitle = v.findViewById(R.id.item_title);
         itemPrice = v.findViewById(R.id.item_price);
         itemCaffine = v.findViewById(R.id.item_caffine);
-//        iceButtons = new ArrayList<CheckBox>();
-//        iceButtons.add((CheckBox) v.findViewById(R.id.ice0CheckBox));
-//        iceButtons.add((CheckBox) v.findViewById(R.id.ice25CheckBox));
-//        iceButtons.add((CheckBox) v.findViewById(R.id.ice50CheckBox));
-//        iceButtons.add((CheckBox) v.findViewById(R.id.ice100CheckBox));
-//        sugarButtons = new ArrayList<CheckBox>();
-//        sugarButtons.add((CheckBox) v.findViewById(R.id.sugar0CheckBox));
-//        sugarButtons.add((CheckBox) v.findViewById(R.id.sugar25CheckBox));
-//        sugarButtons.add((CheckBox) v.findViewById(R.id.sugar50CheckBox));
-//        sugarButtons.add((CheckBox) v.findViewById(R.id.sugar100CheckBox));
-//        toppingsButtons = new ArrayList<CheckBox>();
-//        toppingsButtons.add((CheckBox) v.findViewById(R.id.bobaCheckBox));
-//        toppingsButtons.add((CheckBox) v.findViewById(R.id.jellyCheckBox));
-//        toppingsButtons.add((CheckBox) v.findViewById(R.id.miniBobaCheckBox));
         stepper = v.findViewById(R.id.item_stepper);
-        addToCartButton = v.findViewById(R.id.addToCart);
 
+        // Add to cart button & listener
+        addToCartButton = v.findViewById(R.id.addToCart);
+        setAddToCartOnClickListener();
+
+        // Populate Data
+        fetchCafeItem();
 
         return v;
     }
 
+    // ---------------------------------------------
+    // Set On Click Listener to Add Cart Button
+    // ---------------------------------------------
+    private void setAddToCartOnClickListener(){
+
+        // Add On Click Listener to add to cart button
+        addToCartButton.setOnClickListener((View view) -> {
+            addItemCountToCurrentOrder();
+            NavDirections action = OrderItemFragmentDirections.actionOrderItemFragmentToCafeFragment();
+            Navigation.findNavController(view).navigate(action);
+        });
+
+    }
+
+    // ---------------------------------------------
+    // Adds current count of item to current order
+    // ---------------------------------------------
+    private void addItemCountToCurrentOrder(){
+
+        // Database Reference to
+        DatabaseReference orderRef = Singleton.get(mainActivity).getDatabase()
+                .child(Singleton.firebaseUserTag)
+                .child(Singleton.get(mainActivity).getUserId())
+                .child(Singleton.firebaseCurrentOrderTag)
+                .child(Singleton.firebaseItemsTag)
+                .child(this.item.getId());
+
+        orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@Nullable DataSnapshot dataSnapshot) {
+
+                // Get current value at stepper
+                int stepperCount = Integer.parseInt(stepper.getNumber());
+
+                // Check for zero items
+                if(stepperCount <= 0)
+                    return;
+
+                // Convert to item
+                Item itemSnapshot = dataSnapshot.getValue(Item.class);
+
+                // If empty create
+                if(itemSnapshot == null)
+                    itemSnapshot = new Item(item);
+
+                // Add to database
+                itemSnapshot.setCount(itemSnapshot.getCount() + stepperCount);
+                orderRef.setValue(itemSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+    }
+
+    // ---------------------------------------------
+    // Sets views with item info
+    // ---------------------------------------------
+    private void setCafeItemInfo(Item item){
+        this.item = new Item(item);
+        itemTitle.setText(this.item.getName());
+        itemPrice.setText("$" + (Double.toString(this.item.getPrice())));
+        itemCaffine.setText(((this.item.getCaffeine()) + "mg of caffeine"));
+    }
+
+    // ---------------------------------------------
+    // Retrieves item info from database
+    // ---------------------------------------------
+    private void fetchCafeItem(){
+
+        // Get Cafe Item from Database
+        DatabaseReference cafeItemRef = Singleton.get(mainActivity).getDatabase()
+                .child(Singleton.firebaseCafeTag)
+                .child(Singleton.get(mainActivity).getCurrentCafeId())
+                .child(Singleton.firebaseItemsTag)
+                .child(Singleton.get(mainActivity).getCurrentItemId());
+
+        // Add listener when data is retrieved or changed
+        cafeItemRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                // Convert to item
+                Item item = dataSnapshot.getValue(Item.class);
+
+                // Check if exists
+                if(item == null)
+                    return;
+
+                // Set Item Cafe Info
+                setCafeItemInfo(item);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {}
+        });
+    }
 }

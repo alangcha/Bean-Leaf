@@ -2,23 +2,19 @@ package com.syp.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,7 +27,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.syp.model.Cafe;
@@ -40,13 +35,8 @@ import com.syp.R;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
-import java.util.Map;
-
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -64,21 +54,20 @@ public class CafeFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private FirebaseRecyclerAdapter<Item, MenuViewHolder> adapter;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_cafe, container, false);
 
         // Store views
-        directionButton = v.findViewById(R.id.btnDirection);
+        directionButton = v.findViewById(R.id.individualCafeDirectionsButtom);
         mainActivity = (MainActivity) getActivity();
         cafeName = v.findViewById(R.id.cafe_name);
         cafeAddress = v.findViewById(R.id.cafe_address);
         cafeHours = v.findViewById(R.id.cafe_hours);
 
         // Create map and load cafe from firebase
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.cafeMap);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.individualCafeMap);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -188,9 +177,7 @@ public class CafeFragment extends Fragment {
             @NonNull
             @Override
             protected void onBindViewHolder(MenuViewHolder holder, final int position, Item item) {
-                holder.setBeverageName(item.getName());
-                holder.setBeveragePrice("" + item.getPrice());
-                holder.setCaffeineAmt(item.getCaffeine() + "");
+                holder.setCafeItemInfo(item, mainActivity, CafeFragmentDirections.actionCafeFragmentToOrderItemFragment());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

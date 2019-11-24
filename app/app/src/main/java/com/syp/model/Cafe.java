@@ -22,6 +22,7 @@ public class Cafe implements Serializable {
     private String name;
     private String address;
     private String hours;
+    private double totalSales;
     private double longitude;
     private double latitude;
     private String image;
@@ -47,15 +48,16 @@ public class Cafe implements Serializable {
     public String getHours() {
         return hours;
     }
+    public double getTotalSales() {
+        return totalSales;
+    }
     public double getLongitude() {
         return longitude;
     }
     public double getLatitude() {
         return latitude;
     }
-    public String getImage() {
-        return image;
-    }
+    public String getImage() { return image; }
 
     // ---------------------------------
     // Setters for all Variable Members
@@ -79,6 +81,7 @@ public class Cafe implements Serializable {
     public void setHours(String hours) {
         this.hours = hours;
     }
+    public void setTotalSales(double longitude) { this.totalSales = totalSales; }
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }

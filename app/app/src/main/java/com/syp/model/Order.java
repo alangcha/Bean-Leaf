@@ -123,17 +123,6 @@ public class Order implements Serializable {
         return total;
     }
 
-    // --------------------------------------
-    // Get total $ spent in a list of orders
-    // --------------------------------------
-    public static double getOrdersTotal(ArrayList<Order> orders){
-        double total = 0;
-        for(Order o: orders){
-            total += o.getTotalSpent();
-        }
-        return total;
-    }
-
     // Calculate order before tax
 //    public double calculate_order_total_before_tax(){
 //        double order_total = 0;

@@ -107,7 +107,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/cafeMap"
+                android:id="@+id/individualCafeMap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -117,7 +117,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnDirection"
+        android:id="@+id/individualCafeDirectionsButtom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_directions_black_24dp"

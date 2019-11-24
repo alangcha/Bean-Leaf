@@ -110,9 +110,9 @@ public class FilterOrders {
 
                 // Update or create value depending
                 if(itemTotalMapping.containsKey(i.getName()))
-                    itemTotalMapping.put(i.getName(),itemTotalMapping.get(i.getName()) + (float)i.getPrice());
+                    itemTotalMapping.put(i.getName(),itemTotalMapping.get(i.getName()) + i.getPrice().floatValue());
                 else
-                    itemTotalMapping.put(i.getName(),(float)i.getPrice());
+                    itemTotalMapping.put(i.getName(),i.getPrice().floatValue());
             }
         }
 
@@ -163,6 +163,17 @@ public class FilterOrders {
         }
 
         return dayAmountMap;
+    }
+
+    // --------------------------------------
+    // Get total $ spent in a list of orders
+    // --------------------------------------
+    public static double getOrdersTotal(ArrayList<Order> orders){
+        double total = 0;
+        for(Order o: orders){
+            total += o.getTotalSpent();
+        }
+        return total;
     }
 
 }
