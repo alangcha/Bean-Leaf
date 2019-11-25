@@ -53,7 +53,11 @@ public class MapTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -64,7 +68,11 @@ public class MapTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -74,7 +82,11 @@ public class MapTest {
                         1),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction view = onView(
                 allOf(withContentDescription("Google Map"),
                         childAtPosition(
@@ -84,7 +96,11 @@ public class MapTest {
                                 0),
                         isDisplayed()));
         view.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withText("Syp"),
                         childAtPosition(
@@ -95,7 +111,11 @@ public class MapTest {
                                 1),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView2 = onView(
                 allOf(withText("Syp"),
                         childAtPosition(

@@ -54,7 +54,11 @@ public class AddCafeElementsTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -65,7 +69,11 @@ public class AddCafeElementsTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -75,7 +83,11 @@ public class AddCafeElementsTest {
                         2),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.userProfileAddShop), withText("Add Shop"),
                         childAtPosition(
@@ -84,7 +96,11 @@ public class AddCafeElementsTest {
                                         0),
                                 4)));
         appCompatButton2.perform(scrollTo(), click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withText("Name: "),
                         childAtPosition(
@@ -94,7 +110,11 @@ public class AddCafeElementsTest {
                                 0),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView2 = onView(
                 allOf(withText("Name: "),
                         childAtPosition(
@@ -106,7 +126,7 @@ public class AddCafeElementsTest {
         textView2.check(matches(withText("Name: ")));
 
         ViewInteraction editText = onView(
-                allOf(withId(R.id.addshop_shop_name), withText("Dong Cha"),
+                allOf(withId(R.id.addshop_shop_name),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),

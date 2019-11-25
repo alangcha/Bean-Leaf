@@ -53,7 +53,11 @@ public class StatisticsTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -64,7 +68,11 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -74,7 +82,11 @@ public class StatisticsTest {
                         3),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction viewGroup = onView(
                 allOf(withId(R.id.pieChartCaffeine),
                         childAtPosition(
@@ -84,7 +96,11 @@ public class StatisticsTest {
                                 0),
                         isDisplayed()));
         viewGroup.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction viewGroup2 = onView(
                 allOf(withId(R.id.barChartPriceDaily),
                         childAtPosition(
@@ -94,7 +110,11 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         viewGroup2.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction viewGroup3 = onView(
                 allOf(withId(R.id.barChartPriceWeekly),
                         childAtPosition(
@@ -104,19 +124,23 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         viewGroup3.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction viewGroup4 = onView(
                 allOf(withId(R.id.barChartPriceMonthly),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        3),
-                                1),
+                                        1),
+                                2),
                         isDisplayed()));
         viewGroup4.check(matches(isDisplayed()));
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.totalSpending), withText("$154.75"),
+                allOf(withId(R.id.totalSpending), withText("$0.00"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),

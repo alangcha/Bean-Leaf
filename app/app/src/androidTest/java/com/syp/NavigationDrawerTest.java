@@ -15,6 +15,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +27,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static androidx.test.espresso.matcher.ViewMatchers.Visibility;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
@@ -41,8 +44,8 @@ public class NavigationDrawerTest {
             GrantPermissionRule.grant(
                     "android.permission.ACCESS_FINE_LOCATION");
 
-    @Test
-    public void navigationDrawerTest() {
+    @Before
+    public void login() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
@@ -52,7 +55,14 @@ public class NavigationDrawerTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+    }
+    @Test
+    public void navigationDrawerTest() {
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -63,56 +73,51 @@ public class NavigationDrawerTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction checkedTextView = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        }
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        1),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        1),
                         isDisplayed()));
-        checkedTextView.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView2 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        ViewInteraction navigationMenuItemView2 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        2),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        2),
                         isDisplayed()));
-        checkedTextView2.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView3 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        ViewInteraction navigationMenuItemView3 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        3),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        3),
                         isDisplayed()));
-        checkedTextView3.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView4 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        ViewInteraction navigationMenuItemView4 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        4),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        4),
                         isDisplayed()));
-        checkedTextView4.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView5 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        ViewInteraction navigationMenuItemView5 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        5),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        5),
                         isDisplayed()));
-        checkedTextView5.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

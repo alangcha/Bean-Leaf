@@ -23,6 +23,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -50,7 +51,20 @@ public class LogInSuccesfulTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
+        ViewInteraction view = onView(
+                allOf(withContentDescription("Google Map"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.map),
+                                        0),
+                                0),
+                        isDisplayed()));
+        view.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

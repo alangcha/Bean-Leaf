@@ -193,35 +193,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        geofenceIntentFilter = new IntentFilter("com.example.geofence.ACTION_RECEIVE");
-        //registerReceiver(gBR, geofenceIntentFilter);
-        Log.d("Geofence", "Register - Start");
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        //registerReceiver(gBR, geofenceIntentFilter);
-        Log.d("Geofence", "Register - Resume");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(gBR);
-        Log.d("Geofence", "UnRegsiter - Destroy");
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        unregisterReceiver(gBR);
-        Log.d("Geofence", "UnRegsiter - Stop");
-    }
-
     private void fetchCafes(){
 
         // Get Database Reference to cafes
