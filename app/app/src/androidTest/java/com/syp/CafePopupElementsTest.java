@@ -23,9 +23,11 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -51,17 +53,15 @@ public class CafePopupElementsTest {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.TESTinvisibleRedMarker),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                         0),
-                                3),
+                                0),
                         isDisplayed()));
-        appCompatButton2.perform(click());
-
-        onView(withId(R.id.TESTinvisibleRedMarker)).perform(click());
+        appCompatButton3.perform(click());
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.map_shopName), withText("Pot of Chang"),

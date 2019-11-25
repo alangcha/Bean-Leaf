@@ -69,9 +69,9 @@ public class AddToCartTest {
                 allOf(withId(R.id.TESTinvisibleRedMarker),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                         0),
-                                3),
+                                0),
                         isDisplayed()));
         appCompatButton5.perform(click());
 

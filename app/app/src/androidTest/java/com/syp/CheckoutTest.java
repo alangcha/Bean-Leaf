@@ -58,9 +58,9 @@ public class CheckoutTest {
                 allOf(withId(R.id.TESTinvisibleRedMarker),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                         0),
-                                3),
+                                0),
                         isDisplayed()));
         appCompatButton6.perform(click());
 

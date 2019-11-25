@@ -53,25 +53,15 @@ public class FullCafeInfoTest {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
-        ViewInteraction appCompatButton4 = onView(
+        ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                         0),
-                                3),
+                                0),
                         isDisplayed()));
-        appCompatButton4.perform(click());
+        appCompatButton5.perform(click());
 
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
