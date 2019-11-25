@@ -57,9 +57,13 @@ public class ItemInfoTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
-        
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
+
+        }
         ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.TESTinvisibleRedMarker),
+                allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
@@ -67,7 +71,11 @@ public class ItemInfoTest {
                                 0),
                         isDisplayed()));
         appCompatButton4.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
                         childAtPosition(
@@ -78,7 +86,11 @@ public class ItemInfoTest {
                                 1),
                         isDisplayed()));
         appCompatButton3.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction view = onView(
                 allOf(withId(R.id.userItemRow),
                         childAtPosition(
@@ -88,7 +100,11 @@ public class ItemInfoTest {
                                 0),
                         isDisplayed()));
         view.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction imageView = onView(
                 allOf(withId(R.id.orderItemItemImage),
                         childAtPosition(
