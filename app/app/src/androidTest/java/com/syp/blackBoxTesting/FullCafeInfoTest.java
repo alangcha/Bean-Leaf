@@ -59,7 +59,7 @@ public class FullCafeInfoTest {
         appCompatButton.perform(click());
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.TESTinvisibleRedMarker),
+                allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),

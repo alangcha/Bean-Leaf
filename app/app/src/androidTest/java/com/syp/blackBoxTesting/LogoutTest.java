@@ -48,6 +48,11 @@ public class LogoutTest {
 
     @Test
     public void logoutTest() {
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
+
+        }
         ViewInteraction appCompatButton = onView(
                 Matchers.allOf(ViewMatchers.withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(

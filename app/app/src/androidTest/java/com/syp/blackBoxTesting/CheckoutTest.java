@@ -60,7 +60,7 @@ public class CheckoutTest {
         appCompatButton.perform(click());
 
         ViewInteraction appCompatButton6 = onView(
-                allOf(withId(R.id.TESTinvisibleRedMarker),
+                allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),

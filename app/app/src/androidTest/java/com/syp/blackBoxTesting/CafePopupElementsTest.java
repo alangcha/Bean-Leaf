@@ -59,7 +59,7 @@ public class CafePopupElementsTest {
         appCompatButton.perform(click());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.TESTinvisibleRedMarker),
+                allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),

@@ -76,15 +76,7 @@ public class ItemInfoTest {
         } catch (InterruptedException ie) {
 
         }
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
-                        childAtPosition(
-                                allOf(withId(R.id.cafe_infobox),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                2)),
-                                1),
-                        isDisplayed()));
+        ViewInteraction appCompatButton3 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
         appCompatButton3.perform(click());
         try {
             Thread.sleep(7500);
