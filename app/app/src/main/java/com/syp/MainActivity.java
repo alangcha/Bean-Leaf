@@ -6,7 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -15,9 +18,12 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -29,6 +35,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.util.Log;
@@ -39,9 +47,14 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryDataEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,7 +78,10 @@ import com.syp.model.*;
 import com.syp.ui.AddItemExistingFragment;
 import com.syp.ui.AddItemNewFragment;
 import com.syp.ui.AddShopFragment;
+import com.syp.ui.CafeFragment;
+import com.syp.ui.CheckoutFragment;
 import com.syp.ui.EditMerchantCafeFragment;
+import com.syp.ui.OrderItemFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,17 +89,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback,
-        GeoQueryDataEventListener, IOnLoadLocationListener{
+import static androidx.navigation.Navigation.findNavController;
 
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback,
+        GeoQueryDataEventListener, IOnLoadLocationListener {
+
+    public static MainActivity mainActivity;
     private AppBarConfiguration mAppBarConfiguration;
     private LocationCallback locationCallback;
     protected LocationManager locationManager;
     protected double latitude;
     protected double longitude;
 
+    private GeofencingClient geofencingClient;
+    public GeofenceBroadcastReceiver gBR;
+    private PendingIntent geofencePendingIntent;
+    private GeofencingRequest geofenceRequest;
+    private List<Geofence> geofences;
+
+    IntentFilter geofenceIntentFilter;
+
+
+    private static int GEOFENCE_RADIUS_IN_METERS = 40;
+    private static int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000000000;
+
     // Cafes
     ArrayList<Cafe> cafes;
+    String geofenceCafeID;
     int currentCafeIndex;
     int currentItemIndex;
     User user;
@@ -92,13 +124,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     MarkerOptions userMarker;
 
+    public static MainActivity getStaticMainActivity(){
+        return mainActivity;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize singleton
         Singleton.get(this);
         setTitle("Bean and Leaf");
+        mainActivity = this;
 
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        fetchCafes();
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -118,8 +157,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         MainActivity.this.startActivityForResult(i, 10);
 
-        // TODO: CHECK IF USER VISITED A CAFE WHILE APP WAS CLOSED
 
+
+        // TODO: CHECK IF USER VISITED A CAFE WHILE APP WAS CLOSED
 
         // Populate navigation bar with maps page
         setContentView(R.layout.activity_maps);
@@ -148,9 +188,105 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 R.id.mapFragment, R.id.userFragment, R.id.statisticsFragment, R.id.checkoutFragment, R.id.logoutFragment)
                 .setDrawerLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        geofenceIntentFilter = new IntentFilter("com.example.geofence.ACTION_RECEIVE");
+        //registerReceiver(gBR, geofenceIntentFilter);
+        Log.d("Geofence", "Register - Start");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //registerReceiver(gBR, geofenceIntentFilter);
+        Log.d("Geofence", "Register - Resume");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(gBR);
+        Log.d("Geofence", "UnRegsiter - Destroy");
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        unregisterReceiver(gBR);
+        Log.d("Geofence", "UnRegsiter - Stop");
+    }
+
+    private void fetchCafes(){
+
+        // Get Database Reference to cafes
+        DatabaseReference cafeRef = Singleton.get(this).getDatabase()
+                .child("cafes");
+
+        // Add Listener when info is recieved or changed
+        cafeRef.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                geofences = new ArrayList<>();
+                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                    Cafe cafe = locationSnapshot.getValue(Cafe.class);
+                    Geofence g = new Geofence.Builder()
+                            .setRequestId(cafe.getId()).setCircularRegion(cafe.getLatitude(), cafe.getLongitude(), GEOFENCE_RADIUS_IN_METERS)
+                            .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                                Geofence.GEOFENCE_TRANSITION_EXIT)
+                            .build();
+                    geofences.add(g);
+                }
+
+                geofenceRequest = getGeofencingRequest();
+                geofencePendingIntent = getGeofencePendingIntent();
+                geofencingClient.addGeofences(geofenceRequest, geofencePendingIntent);
+                //Log.d("Finish Setting up", "ASDFASDFASDF");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+    }
+
+    public void popUpEnteredCafe(String cafeID){
+        this.geofenceCafeID = cafeID;
+        Intent i = new Intent(this, EnteredCafeRadius.class);
+        startActivityForResult(i, 2001);
+    }
+
+    public void popUpExitedCafe(String cafeID){
+        this.geofenceCafeID = cafeID;
+        Intent i = new Intent(this, EnteredCafeRadius.class);
+        startActivityForResult(i, 2002);
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofences);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        // Reuse the PendingIntent if we already have it.
+        if (geofencePendingIntent != null) {
+            return geofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+        return geofencePendingIntent;
     }
 
     public boolean checkLocationPermission() {
@@ -189,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
@@ -197,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("OnActivityResult", "Success");
+        Log.d("OnActivityResult", "Success - " + requestCode);
 
         // Image Code Range
         if (requestCode > 0 && requestCode < 6 && resultCode == RESULT_OK && null != data) {
@@ -219,9 +355,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
 
         if(requestCode == 10 && resultCode == RESULT_OK && null != data){
+
+            //gBR = new GeofenceBroadcastReceiver();
+            // geofenceIntentFilter = new IntentFilter("com.example.geofence.ACTION_RECEIVE");
+            //registerReceiver(gBR, geofenceIntentFilter);
+            Log.d("Geofence", "Registered");
+
             String email = data.getStringExtra("email");
             String displayName = data.getStringExtra("displayName");
-//            Toast.makeText(this, email, Toast.LENGTH_LONG).show();
+
             // Check if user exists
             Query query = Singleton.get(this).getDatabase().child("users").orderByChild("email").equalTo(email);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -254,6 +396,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 }
             });
+        }
+
+        if(requestCode == 2001){
+            Log.d("Request Code : ", "2001");
+            //String action = data.getStringExtra("action");
+            //if(action.equalsIgnoreCase("viewCafeMenu")) {
+
+            //NavController navController = Navigation.findNavController(this, R.id.cafeFragment);
+
+            //}
+        }
+        if(requestCode == 2002){
+            //String action = data.getStringExtra("action");
+
+            //if(action.equalsIgnoreCase("viewCafeMenu")) {
+//                Singleton.get(this).setCurrentCafeId(geofenceCafeID);
+//                ViewGroup viewGroup = findViewById(R.id.replacementFragmentId);
+//                viewGroup.removeAllViews();
+//                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                ft.add(viewGroup.getId(), new CafeFragment());
+            //}
+            //if(action.equalsIgnoreCase("viewCheckout")) {
+//                Singleton.get(this).setCurrentCafeId(geofenceCafeID);
+//                getSupportFragmentManager().beginTransaction().add(R.id.replacementFragmentId, new CheckoutFragment()).commit();
+            //}
         }
     }
 
@@ -407,12 +574,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     @Override
-    protected void onStop() {
-        //fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        super.onStop();
-    }
-
-    @Override
     public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
         sendNotification("USER", dataSnapshot.getKey() + "%s entered the cafe.");
     }
@@ -498,16 +659,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLoadLocationFailure(String message) {
     }
 
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        startLocationUpdates();
-//    }
+
 //
 //    private void startLocationUpdates() {
 //        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
 //                locationCallback,
 //                Looper.getMainLooper());
 //    }
+
 
 }

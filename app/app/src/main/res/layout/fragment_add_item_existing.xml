@@ -89,6 +89,28 @@
                 android:src="@drawable/matcha_latte">
             </ImageView>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Image Title: "
+                    android:textSize="25sp">
+                </TextView>
+
+                <EditText
+                    android:id="@+id/additemexisting_image_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Honey Green Milk Tea"
+                    android:textSize="20sp">
+                </EditText>
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/additemexisting_add_image"
                 android:layout_width="wrap_content"

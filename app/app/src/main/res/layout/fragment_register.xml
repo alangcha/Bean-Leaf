@@ -13,16 +13,8 @@
             android:id="@+id/registerFirstName"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginTop="75dp"
-            android:hint="Enter first name">
-        </EditText>
-
-        <EditText
-            android:id="@+id/registerLastName"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:hint="Enter last name">
+            android:layout_marginTop="70dp"
+            android:hint="Enter diplay name">
         </EditText>
 
         <EditText
@@ -47,6 +39,14 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:hint="Confirm password">
+        </EditText>
+
+        <EditText
+            android:id="@+id/registerGender"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:hint="Gender">
         </EditText>
         
         <TextView

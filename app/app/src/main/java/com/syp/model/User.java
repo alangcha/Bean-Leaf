@@ -28,6 +28,7 @@ public class User implements Serializable {
     private Map<String, Cafe> cafes;
     private Map<String, Order> orders;
     private Order currentOrder;
+    private String password;
 
     // ----------------------------------------------
     // Public Default Constructor (Firebase Required)
@@ -64,6 +65,9 @@ public class User implements Serializable {
     public Order getCurrentOrder() {
         return currentOrder;
     }
+    public String getPassword(){
+        return password;
+    }
 
 
     // ---------------------------------
@@ -90,6 +94,9 @@ public class User implements Serializable {
     }
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
+    }
+    public void setPassword(String password){
+        this.password = password;
     }
 
 

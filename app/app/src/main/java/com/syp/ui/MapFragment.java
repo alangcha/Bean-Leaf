@@ -104,8 +104,10 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private IOnLoadLocationListener listener;
     private List<LatLng> cafeLocations;
+    private List<Marker> markers;
     private GeoQuery geoQuery;
     private DatabaseReference myLocationRef;
+    private Button TESTinvisibleRedMarkerButton;
     private View v;
 
     @Nullable
@@ -123,6 +125,8 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
         shopName = v.findViewById(R.id.map_shopName);
         shopAddress = v.findViewById(R.id.map_shopAddress);
         shopHours = v.findViewById(R.id.map_shopTime);
+        TESTinvisibleRedMarkerButton = v.findViewById(R.id.TESTinvisibleRedMarker);
+        addTESTInvisibleRedMarkerButtonOnClick();
 
         // View Cafe Button & On Click Listener
         viewCafeButton = v.findViewById(R.id.view_cafe_button);
@@ -215,6 +219,7 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
 
                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
 
+
                     MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
                     Cafe cafe = locationSnapshot.getValue(Cafe.class);
 
@@ -223,6 +228,7 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(cafe.getLatitude(), cafe.getLongitude())).title(cafe.getName()));
                     marker.setTag(cafe.getId());
                     marker.showInfoWindow();
+                    markers.add(marker);
                 }
                 //listener.onLoadLocationSuccess(latLngList);
             }
@@ -242,6 +248,15 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
             return false;
         });
     }
+
+    private void addTESTInvisibleRedMarkerButtonOnClick(){
+        TESTinvisibleRedMarkerButton.setOnClickListener((View v)->{
+            Singleton.get(mainActivity).setCurrentCafeId((String) markers.get(0).getTag());
+            showInfoBox();
+        });
+    }
+
+
 
     private void showInfoBox(){
         fetchCafeInfo();

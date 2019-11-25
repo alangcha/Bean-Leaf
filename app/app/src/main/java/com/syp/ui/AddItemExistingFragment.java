@@ -52,8 +52,10 @@ public class AddItemExistingFragment extends Fragment {
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_LOAD_IMAGE_EXISTING);
+                openFileChooser();
+
+//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(i, RESULT_LOAD_IMAGE_EXISTING);
             }
         });
 
@@ -116,5 +118,12 @@ public class AddItemExistingFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getActivity().startActivityForResult(intent, RESULT_LOAD_IMAGE_EXISTING);
     }
 }
