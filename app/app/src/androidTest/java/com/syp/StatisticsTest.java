@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -96,11 +97,7 @@ public class StatisticsTest {
                                 0),
                         isDisplayed()));
         viewGroup.check(matches(isDisplayed()));
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
 
-        }
         ViewInteraction viewGroup2 = onView(
                 allOf(withId(R.id.barChartPriceDaily),
                         childAtPosition(
@@ -110,11 +107,6 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         viewGroup2.check(matches(isDisplayed()));
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
-
-        }
         ViewInteraction viewGroup3 = onView(
                 allOf(withId(R.id.barChartPriceWeekly),
                         childAtPosition(
@@ -124,70 +116,6 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         viewGroup3.check(matches(isDisplayed()));
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
-
-        }
-        ViewInteraction viewGroup4 = onView(
-                allOf(withId(R.id.barChartPriceMonthly),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                2),
-                        isDisplayed()));
-        viewGroup4.check(matches(isDisplayed()));
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.totalSpending), withText("$0.00"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
-
-        ViewInteraction textView2 = onView(
-                allOf(withText("all time total"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1),
-                                1),
-                        isDisplayed()));
-        textView2.check(matches(isDisplayed()));
-
-        ViewInteraction textView3 = onView(
-                allOf(withText("all time total"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1),
-                                1),
-                        isDisplayed()));
-        textView3.check(matches(withText("all time total")));
-
-        ViewInteraction textView4 = onView(
-                allOf(withText("this month"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView4.check(matches(isDisplayed()));
-
-        ViewInteraction textView5 = onView(
-                allOf(withText("this month"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView5.check(matches(withText("this month")));
 
         ViewInteraction textView6 = onView(
                 allOf(withText("this week"),
@@ -228,6 +156,70 @@ public class StatisticsTest {
                                 1),
                         isDisplayed()));
         textView9.check(matches(withText("today")));
+        ViewInteraction textView3 = onView(
+                allOf(withText("all time total"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                1)));
+        textView3.perform(scrollTo());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
+
+        }
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.totalSpending), withText("$0.0"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                0)));
+        textView.check(matches(isDisplayed()));
+
+        ViewInteraction viewGroup4 = onView(
+                allOf(withId(R.id.barChartPriceMonthly),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        3),
+                                1), isDisplayed()));
+        viewGroup4.check(matches(isDisplayed()));
+
+        ViewInteraction textView4 = onView(
+                allOf(withText("this month"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView4.check(matches(isDisplayed()));
+
+        ViewInteraction textView5 = onView(
+                allOf(withText("this month"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView5.check(matches(withText("this month")));
+
+
+        ViewInteraction textView2 = onView(
+                allOf(withText("all time total"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(isDisplayed()));
+
+
+        textView3.check(matches(withText("all time total")));
     }
 
     private static Matcher<View> childAtPosition(
