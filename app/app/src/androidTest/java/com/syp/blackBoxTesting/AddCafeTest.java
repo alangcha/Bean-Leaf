@@ -188,7 +188,7 @@ public class AddCafeTest {
                                         0),
                                 1),
                         isDisplayed()));
-        textView3.check(matches(withText("TestAddress")));
+        textView3.check(matches(withText("930 w 30th st, los angeles, ca 90007")));
 
         ViewInteraction textView4 = onView(
                 allOf(withId(R.id.viewMerchantCafeCafeHours), withText("TestHours"),
