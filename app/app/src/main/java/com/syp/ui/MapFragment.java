@@ -119,6 +119,7 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
 
         // Get Main Activity
         mainActivity = (MainActivity) getActivity();
+        markers = new ArrayList<>();
 
         // Assign views to variables
         infoBox = v.findViewById(R.id.cafe_infobox);
