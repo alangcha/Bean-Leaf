@@ -138,15 +138,6 @@ public class AddCafeTest {
                         isDisplayed()));
         textView.check(matches(withText("TestShop")));
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.cellShopName), withText("TestShop"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(withText("TestShop")));
 
         ViewInteraction view = onView(
                 allOf(withId(R.id.cafeRowButton),
