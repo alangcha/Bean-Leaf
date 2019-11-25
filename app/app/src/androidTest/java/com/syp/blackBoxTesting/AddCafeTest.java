@@ -128,7 +128,7 @@ public class AddCafeTest {
                                         withClassName(is("android.widget.LinearLayout")),
                                         1),
                                 1)));
-        appCompatEditText2.perform(scrollTo(), replaceText("935 w 30th st, los angeles, ca 90007"), closeSoftKeyboard());
+        appCompatEditText2.perform(scrollTo(), replaceText("930 w 30th st, los angeles, ca 90007"), closeSoftKeyboard());
         try {
             Thread.sleep(7500);
         } catch (InterruptedException ie) {
@@ -142,7 +142,11 @@ public class AddCafeTest {
                                         2),
                                 1)));
         appCompatEditText3.perform(scrollTo(), replaceText("TestHours"), closeSoftKeyboard());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(R.id.addshop_register_cafe), withText("Register Cafe"),
                         childAtPosition(
@@ -151,7 +155,11 @@ public class AddCafeTest {
                                         0),
                                 9)));
         appCompatButton4.perform(scrollTo(), click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withId(R.id.cellShopName), withText("TestShop"),
                         childAtPosition(
@@ -173,7 +181,7 @@ public class AddCafeTest {
         view.perform(click());
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.viewMerchantCafeCafeAddress), withText("935 w 30th st, los angeles, ca 90007"),
+                allOf(withId(R.id.viewMerchantCafeCafeAddress), withText("930 w 30th st, los angeles, ca 90007"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
