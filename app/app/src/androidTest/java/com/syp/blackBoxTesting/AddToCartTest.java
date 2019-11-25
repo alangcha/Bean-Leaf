@@ -79,7 +79,11 @@ public class AddToCartTest {
                                 0),
                         isDisplayed()));
         appCompatButton5.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction view = onView(
                 allOf(withId(R.id.userItemRow),
                         childAtPosition(
@@ -89,7 +93,11 @@ public class AddToCartTest {
                                 0),
                         isDisplayed()));
         view.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.add_btn), withText("+"),
                         childAtPosition(
@@ -100,7 +108,11 @@ public class AddToCartTest {
                                 2),
                         isDisplayed()));
         appCompatButton3.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withId(R.id.number_counter), withText("1"),
                         childAtPosition(
@@ -111,7 +123,11 @@ public class AddToCartTest {
                                 1),
                         isDisplayed()));
         textView.check(matches(withText("1")));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(R.id.orderItemAddToCart), withText("Add to Cart"),
                         childAtPosition(
@@ -121,7 +137,11 @@ public class AddToCartTest {
                                 2),
                         isDisplayed()));
         appCompatButton4.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
@@ -132,7 +152,11 @@ public class AddToCartTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -143,7 +167,11 @@ public class AddToCartTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -153,7 +181,11 @@ public class AddToCartTest {
                         4),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.itemTitle), withText("The Juice of Chang | x1"),
                         childAtPosition(
