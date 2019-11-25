@@ -58,7 +58,11 @@ public class CheckoutElementsTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -69,7 +73,11 @@ public class CheckoutElementsTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -79,18 +87,11 @@ public class CheckoutElementsTest {
                         4),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction textView = onView(
-                allOf(withText("Checkout"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("Checkout")));
-
+        }
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.Title), withText("My Checkout"),
                         childAtPosition(
@@ -100,7 +101,6 @@ public class CheckoutElementsTest {
                                 1),
                         isDisplayed()));
         textView2.check(matches(withText("My Checkout")));
-
         ViewInteraction textView3 = onView(
                 allOf(withId(R.id.priceSubTitle), withText("Subtotal:"),
                         childAtPosition(
@@ -110,7 +110,6 @@ public class CheckoutElementsTest {
                                 0),
                         isDisplayed()));
         textView3.check(matches(withText("Subtotal:")));
-
         ViewInteraction textView4 = onView(
                 allOf(withId(R.id.discountSubTitle), withText("Discount:"),
                         childAtPosition(
