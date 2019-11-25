@@ -189,7 +189,11 @@ public class AddCafeElementsTest {
                                 4),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.addshop_add_cafe_images),
                         childAtPosition(
@@ -200,25 +204,6 @@ public class AddCafeElementsTest {
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
 
-        ViewInteraction button3 = onView(
-                allOf(withId(R.id.addshop_add_registration_form_image),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class),
-                                        0),
-                                8),
-                        isDisplayed()));
-        button3.check(matches(isDisplayed()));
-
-        ViewInteraction button4 = onView(
-                allOf(withId(R.id.addshop_register_cafe),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class),
-                                        0),
-                                9),
-                        isDisplayed()));
-        button4.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
