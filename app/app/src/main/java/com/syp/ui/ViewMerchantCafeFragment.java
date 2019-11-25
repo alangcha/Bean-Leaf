@@ -52,17 +52,17 @@ public class ViewMerchantCafeFragment extends Fragment {
     LayoutInflater layoutInflater;
 
     // Views
-    private TextView viewMerchantCafeCafeName;
-    private TextView viewMerchantCafeCafeAddress;
-    private TextView viewMerchantCafeCafeHours;
-    private TextView viewMerchantCafeCafeTotal; // To Be Populated
-    private RecyclerView viewMerchantCafeCafeItemStatistics;
-    private GoogleMap viewMerchantCafeCafeMap;
-    private ImageButton viewMerchantCafeEdit;
+    public TextView viewMerchantCafeCafeName;
+    public TextView viewMerchantCafeCafeAddress;
+    public TextView viewMerchantCafeCafeHours;
+    public TextView viewMerchantCafeCafeTotal; // To Be Populated
+    public RecyclerView viewMerchantCafeCafeItemStatistics;
+    public GoogleMap viewMerchantCafeCafeMap;
+    public ImageButton viewMerchantCafeEdit;
     private View v;
 
     // Cafe associated with page
-    private Cafe cafe;
+    public Cafe cafe;
 
     // ----------------------------------------------------------
     // Fragment for page showing merchant shops & items
@@ -135,7 +135,7 @@ public class ViewMerchantCafeFragment extends Fragment {
     // ----------------------------------------------------------
     // Set Info for page with cafe passed in
     // ----------------------------------------------------------
-    private void setCafeInfo(Cafe cafe){
+    public void setCafeInfo(Cafe cafe){
 
         // load data into views
         this.cafe = cafe;

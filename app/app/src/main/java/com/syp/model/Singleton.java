@@ -36,6 +36,7 @@ public class Singleton {
     private DatabaseReference database;
     private FirebaseStorage storage;
     private FirebaseUser firebaseUser;
+    private boolean isLoggedIn = false;
 
     private HashMap<String, Cafe> cafes;
     private String currentUserId;
@@ -208,5 +209,17 @@ public class Singleton {
         }
     }
 
+    // --------------------
+    // Set if user logged in
+    // --------------------
+    public void setLoggedIn() {
+        isLoggedIn = true;
+    }
 
+    // --------------------
+    // Get if user logged in
+    // --------------------
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
 }

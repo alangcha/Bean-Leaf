@@ -71,6 +71,8 @@ public class CafeFragment extends Fragment {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
+                mainActivity.viewCafeGoogleMap = mMap;
+
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 mMap.setMinZoomPreference(6.0f);
                 mMap.setMaxZoomPreference(14.0f);

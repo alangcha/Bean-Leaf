@@ -14,12 +14,11 @@ import com.syp.model.Singleton;
 import java.util.List;
 
 
-public class GeofenceBroadcastReceiver extends  BroadcastReceiver {
+public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-        Log.d("GeoFence", "ASDFASDFASDFASDF");
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
@@ -28,12 +27,14 @@ public class GeofenceBroadcastReceiver extends  BroadcastReceiver {
         Singleton.get(context).setCurrentCafeId(triggeringGeofences.get(0).getRequestId());
         MainActivity mainActivity = MainActivity.getStaticMainActivity();
 
+        boolean isLoggedIn = Singleton.get(mainActivity).isLoggedIn();
+
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER && isLoggedIn ) {
             mainActivity.popUpEnteredCafe(triggeringGeofences.get(0).getRequestId());
         }
 
-        if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
+        if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT && isLoggedIn){
             mainActivity.popUpExitedCafe(triggeringGeofences.get(0).getRequestId());
         }
     }

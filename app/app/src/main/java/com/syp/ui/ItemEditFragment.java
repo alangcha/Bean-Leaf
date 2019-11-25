@@ -32,17 +32,17 @@ import com.syp.model.Singleton;
 public class ItemEditFragment extends Fragment {
 
     private static int RESULT_LOAD_IMAGE = 1;
-    private TextView itemName;
-    private TextView itemPrice;
-    private TextView itemCaffeine;
-    private EditText itemNameEdit;
-    private EditText itemPriceEdit;
-    private EditText itemCaffeineEdit;
-    private FloatingActionButton edit;
-    private FloatingActionButton done;
-    private MainActivity mainActivity;
-    private Button changeImage;
-    private ImageView image;
+    public TextView itemName;
+    public TextView itemPrice;
+    public TextView itemCaffeine;
+    public EditText itemNameEdit;
+    public EditText itemPriceEdit;
+    public EditText itemCaffeineEdit;
+    public FloatingActionButton edit;
+    public FloatingActionButton done;
+    public MainActivity mainActivity;
+    public Button changeImage;
+    public ImageView image;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

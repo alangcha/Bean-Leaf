@@ -51,17 +51,17 @@ public class EditMerchantCafeFragment extends Fragment {
     private LayoutInflater layoutInflater;
 
     // Views
-    private TextView shopName;
-    private TextView shopAddress;
-    private TextView shopHours;
-    private EditText shopHoursEdit;
-    private Button addItem;
-    private FloatingActionButton done;
-    private FloatingActionButton edit;
-    private RecyclerView merchantCafeItems;
-    private ImageView image;
-    private Button setCafeImageButton;
-    private Cafe cafe;
+    public TextView shopName;
+    public TextView shopAddress;
+    public TextView shopHours;
+    public EditText shopHoursEdit;
+    public Button addItem;
+    public FloatingActionButton done;
+    public FloatingActionButton edit;
+    public RecyclerView merchantCafeItems;
+    public ImageView image;
+    public Button setCafeImageButton;
+    public Cafe cafe;
     private View v;
 
     // ---------------------------------------
@@ -162,8 +162,9 @@ public class EditMerchantCafeFragment extends Fragment {
     // -----------------------------------------------------
     private void setSetCafeImageButtonOnClickListener(){
         setCafeImageButton.setOnClickListener((View v) -> {
-            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, RESULT_LOAD_IMAGE_CHANGESHOP);
+            openFileChooser();
+//            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            startActivityForResult(i, RESULT_LOAD_IMAGE_CHANGESHOP);
         });
     }
 
@@ -250,5 +251,12 @@ public class EditMerchantCafeFragment extends Fragment {
         shopName.setText(this.cafe.getName());
         shopAddress.setText(this.cafe.getAddress());
         shopHours.setText(this.cafe.getHours());
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getActivity().startActivityForResult(intent, RESULT_LOAD_IMAGE_CHANGESHOP);
     }
 }

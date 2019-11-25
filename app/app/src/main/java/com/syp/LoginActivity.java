@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         // Connect to firebase
         mAuth = FirebaseAuth.getInstance();
 
+
+//        // AUTO LOGIN FOR BLACK BOX TESTING FUNCTIONALITY
 //        AuthCredential credential = GoogleAuthProvider
 //                .getCredential("eyJhbGciOiJSUzI1NiIsImtpZCI6ImRiMDJhYjMwZTBiNzViOGVjZDRmODE2YmI5ZTE5NzhmNjI4NDk4OTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNjE5Mjg4MDA1OTUtNGRjdmRmcGVsamgwMXE0NGdicGNmaXI2Z3BxdGI5MG0uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNjE5Mjg4MDA1OTUtbnZnOGtwc2UxaWxsM2k1YXM0cnM4ZmtmdDMyYzhvMDguYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQ0MDE0ODkzNzM0OTc3MTg4MTIiLCJlbWFpbCI6InN5cHByb2plY3QyMDE5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE1NzQ2MzY4OTAsImV4cCI6MTU3NDY0MDQ5MH0.YeCpXPSi5nPCF6anypuJbijdgPHOeXEPQzGjsbk0yZKXTPxilhhl2yerSzUC7D-7klwywo8NuIbV31fL34FyMXpKt_TXhp0nOxaKF6sNpDdy8eH21lVgmHbuqy7gdbBzNOZWzI07qJmWMWCxFP6Vz4ZDBTjdjyhjurbbx7STUnbCAJBuscym6TzUis0PMLP9-_pCBGYPe_NiPeI8orJNPMOurVNNPxbkOnGDStJamJ7XhwA17suhB-zdvLp7CZjvAHsjOlZwWvJGPPvSPM-ER2pAnyd-f66tF4_K6ryeyD_wXg6B-ghr5lYuiNcinM07j5wRkxWRgEbjQ1YKwJXPzQ", null);
 //        mAuth.signInWithCredential(credential)

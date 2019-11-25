@@ -37,12 +37,12 @@ public class OrderItemFragment extends Fragment {
     private MainActivity mainActivity;
 
     // Views on page
-    private TextView orderItemItemTitle;
-    private TextView orderItemItemPrice;
-    private TextView orderItemItemCaffeine;
-    private ImageView orderItemItemImage;
-    private Button orderItemAddToCart;
-    private ElegantNumberButton orderItemCountStepper;
+    public TextView orderItemItemTitle;
+    public TextView orderItemItemPrice;
+    public TextView orderItemItemCaffeine;
+    public ImageView orderItemItemImage;
+    public Button orderItemAddToCart;
+    public ElegantNumberButton orderItemCountStepper;
 
     // Item on Page
     private Item item;

@@ -41,47 +41,58 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CheckoutFragment extends Fragment {
 
     private MainActivity mainActivity;
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private FirebaseRecyclerAdapter adapter;
+    public FirebaseRecyclerAdapter adapter;
     private Singleton singleton;
 
-    private TextView countTv;
-    private Button checkoutBtn;
-    private TextView subTotalTv;
-    private TextView discountTv;
-    private TextView taxTv;
-    private TextView totalTv;
+    public TextView countTv;
+    public Button checkoutBtn;
+    public TextView subTotalTv;
+    public TextView discountTv;
+    public TextView taxTv;
+    public TextView totalTv;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_checkout, container, false);
+
         mainActivity = (MainActivity) getActivity();
         singleton = Singleton.get(mainActivity);
 
-
         // Set up recycler view
         recyclerView = v.findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Get data
+        mainActivity = (MainActivity) getActivity();
+
+        // Find views
+        countTv = v.findViewById(R.id.SubTitle);
+        checkoutBtn = v.findViewById(R.id.confirmBtn);
+        setCheckoutOnClickListener();
+        subTotalTv = v.findViewById(R.id.priceTitle);
+        discountTv = v.findViewById(R.id.discountTitle);
+        taxTv = v.findViewById(R.id.taxTitle);
+        totalTv = v.findViewById(R.id.totalTitle);
+
+        // Fetch Stuff
+        fetchCheckoutItems();
+        fetchCheckoutData();
+
+        return v;
+    }
+    public void fetchCheckoutItems(){
 
         // Query
         Query query = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder")
                 .child("items");
 
         // Firebase Options
-        FirebaseRecyclerOptions<Item> options =
-                new FirebaseRecyclerOptions.Builder<Item>()
-                        .setQuery(query, new SnapshotParser<Item>() {
-                            @NonNull
-                            @Override
-                            public Item parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                Item item = snapshot.getValue(Item.class);
-                                return item;
-                            }
-                        })
-                        .build();
+        FirebaseRecyclerOptions<Item> options = new FirebaseRecyclerOptions.Builder<Item>()
+                .setQuery(query, Item.class)
+                .build();
 
         // Firebase Recycler View
         adapter = new FirebaseRecyclerAdapter<Item, CheckoutViewHolder>(options) {
@@ -107,20 +118,7 @@ public class CheckoutFragment extends Fragment {
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int currCount = Integer.parseInt(dataSnapshot.child("count").getValue().toString());
-
-                                if (currCount >=2 ) {
-                                    Toast.makeText(mainActivity, "item: " + item.getName() + ", count: " + currCount , Toast.LENGTH_SHORT).show();
-                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child("items").child(item.getId()).child("count");
-
-                                    ref.setValue(--currCount);
-                                } else {
-                                    Toast.makeText(mainActivity, "item removed", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                            .child("currentOrder").child("items").child(item.getId());
-                                    ref.removeValue();
-                                }
+                                decrementCheckoutItemCount(dataSnapshot.getValue(Item.class));
                             }
 
                             @Override
@@ -131,21 +129,25 @@ public class CheckoutFragment extends Fragment {
                     }});
             }
         };
-
-        // Get data
-        mainActivity = (MainActivity) getActivity();
-
-        // specify an adapter
         recyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
+    public void decrementCheckoutItemCount(Item item){
+        int currCount = item.getCount();
 
-        // Find views
-        countTv = v.findViewById(R.id.SubTitle);
-        checkoutBtn = v.findViewById(R.id.confirmBtn);
-        subTotalTv = v.findViewById(R.id.priceTitle);
-        discountTv = v.findViewById(R.id.discountTitle);
-        taxTv = v.findViewById(R.id.taxTitle);
-        totalTv = v.findViewById(R.id.totalTitle);
-
+        if (currCount >=2 ) {
+            Toast.makeText(mainActivity, "item: " + item.getName() + ", count: " + currCount , Toast.LENGTH_SHORT).show();
+            DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
+                    .child("currentOrder").child("items").child(item.getId()).child("count");
+            ref.setValue(--currCount);
+        } else {
+            Toast.makeText(mainActivity, "item removed", Toast.LENGTH_SHORT).show();
+            DatabaseReference ref = singleton.getDatabase().child("users").child(singleton.getUserId())
+                    .child("currentOrder").child("items").child(item.getId());
+            ref.removeValue();
+        }
+    }
+    public void fetchCheckoutData(){
         // Calculate totals
         Query totalQuery = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder").child("items");
         totalQuery.addValueEventListener(new ValueEventListener() {
@@ -159,11 +161,7 @@ public class CheckoutFragment extends Fragment {
                     subtotal += price * count;
                     totalCount += count;
                 }
-                countTv.setText(totalCount + " Items");
-                subTotalTv.setText("$ " + String.format("%.2f", subtotal));
-                discountTv.setText("$ " + String.format("%.2f", 0.0));
-                taxTv.setText("$ " + String.format("%.2f", subtotal*0.08));
-                totalTv.setText("$ " + String.format("%.2f", subtotal * 1.08));
+                setCheckoutData(totalCount, subtotal);
             }
 
             @Override
@@ -171,8 +169,15 @@ public class CheckoutFragment extends Fragment {
 
             }
         });
-
-
+    }
+    public void setCheckoutData(int totalCount, double subtotal){
+        countTv.setText(totalCount + " Items");
+        subTotalTv.setText("$ " + String.format("%.2f", subtotal));
+        discountTv.setText("$ " + String.format("%.2f", 0.0));
+        taxTv.setText("$ " + String.format("%.2f", subtotal*0.08));
+        totalTv.setText("$ " + String.format("%.2f", subtotal * 1.08));
+    }
+    public void setCheckoutOnClickListener(){
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,43 +212,9 @@ public class CheckoutFragment extends Fragment {
                             return;
                         }
 
-                        DatabaseReference userRef = singleton.getDatabase().child("users").child(singleton.getUserId());
-                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                double caffeine = dataSnapshot.getValue(User.class).getTodayCaffeine();
-                                if(caffeine > 300 && caffeine < 400){
-                                    Intent i = new Intent(mainActivity, DangerCaffeine.class);
-                                    startActivity(i);
-                                }
-                                if(caffeine > 400){
-                                    Intent i = new Intent(mainActivity, ExceedCaffeineActivity.class);
-                                    startActivity(i);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        // Delete current order
+                        checkUserCaffeine();
                         checkoutQuery.removeValue();
-
-                        // Insert order into user
-                        DatabaseReference checkoutRef = singleton.getDatabase().child("users").child(singleton.getUserId())
-                                .child("orders");
-                        String id = checkoutRef.push().getKey();
-                        order.setId(id);
-                        checkoutRef.child(id).setValue(order);
-
-                        // Insert order into cafe
-                        checkoutRef = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId())
-                                .child("orders");
-                        id = checkoutRef.push().getKey();
-                        checkoutRef.child(id).setValue(order);
-
+                        pushOrder(order);
 
                         NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
                         Navigation.findNavController(view).navigate(action);
@@ -258,8 +229,43 @@ public class CheckoutFragment extends Fragment {
                 });
             }
         });
-        adapter.startListening();
-        return v;
     }
+    public void pushOrder(Order order){
 
+        // Insert order into user
+        DatabaseReference checkoutRef = singleton.getDatabase().child("users").child(singleton.getUserId())
+                .child("orders");
+        String id = checkoutRef.push().getKey();
+        order.setId(id);
+        checkoutRef.child(id).setValue(order);
+
+        // Insert order into cafe
+        checkoutRef = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId())
+                .child("orders");
+        id = checkoutRef.push().getKey();
+        checkoutRef.child(id).setValue(order);
+
+    }
+    public void checkUserCaffeine(){
+        DatabaseReference userRef = singleton.getDatabase().child("users").child(singleton.getUserId());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                double caffeine = dataSnapshot.getValue(User.class).getTodayCaffeine();
+                if(caffeine > 300 && caffeine < 400){
+                    Intent i = new Intent(mainActivity, DangerCaffeine.class);
+                    startActivity(i);
+                }
+                if(caffeine > 400){
+                    Intent i = new Intent(mainActivity, ExceedCaffeineActivity.class);
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

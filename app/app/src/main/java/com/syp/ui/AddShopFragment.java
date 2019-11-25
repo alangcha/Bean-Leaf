@@ -2,6 +2,8 @@ package com.syp.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +34,10 @@ import com.syp.model.Cafe;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class AddShopFragment extends Fragment {
@@ -156,20 +161,20 @@ public class AddShopFragment extends Fragment {
                 newCafe.setName(shopName.getText().toString());
                 double latitude = 34.02686, longitude = -118.280857;
 
-//                try {
-//                    Log.d("Address", shopAddress.getText().toString().trim());
-//                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
-//                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
-//                    Address address = addresses.get(0);
-//                    Log.d("address", address.toString());
-//                    longitude = address.getLongitude();
-//                    latitude = address.getLatitude();
-//                } catch (IOException io){
-//                    Log.d("io", io.getMessage());
-//                    shopAddress.setHint("Invalid Address");
-//                    shopAddress.setText("");
-//                    failed = true;
-//                }
+                try {
+                    Log.d("Address", shopAddress.getText().toString().trim());
+                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
+                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
+                    Address address = addresses.get(0);
+                    Log.d("address", address.toString());
+                    longitude = address.getLongitude();
+                    latitude = address.getLatitude();
+                } catch (IOException io){
+                    Log.d("io", io.getMessage());
+                    shopAddress.setHint("Invalid Address");
+                    shopAddress.setText("");
+                    failed = true;
+                }
 
                 newCafe.setLatitude(latitude);
                 newCafe.setLongitude(longitude);
@@ -185,16 +190,20 @@ public class AddShopFragment extends Fragment {
         addCafeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_LOAD_IMAGE_SHOP);
+                openFileChooser(RESULT_LOAD_IMAGE_SHOP);
+
+//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(i, RESULT_LOAD_IMAGE_SHOP);
             }
         });
 
         addRegistrationForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_LOAD_IMAGE_REG);
+                openFileChooser(RESULT_LOAD_IMAGE_REG);
+
+//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(i, RESULT_LOAD_IMAGE_REG);
             }
         });
 
@@ -216,20 +225,22 @@ public class AddShopFragment extends Fragment {
 
                 double latitude = 34.02686, longitude = -118.280857;
 
-//                try {
-//                    Log.d("Address", shopAddress.getText().toString().trim());
-//                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
-//                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
-//                    Address address = addresses.get(0);
-//                    Log.d("address", address.toString());
-//                    longitude = address.getLongitude();
-//                    latitude = address.getLatitude();
-//                } catch (IOException io){
-//                    Log.d("io", io.getMessage());
-//                    shopAddress.setHint("Invalid Address");
-//                    shopAddress.setText("");
-//                    failed = true;
-//                }
+                try {
+                    Log.d("Address", shopAddress.getText().toString().trim());
+                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
+                    Log.d("tStringAdd", shopAddress.getText().toString());
+
+                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
+                    Address address = addresses.get(0);
+                    Log.d("address", address.toString());
+                    longitude = address.getLongitude();
+                    latitude = address.getLatitude();
+                } catch (IOException io){
+                    Log.d("ADDRESS IO", io.getMessage());
+                    shopAddress.setHint("Invalid Address");
+                    shopAddress.setText("");
+                    failed = true;
+                }
 
                 newCafe.setLatitude(latitude);
                 newCafe.setLongitude(longitude);
@@ -302,5 +313,12 @@ public class AddShopFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void openFileChooser(int requestCode) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getActivity().startActivityForResult(intent, requestCode);
     }
 }

@@ -60,17 +60,17 @@ public class StatisticsFragment extends Fragment {
     private int lightRed = Color.rgb( 255, 102, 102 );
 
     // Views & Activities
-    private MainActivity mainActivity;
-    private View v;
-    private TextView dailyTotal;
-    private TextView weeklyTotal;
-    private TextView monthlyTotal;
-    private TextView totalCaffeine;
-    private TextView totalSpendingText;
-    private PieChart caffeinePieChart;
-    private BarChart dailySpendingBarChart;
-    private BarChart weeklySpendingBarChart;
-    private BarChart monthlySpendingBarChart;
+    public MainActivity mainActivity;
+    public View v;
+    public TextView dailyTotal;
+    public TextView weeklyTotal;
+    public TextView monthlyTotal;
+    public TextView totalCaffeine;
+    public TextView totalSpendingText;
+    public PieChart caffeinePieChart;
+    public BarChart dailySpendingBarChart;
+    public BarChart weeklySpendingBarChart;
+    public BarChart monthlySpendingBarChart;
 
 
     // ---------------------------------------
@@ -103,7 +103,7 @@ public class StatisticsFragment extends Fragment {
     // ------------------------------------------------------------------------------------------
     // Add Event Listener when we retrieve / update a value for User class (Firebase Interaction)
     // -------------------------------------------------------------------------------------------
-    private void fetchUser(){
+    public void fetchUser(){
 
         // Get reference in database
         DatabaseReference userRef = Singleton.get(mainActivity).getDatabase()
@@ -132,7 +132,7 @@ public class StatisticsFragment extends Fragment {
     // ---------------------------------------------------------------------
     // Fills in graphs with data from user -- ONLY CALLED IN EVENT LISTENER
     // ---------------------------------------------------------------------
-    private void createGraphs(User user){
+    public void createGraphs(User user){
         // Get all orders
         ArrayList<Order> orders = (ArrayList<Order>)user.getOrdersAsList();
 
@@ -163,7 +163,7 @@ public class StatisticsFragment extends Fragment {
     // ---------------------------------------------------------------------
     // Creating settings for Caffeine Pie Chart
     // ---------------------------------------------------------------------
-    private void initializeCaffeinePieChart(double caffeineIntake) {
+    public void initializeCaffeinePieChart(double caffeineIntake) {
         // Populating a list of PieEntries
         List<PieEntry> pieEntries = new ArrayList<>();
 
@@ -198,7 +198,7 @@ public class StatisticsFragment extends Fragment {
     // ---------------------------------------------------------------------
     // Creating settings for Daily Spending Bar Chart
     // ---------------------------------------------------------------------
-    private void initializeDailySpendingBarChart(ArrayList<Order> userOrders) {
+    public void initializeDailySpendingBarChart(ArrayList<Order> userOrders) {
 
         // Get Item Mapping & Dec YValues in grpah
         ArrayList<BarEntry> yVals = new ArrayList<>();
@@ -250,7 +250,7 @@ public class StatisticsFragment extends Fragment {
     // ---------------------------------------------------------------------
     // Creating settings for Weekly Spending Bar Chart
     // ---------------------------------------------------------------------
-    private void initializeWeeklySpendingBarChart(ArrayList<Order> userOrders) {
+    public void initializeWeeklySpendingBarChart(ArrayList<Order> userOrders) {
 
         // Get Item Mapping & Dec YValues in grpah
         ArrayList<BarEntry> yVals = new ArrayList<>();
@@ -305,7 +305,7 @@ public class StatisticsFragment extends Fragment {
     // ---------------------------------------------------------------------
     // Creating settings for Weekly Spending Bar Chart
     // ---------------------------------------------------------------------
-    private void initializeMonthlySpendingBarChart(ArrayList<Order> userOrders) {
+    public void initializeMonthlySpendingBarChart(ArrayList<Order> userOrders) {
 
         // Get Item Mapping & Dec YValues in grpah
         ArrayList<BarEntry> yVals = new ArrayList<>();

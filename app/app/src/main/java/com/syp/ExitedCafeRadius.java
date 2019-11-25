@@ -1,6 +1,7 @@
 package com.syp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -34,14 +35,16 @@ public class ExitedCafeRadius extends Activity {
 
     private void setViewCafeMenuOnClickListener(){
         exitedCafeViewCafeMenu.setOnClickListener((View v)-> {
-            getIntent().putExtra("action", "viewCafeMenu");
+            Intent i = getIntent().putExtra("action", "viewCafeMenu");
+            setResult(RESULT_OK, i);
             finish();
         });
     }
 
     private void setDismissOnClickListener(){
         exitedCafeViewChekout.setOnClickListener((View v)-> {
-            getIntent().putExtra("action", "dismiss");
+            Intent i = getIntent().putExtra("action", "viewCheckout");
+            setResult(RESULT_OK, i);
             finish();
         });
     }

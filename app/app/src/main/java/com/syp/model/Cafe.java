@@ -81,7 +81,7 @@ public class Cafe implements Serializable {
     public void setHours(String hours) {
         this.hours = hours;
     }
-    public void setTotalSales(double longitude) { this.totalSales = totalSales; }
+    public void setTotalSales(double totalSales) { this.totalSales = totalSales; }
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
