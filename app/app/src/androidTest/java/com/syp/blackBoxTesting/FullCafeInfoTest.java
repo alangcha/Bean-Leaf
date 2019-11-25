@@ -57,7 +57,11 @@ public class FullCafeInfoTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
@@ -67,18 +71,18 @@ public class FullCafeInfoTest {
                                 0),
                         isDisplayed()));
         appCompatButton5.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
-                        childAtPosition(
-                                allOf(withId(R.id.cafe_infobox),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                2)),
-                                1),
-                        isDisplayed()));
+        }
+        ViewInteraction appCompatButton3 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
         appCompatButton3.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withId(R.id.cafe_name), withText("Pot of Chang"),
                         childAtPosition(
@@ -119,16 +123,6 @@ public class FullCafeInfoTest {
                         isDisplayed()));
         imageButton.check(matches(isDisplayed()));
 
-        ViewInteraction textView4 = onView(
-                allOf(withText("Cafe"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView4.check(matches(withText("Cafe")));
 
         ViewInteraction textView5 = onView(
                 allOf(withId(R.id.userItemRowItemName), withText("The Juice of Chang"),
@@ -171,48 +165,6 @@ public class FullCafeInfoTest {
                                 2),
                         isDisplayed()));
         imageView.check(matches(isDisplayed()));
-
-        ViewInteraction textView8 = onView(
-                allOf(withId(R.id.userItemRowItemName), withText("Chang's Signature Juice"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textView8.check(matches(withText("Chang's Signature Juice")));
-
-        ViewInteraction textView9 = onView(
-                allOf(withId(R.id.userItemRowItemPrice), withText("$20.0"),
-                        childAtPosition(
-                                allOf(withId(R.id.layout_price),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        textView9.check(matches(withText("$20.0")));
-
-        ViewInteraction textView10 = onView(
-                allOf(withId(R.id.userItemRowItemCaffeine), withText("60.0 mg of caffeine"),
-                        childAtPosition(
-                                allOf(withId(R.id.layout_price),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                1)),
-                                2),
-                        isDisplayed()));
-        textView10.check(matches(withText("60.0 mg of caffeine")));
-
-        ViewInteraction imageView2 = onView(
-                allOf(withId(R.id.userItemRowItemImage),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        0),
-                                2),
-                        isDisplayed()));
-        imageView2.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

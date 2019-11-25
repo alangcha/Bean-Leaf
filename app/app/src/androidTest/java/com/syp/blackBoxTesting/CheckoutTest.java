@@ -58,7 +58,11 @@ public class CheckoutTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton6 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
@@ -68,18 +72,18 @@ public class CheckoutTest {
                                 0),
                         isDisplayed()));
         appCompatButton6.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
-                        childAtPosition(
-                                allOf(withId(R.id.cafe_infobox),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                2)),
-                                1),
-                        isDisplayed()));
+        }
+        ViewInteraction appCompatButton2 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
         appCompatButton2.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction view = onView(
                 allOf(withId(R.id.userItemRow),
                         childAtPosition(
@@ -89,7 +93,11 @@ public class CheckoutTest {
                                 0),
                         isDisplayed()));
         view.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.add_btn), withText("+"),
                         childAtPosition(
@@ -100,7 +108,11 @@ public class CheckoutTest {
                                 2),
                         isDisplayed()));
         appCompatButton3.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(R.id.orderItemAddToCart), withText("Add to Cart"),
                         childAtPosition(
@@ -110,7 +122,11 @@ public class CheckoutTest {
                                 2),
                         isDisplayed()));
         appCompatButton4.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
@@ -121,7 +137,11 @@ public class CheckoutTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -132,7 +152,11 @@ public class CheckoutTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -142,7 +166,11 @@ public class CheckoutTest {
                         4),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.confirmBtn), withText("Complete Checkout"),
                         childAtPosition(
@@ -152,16 +180,20 @@ public class CheckoutTest {
                                 5),
                         isDisplayed()));
         appCompatButton5.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction frameLayout = onView(
-                allOf(withId(R.id.map),
+        }
+        ViewInteraction viewMap = onView(
+                allOf(withContentDescription("Google Map"),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
+                                        withId(R.id.map),
                                         0),
                                 0),
                         isDisplayed()));
-        frameLayout.check(matches(isDisplayed()));
+        viewMap.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
