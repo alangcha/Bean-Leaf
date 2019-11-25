@@ -61,7 +61,11 @@ public class AddCafeTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -72,7 +76,11 @@ public class AddCafeTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -82,7 +90,11 @@ public class AddCafeTest {
                         2),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.userProfileAddShop), withText("Add Shop"),
                         childAtPosition(
@@ -91,7 +103,11 @@ public class AddCafeTest {
                                         0),
                                 4)));
         appCompatButton3.perform(scrollTo(), click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.addshop_shop_name),
                         childAtPosition(
@@ -100,7 +116,11 @@ public class AddCafeTest {
                                         0),
                                 1)));
         appCompatEditText.perform(scrollTo(), replaceText("TestShop"), closeSoftKeyboard());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.addshop_shop_address),
                         childAtPosition(
@@ -108,8 +128,12 @@ public class AddCafeTest {
                                         withClassName(is("android.widget.LinearLayout")),
                                         1),
                                 1)));
-        appCompatEditText2.perform(scrollTo(), replaceText("TestAddress"), closeSoftKeyboard());
+        appCompatEditText2.perform(scrollTo(), replaceText("935 w 30th st, los angeles, ca 90007"), closeSoftKeyboard());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.addshop_shop_hours),
                         childAtPosition(
@@ -138,16 +162,6 @@ public class AddCafeTest {
                         isDisplayed()));
         textView.check(matches(withText("TestShop")));
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.cellShopName), withText("TestShop"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(withText("TestShop")));
-
         ViewInteraction view = onView(
                 allOf(withId(R.id.cafeRowButton),
                         childAtPosition(
@@ -159,7 +173,7 @@ public class AddCafeTest {
         view.perform(click());
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.viewMerchantCafeCafeAddress), withText("TestAddress"),
+                allOf(withId(R.id.viewMerchantCafeCafeAddress), withText("935 w 30th st, los angeles, ca 90007"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
