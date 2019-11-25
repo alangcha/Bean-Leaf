@@ -42,7 +42,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -84,31 +83,21 @@ import java.util.Random;
 // -----------------------------------------------
 // Fragment for showing map and markers for cafes
 // -----------------------------------------------
-public class MapFragment extends Fragment implements GeoQueryDataEventListener, IOnLoadLocationListener {
+public class MapFragment extends Fragment {
 
-    private static final int REQUEST_CODE = 101;
-
-    private LinearLayout infoBox;
-    private Button viewCafeButton;
-    private TextView shopName;
-    private TextView shopAddress;
-    private TextView shopHours;
-    private MainActivity mainActivity;
-    private LocationRequest locationRequest;
-    private Location lastLocation;
-    private Location currentLocation;
-    private LocationCallback locationCallback;
-    private GeoFire geoFire;
-    private Marker currentUser;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private IOnLoadLocationListener listener;
-    private List<LatLng> cafeLocations;
-    private List<Marker> markers;
-    private GeoQuery geoQuery;
-    private DatabaseReference myLocationRef;
-    private Button TESTinvisibleRedMarkerButton;
-    private View v;
+    public LinearLayout infoBox;
+    public Button viewCafeButton;
+    public TextView shopName;
+    public TextView shopAddress;
+    public TextView shopHours;
+    public MainActivity mainActivity;
+    public GoogleMap mMap;
+    public List<Marker> markers;
+    public Button TESTinvisibleRedMarkerButton_PotofChange;
+    public Button TESTinvisibleRedMarkerButton_PotofCha;
+    public Marker potOfChang;
+    public Marker potOfCha;
+    public View v;
 
     @Nullable
     @Override
@@ -126,47 +115,34 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
         shopName = v.findViewById(R.id.map_shopName);
         shopAddress = v.findViewById(R.id.map_shopAddress);
         shopHours = v.findViewById(R.id.map_shopTime);
-        TESTinvisibleRedMarkerButton = v.findViewById(R.id.TESTinvisibleRedMarker);
+        TESTinvisibleRedMarkerButton_PotofChange = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfChang);
+        TESTinvisibleRedMarkerButton_PotofCha = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfCha);
+        TESTinvisibleRedMarkerButton_PotofCha.setVisibility(View.VISIBLE);
+        TESTinvisibleRedMarkerButton_PotofChange.setVisibility(View.VISIBLE);
         addTESTInvisibleRedMarkerButtonOnClick();
 
         // View Cafe Button & On Click Listener
         viewCafeButton = v.findViewById(R.id.view_cafe_button);
         setViewCafeOnClickListener();
 
+        getMap();
+
+        return v;
+    }
+
+    public void getMap(){
         // Create Map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((GoogleMap map) -> {
 
             // Set map & settings
+            mainActivity.mapViewGoogleMap = map;
             mMap = map;
             setMapSettings();
 
             fetchCafes();
             setAllMarkerOnClickListeners();
-
-            // Get user permission
-            Dexter.withActivity(mainActivity)
-                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        buildLocationRequest();
-                        buildLocationCallback();
-                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mainActivity);
-                        fetchLastLocation();
-
-                        listener = MapFragment.this;
-                        settingGeoFire();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {}
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {}
-                }).check();
         });
-        return v;
     }
 
     private void setMapSettings(){
@@ -188,15 +164,13 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
 
         // Camera settings & start spot
         CameraPosition googlePlex = CameraPosition.builder()
-                .target(getUserLatitudeLongitude()).zoom(12)
+                .target(new LatLng(34.022404 ,-118.285109)).zoom(12)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
     }
 
-    //TODO get user location dynamically
-    private LatLng getUserLatitudeLongitude(){
-        //fetchLastLocation();
-        return new LatLng(37.400403, -122.113402);
+   public LatLng getUserLatitudeLongitude(){
+        return new LatLng(mainActivity.latitude, mainActivity.longitude);
     }
 
     private void setViewCafeOnClickListener(){
@@ -230,6 +204,11 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
                     marker.setTag(cafe.getId());
                     marker.showInfoWindow();
                     markers.add(marker);
+                    if(cafe.getName().equalsIgnoreCase("Pot of Chang"))
+                        potOfChang = marker;
+                    if(cafe.getName().equalsIgnoreCase("Pot of Cha"))
+                        potOfCha = marker;
+
                 }
                 //listener.onLoadLocationSuccess(latLngList);
             }
@@ -251,13 +230,16 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
     }
 
     private void addTESTInvisibleRedMarkerButtonOnClick(){
-        TESTinvisibleRedMarkerButton.setOnClickListener((View v)->{
-            Singleton.get(mainActivity).setCurrentCafeId((String) markers.get(0).getTag());
+        TESTinvisibleRedMarkerButton_PotofCha.setOnClickListener((View v)->{
+            Singleton.get(mainActivity).setCurrentCafeId((String) potOfCha.getTag());
+            showInfoBox();
+        });
+
+        TESTinvisibleRedMarkerButton_PotofChange.setOnClickListener((View v)->{
+            Singleton.get(mainActivity).setCurrentCafeId((String) potOfChang.getTag());
             showInfoBox();
         });
     }
-
-
 
     private void showInfoBox(){
         fetchCafeInfo();
@@ -292,186 +274,5 @@ public class MapFragment extends Fragment implements GeoQueryDataEventListener, 
         shopName.setText(cafe.getName());
         shopAddress.setText(cafe.getAddress());
         shopHours.setText(cafe.getHours());
-    }
-
-    private void buildLocationRequest() {
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(3000);
-        locationRequest.setSmallestDisplacement(10f);
-    }
-
-    private void buildLocationCallback() {
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(final LocationResult locationResult) {
-            lastLocation = locationResult.getLastLocation();
-            addUserMarker();
-            }
-        };
-    }
-
-    private void addUserMarker() {
-        if (lastLocation != null) {
-            geoFire.setLocation("You", new GeoLocation(lastLocation.getLatitude(),
-                    lastLocation.getLongitude()), new GeoFire.CompletionListener() {
-                @Override
-                public void onComplete(String key, DatabaseError error) {
-                    if (currentUser != null) currentUser.remove();
-                    currentUser = mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(lastLocation.getLatitude(),
-                                    lastLocation.getLongitude()))
-                            .title("You"));
-
-                    mMap.animateCamera(CameraUpdateFactory
-                            .newLatLngZoom(currentUser.getPosition(), 12.0f));
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onLoadLocationSuccess(HashMap<String, MyLatLng> latLngs) {
-        cafeLocations = new ArrayList<>();
-        for (Map.Entry<String, MyLatLng> myLatLng : latLngs.entrySet()) {
-            LatLng convert = new LatLng(myLatLng.getValue().getLatitude(), myLatLng.getValue().getLongitude());
-            cafeLocations.add(convert);
-        }
-        addUserMarker();
-        addCircleArea();
-    }
-
-    private void addCircleArea() {
-        if (geoQuery != null) {
-            //geoQuery.removeGeoQueryEventListener(this);
-            geoQuery.removeAllListeners();
-        }
-        for (LatLng latLng : cafeLocations) {
-            mMap.addCircle(new CircleOptions().center(latLng)
-                    .radius(10)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(0x220000FF)
-                    .strokeWidth(5.0f)
-            );
-
-            //Creates GeoQuery when user is in cafe location
-            geoQuery = geoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 0.1f);
-            geoQuery.addGeoQueryDataEventListener(mainActivity);
-        }
-    }
-
-    private void settingGeoFire() {
-        myLocationRef = FirebaseDatabase.getInstance().getReference("MyLocation");
-        geoFire = new GeoFire(myLocationRef);
-    }
-
-    @Override
-    public void onLoadLocationFailure(String message) {
-    }
-
-    @Override
-    public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
-        for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()){
-            Cafe cafe = locationSnapshot.getValue(Cafe.class);
-            Singleton.get(mainActivity).setUserId(cafe.getId());
-        }
-        NavDirections action = MapFragmentDirections.actionMapFragmentToCafeFragment();
-        Navigation.findNavController(v).navigate(action);
-    }
-
-    @Override
-    public void onDataExited(DataSnapshot dataSnapshot) {
-        sendNotification("USER", dataSnapshot.getKey() + "%s left the cafe.");
-        Intent i  = new Intent(mainActivity, FinishOrderPopUp.class);
-        startActivity(i);
-    }
-
-    @Override
-    public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
-        sendNotification("USER", dataSnapshot.getKey() + "%s moved within the cafe.");
-    }
-
-    @Override
-    public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
-        sendNotification("USER", dataSnapshot.getKey() + "%s changed the cafe.");
-    }
-
-    @Override
-    public void onGeoQueryReady() {
-
-    }
-
-    @Override
-    public void onGeoQueryError(DatabaseError error) {
-    }
-
-    public void sendNotification(String title, String content) {
-
-
-        String NOTIFICATION_CHANNEL_ID = "cafe_multiple_location";
-        NotificationManager notificationManager = (NotificationManager) mainActivity.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notification",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-
-            // Configuration
-            notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mainActivity, NOTIFICATION_CHANNEL_ID);
-        builder.setContentTitle(title)
-                .setContentText(content)
-                .setAutoCancel(false)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-
-        Notification notification = builder.build();
-        notificationManager.notify(new Random().nextInt(), notification);
-    }
-
-    private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(mainActivity, new String[]
-                        {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-                return;
-        }
-
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    currentLocation = location;
-                    LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-                    // Place user market on the map
-//                    MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-//                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-//                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
-//                    mMap.addMarker(markerOptions);
-//                    Log.d("asdf", currentLocation.getLatitude() + "" + currentLocation.getLongitude());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fetchLastLocation();
-                }
-                break;
-        }
     }
 }
