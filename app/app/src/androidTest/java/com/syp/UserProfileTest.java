@@ -54,16 +54,6 @@ public class UserProfileTest {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -106,7 +96,7 @@ public class UserProfileTest {
         imageView.check(matches(isDisplayed()));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.userProfileUserDisplayName), withText("Jackie Dong"),
+                allOf(withId(R.id.userProfileUserDisplayName),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
@@ -114,16 +104,6 @@ public class UserProfileTest {
                                 1),
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.userProfileUserDisplayName), withText("Jackie Dong"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView3.check(matches(withText("Jackie Dong")));
 
         ViewInteraction imageView2 = onView(
                 allOf(childAtPosition(
@@ -134,25 +114,15 @@ public class UserProfileTest {
                         isDisplayed()));
         imageView2.check(matches(isDisplayed()));
 
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.userProfileUserEmail), withText("sypproject2019@gmail.com"),
+        ViewInteraction textView3 = onView(
+                allOf(withId(R.id.userProfileUserEmail),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         1),
                                 1),
                         isDisplayed()));
-        textView4.check(matches(isDisplayed()));
-
-        ViewInteraction textView5 = onView(
-                allOf(withId(R.id.userProfileUserEmail), withText("sypproject2019@gmail.com"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                1),
-                        isDisplayed()));
-        textView5.check(matches(withText("sypproject2019@gmail.com")));
+        textView3.check(matches(isDisplayed()));
 
         ViewInteraction imageView3 = onView(
                 allOf(childAtPosition(
@@ -163,25 +133,15 @@ public class UserProfileTest {
                         isDisplayed()));
         imageView3.check(matches(isDisplayed()));
 
-        ViewInteraction textView6 = onView(
-                allOf(withId(R.id.userProfileUserGender), withText("male"),
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.userProfileUserGender),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         2),
                                 1),
                         isDisplayed()));
-        textView6.check(matches(isDisplayed()));
-
-        ViewInteraction textView7 = onView(
-                allOf(withId(R.id.userProfileUserGender), withText("male"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        2),
-                                1),
-                        isDisplayed()));
-        textView7.check(matches(withText("male")));
+        textView4.check(matches(isDisplayed()));
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.userProfileAddShop),
