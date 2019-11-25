@@ -53,7 +53,11 @@ public class UserProfileTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -64,7 +68,11 @@ public class UserProfileTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -74,26 +82,11 @@ public class UserProfileTest {
                         2),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction textView = onView(
-                allOf(withText("User Profile"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("User Profile")));
-
-        ViewInteraction imageView = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                0),
-                        0),
-                        isDisplayed()));
-        imageView.check(matches(isDisplayed()));
+        }
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.userProfileUserDisplayName),
@@ -105,14 +98,6 @@ public class UserProfileTest {
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
 
-        ViewInteraction imageView2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                1),
-                        0),
-                        isDisplayed()));
-        imageView2.check(matches(isDisplayed()));
 
         ViewInteraction textView3 = onView(
                 allOf(withId(R.id.userProfileUserEmail),
