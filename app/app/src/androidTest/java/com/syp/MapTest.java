@@ -96,36 +96,6 @@ public class MapTest {
                                 0),
                         isDisplayed()));
         view.check(matches(isDisplayed()));
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
-
-        }
-        ViewInteraction textView = onView(
-                allOf(withText("Syp"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
-
-        }
-        ViewInteraction textView2 = onView(
-                allOf(withText("Syp"),
-                        childAtPosition(
-                                allOf(withId(R.id.toolbar),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView2.check(matches(withText("Syp")));
     }
 
     private static Matcher<View> childAtPosition(
