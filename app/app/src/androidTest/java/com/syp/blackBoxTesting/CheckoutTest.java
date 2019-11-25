@@ -1,4 +1,4 @@
-package com.syp;
+package com.syp.blackBoxTesting;
 
 
 import android.view.View;
@@ -6,13 +6,18 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.syp.MainActivity;
+import com.syp.R;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
@@ -32,7 +37,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddToCartTest {
+public class CheckoutTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -43,9 +48,9 @@ public class AddToCartTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void addToCartTest() {
+    public void checkoutTest() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
+                Matchers.allOf(ViewMatchers.withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -53,6 +58,16 @@ public class AddToCartTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+
+        ViewInteraction appCompatButton6 = onView(
+                allOf(withId(R.id.TESTinvisibleRedMarker),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                0),
+                        isDisplayed()));
+        appCompatButton6.perform(click());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
@@ -64,16 +79,6 @@ public class AddToCartTest {
                                 1),
                         isDisplayed()));
         appCompatButton2.perform(click());
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.TESTinvisibleRedMarker),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatButton5.perform(click());
 
         ViewInteraction view = onView(
                 allOf(withId(R.id.userItemRow),
@@ -95,17 +100,6 @@ public class AddToCartTest {
                                 2),
                         isDisplayed()));
         appCompatButton3.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.number_counter), withText("1"),
-                        childAtPosition(
-                                allOf(withId(R.id.layout),
-                                        childAtPosition(
-                                                withId(R.id.orderItemCountStepper),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("1")));
 
         ViewInteraction appCompatButton4 = onView(
                 allOf(withId(R.id.orderItemAddToCart), withText("Add to Cart"),
@@ -149,45 +143,25 @@ public class AddToCartTest {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.itemTitle), withText("The Juice of Chang | x1"),
+        ViewInteraction appCompatButton5 = onView(
+                allOf(withId(R.id.confirmBtn), withText("Complete Checkout"),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
+                                        withId(R.id.nav_host_fragment),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatButton5.perform(click());
+
+        ViewInteraction frameLayout = onView(
+                allOf(withId(R.id.map),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
+                                        0),
                                 0),
                         isDisplayed()));
-        textView2.check(matches(withText("The Juice of Chang | x1")));
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.itemSubTitle), withText("10.0"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                1),
-                        isDisplayed()));
-        textView3.check(matches(withText("10.0")));
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.btnRemoveOne),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.recycler_view),
-                                        0),
-                                2),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
-
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.totalTitle), withText("$ 10.80"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        4),
-                                1),
-                        isDisplayed()));
-        textView4.check(matches(withText("$ 10.80")));
+        frameLayout.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

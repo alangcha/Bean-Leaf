@@ -1,4 +1,4 @@
-package com.syp;
+package com.syp.blackBoxTesting;
 
 
 import android.view.View;
@@ -6,13 +6,18 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.syp.MainActivity;
+import com.syp.R;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
@@ -44,7 +49,7 @@ public class FullCafeInfoTest {
     @Test
     public void fullCafeInfoTest() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
+                Matchers.allOf(ViewMatchers.withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

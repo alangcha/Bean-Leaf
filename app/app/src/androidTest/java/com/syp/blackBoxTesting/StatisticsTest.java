@@ -1,4 +1,4 @@
-package com.syp;
+package com.syp.blackBoxTesting;
 
 
 import android.view.View;
@@ -6,13 +6,18 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.syp.MainActivity;
+import com.syp.R;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
@@ -21,8 +26,6 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -35,7 +38,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddCafeTest {
+public class StatisticsTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -46,9 +49,9 @@ public class AddCafeTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void addCafeTest() {
+    public void statisticsTest() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
+                Matchers.allOf(ViewMatchers.withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -56,7 +59,11 @@ public class AddCafeTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
@@ -67,111 +74,157 @@ public class AddCafeTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        2),
+                        3),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.userProfileAddShop), withText("Add Shop"),
+        }
+        ViewInteraction viewGroup = onView(
+                allOf(withId(R.id.pieChartCaffeine),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         0),
-                                4)));
-        appCompatButton3.perform(scrollTo(), click());
+                                0),
+                        isDisplayed()));
+        viewGroup.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.addshop_shop_name),
+        ViewInteraction viewGroup2 = onView(
+                allOf(withId(R.id.barChartPriceDaily),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        0),
-                                1)));
-        appCompatEditText.perform(scrollTo(), replaceText("TestShop"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.addshop_shop_address),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         1),
-                                1)));
-        appCompatEditText2.perform(scrollTo(), replaceText("TestAddress"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.addshop_shop_hours),
+                                1),
+                        isDisplayed()));
+        viewGroup2.check(matches(isDisplayed()));
+        ViewInteraction viewGroup3 = onView(
+                allOf(withId(R.id.barChartPriceWeekly),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         2),
-                                1)));
-        appCompatEditText3.perform(scrollTo(), replaceText("TestHours"), closeSoftKeyboard());
-
-        ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.addshop_register_cafe), withText("Register Cafe"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                9)));
-        appCompatButton4.perform(scrollTo(), click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.cellShopName), withText("TestShop"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                0),
+                                1),
                         isDisplayed()));
-        textView.check(matches(withText("TestShop")));
+        viewGroup3.check(matches(isDisplayed()));
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.cellShopName), withText("TestShop"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                        1),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(withText("TestShop")));
-
-        ViewInteraction view = onView(
-                allOf(withId(R.id.cafeRowButton),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        view.perform(click());
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.viewMerchantCafeCafeAddress), withText("TestAddress"),
+        ViewInteraction textView6 = onView(
+                allOf(withText("this week"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         0),
                                 1),
                         isDisplayed()));
-        textView3.check(matches(withText("TestAddress")));
+        textView6.check(matches(isDisplayed()));
 
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.viewMerchantCafeCafeHours), withText("TestHours"),
+        ViewInteraction textView7 = onView(
+                allOf(withText("this week"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         0),
-                                2),
+                                1),
                         isDisplayed()));
-        textView4.check(matches(withText("TestHours")));
+        textView7.check(matches(withText("this week")));
+
+        ViewInteraction textView8 = onView(
+                allOf(withText("today"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView8.check(matches(isDisplayed()));
+
+        ViewInteraction textView9 = onView(
+                allOf(withText("today"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView9.check(matches(withText("today")));
+        ViewInteraction textView3 = onView(
+                allOf(withText("all time total"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                1)));
+        textView3.perform(scrollTo());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
+
+        }
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.totalSpending), withText("$0.0"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                0)));
+        textView.check(matches(isDisplayed()));
+
+        ViewInteraction viewGroup4 = onView(
+                allOf(withId(R.id.barChartPriceMonthly),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        3),
+                                1), isDisplayed()));
+        viewGroup4.check(matches(isDisplayed()));
+
+        ViewInteraction textView4 = onView(
+                allOf(withText("this month"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView4.check(matches(isDisplayed()));
+
+        ViewInteraction textView5 = onView(
+                allOf(withText("this month"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView5.check(matches(withText("this month")));
+
+
+        ViewInteraction textView2 = onView(
+                allOf(withText("all time total"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
+                                        1),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(isDisplayed()));
+
+
+        textView3.check(matches(withText("all time total")));
     }
 
     private static Matcher<View> childAtPosition(
