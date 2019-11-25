@@ -63,13 +63,6 @@ public class AddToCartTest {
         } catch (InterruptedException ie) {
 
         }
-        ViewInteraction appCompatButton2 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
-        appCompatButton2.perform(click());
-        try {
-            Thread.sleep(7500);
-        } catch (InterruptedException ie) {
-
-        }
         ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
@@ -79,6 +72,13 @@ public class AddToCartTest {
                                 0),
                         isDisplayed()));
         appCompatButton5.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
+
+        }
+        ViewInteraction appCompatButton2 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
+        appCompatButton2.perform(click());
         try {
             Thread.sleep(7500);
         } catch (InterruptedException ie) {
