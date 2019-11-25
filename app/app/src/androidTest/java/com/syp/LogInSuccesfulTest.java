@@ -50,7 +50,7 @@ public class LogInSuccesfulTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
-        
+
     }
 
     private static Matcher<View> childAtPosition(
