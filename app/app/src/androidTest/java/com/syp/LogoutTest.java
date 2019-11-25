@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class NavigationDrawerTest {
+public class LogoutTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -42,7 +42,7 @@ public class NavigationDrawerTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void navigationDrawerTest() {
+    public void logoutTest() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
@@ -74,55 +74,25 @@ public class NavigationDrawerTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
-        ViewInteraction checkedTextView = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        1),
-                                0),
+                                        withId(R.id.nav_view),
+                                        0)),
+                        5),
                         isDisplayed()));
-        checkedTextView.check(matches(isDisplayed()));
+        navigationMenuItemView.perform(click());
 
-        ViewInteraction checkedTextView2 = onView(
-                allOf(withId(R.id.design_menu_item_text),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.signInButton),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        2),
-                                0),
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
                         isDisplayed()));
-        checkedTextView2.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView3 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        3),
-                                0),
-                        isDisplayed()));
-        checkedTextView3.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView4 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        4),
-                                0),
-                        isDisplayed()));
-        checkedTextView4.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView5 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        5),
-                                0),
-                        isDisplayed()));
-        checkedTextView5.check(matches(isDisplayed()));
+        button.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

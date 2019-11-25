@@ -14,6 +14,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class NavigationDrawerTest {
+public class CheckoutElementsTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -42,7 +43,7 @@ public class NavigationDrawerTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void navigationDrawerTest() {
+    public void checkoutElementsTest() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.signInButton), withText("login with google"),
                         childAtPosition(
@@ -52,16 +53,6 @@ public class NavigationDrawerTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.signInButton), withText("login with google"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -74,55 +65,86 @@ public class NavigationDrawerTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
-        ViewInteraction checkedTextView = onView(
-                allOf(withId(R.id.design_menu_item_text),
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0)),
+                        4),
+                        isDisplayed()));
+        navigationMenuItemView.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withText("Checkout"),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        textView.check(matches(withText("Checkout")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.Title), withText("My Checkout"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
+                                        withId(R.id.nav_host_fragment),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(withText("My Checkout")));
+
+        ViewInteraction textView3 = onView(
+                allOf(withId(R.id.priceSubTitle), withText("Subtotal:"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
+                                0),
+                        isDisplayed()));
+        textView3.check(matches(withText("Subtotal:")));
+
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.discountSubTitle), withText("Discount:"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         1),
                                 0),
                         isDisplayed()));
-        checkedTextView.check(matches(isDisplayed()));
+        textView4.check(matches(withText("Discount:")));
 
-        ViewInteraction checkedTextView2 = onView(
-                allOf(withId(R.id.design_menu_item_text),
+        ViewInteraction textView5 = onView(
+                allOf(withId(R.id.taxSubTitle), withText("Tax:"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         2),
                                 0),
                         isDisplayed()));
-        checkedTextView2.check(matches(isDisplayed()));
+        textView5.check(matches(withText("Tax:")));
 
-        ViewInteraction checkedTextView3 = onView(
-                allOf(withId(R.id.design_menu_item_text),
+        ViewInteraction textView6 = onView(
+                allOf(withId(R.id.totalSubTitle), withText("Total:"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        3),
-                                0),
-                        isDisplayed()));
-        checkedTextView3.check(matches(isDisplayed()));
-
-        ViewInteraction checkedTextView4 = onView(
-                allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.design_navigation_view),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         4),
                                 0),
                         isDisplayed()));
-        checkedTextView4.check(matches(isDisplayed()));
+        textView6.check(matches(withText("Total:")));
 
-        ViewInteraction checkedTextView5 = onView(
-                allOf(withId(R.id.design_menu_item_text),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.confirmBtn),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.design_navigation_view),
-                                        5),
-                                0),
+                                        withId(R.id.nav_host_fragment),
+                                        0),
+                                5),
                         isDisplayed()));
-        checkedTextView5.check(matches(isDisplayed()));
+        button.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
