@@ -50,16 +50,7 @@ public class LogInSuccesfulTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
-
-        ViewInteraction frameLayout = onView(
-                allOf(withId(R.id.map),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
-                                        0),
-                                0),
-                        isDisplayed()));
-        frameLayout.check(matches(isDisplayed()));
+        
     }
 
     private static Matcher<View> childAtPosition(
