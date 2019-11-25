@@ -58,18 +58,18 @@ public class AddToCartTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.view_cafe_button), withText("View Cafe"),
-                        childAtPosition(
-                                allOf(withId(R.id.cafe_infobox),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                2)),
-                                1),
-                        isDisplayed()));
+        }
+        ViewInteraction appCompatButton2 = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
         appCompatButton2.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton5 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(

@@ -57,7 +57,11 @@ public class CafePopupElementsTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.TESTinvisibleRedMarker_PotOfChang),
                         childAtPosition(
@@ -67,7 +71,11 @@ public class CafePopupElementsTest {
                                 0),
                         isDisplayed()));
         appCompatButton3.perform(click());
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView = onView(
                 allOf(withId(R.id.map_shopName), withText("Pot of Chang"),
                         childAtPosition(
@@ -77,7 +85,11 @@ public class CafePopupElementsTest {
                                 0),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
+        try {
+            Thread.sleep(7500);
+        } catch (InterruptedException ie) {
 
+        }
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.map_shopAddress), withText("935 W 30th St"),
                         childAtPosition(
@@ -108,16 +120,7 @@ public class CafePopupElementsTest {
                         isDisplayed()));
         imageView.check(matches(isDisplayed()));
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.view_cafe_button),
-                        childAtPosition(
-                                allOf(withId(R.id.cafe_infobox),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                                1)),
-                                1),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
+        ViewInteraction button = onView(allOf(withId(R.id.view_cafe_button), isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
