@@ -157,7 +157,7 @@ public class StatisticsFragment extends Fragment {
         dailyTotal.setText(String.format(Locale.ENGLISH, "$%.2f", FilterOrders.getOrdersTotal(dailyOrders)));
         weeklyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(weeklyOrders)));
         monthlyTotal.setText(String.format(Locale.ENGLISH, "$%.2f",  FilterOrders.getOrdersTotal(monthlyOrders)));
-        totalSpendingText.setText("$" + Double.toString(totalSum));
+        totalSpendingText.setText("$" + String.format("%.2f", totalSum));
     }
 
     // ---------------------------------------------------------------------

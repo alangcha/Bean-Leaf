@@ -26,6 +26,12 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
+        <receiver android:name=".GeofenceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.example.geofence.ACTION_RECEIVE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_maps"
@@ -38,6 +44,16 @@
 
         <activity
             android:name=".ui.FinishOrderPopUp"
+            android:theme="@style/AppTheme.PopUpTranslucent">
+        </activity>
+
+        <activity
+            android:name=".EnteredCafeRadius"
+            android:theme="@style/AppTheme.PopUpTranslucent">
+        </activity>
+
+        <activity
+            android:name=".ExitedCafeRadius"
             android:theme="@style/AppTheme.PopUpTranslucent">
         </activity>
 
@@ -63,6 +79,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
 
 
 </manifest>

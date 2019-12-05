@@ -169,9 +169,9 @@ public class MapFragment extends Fragment {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
     }
 
-//   public LatLng getUserLatitudeLongitude(){
-//        return new LatLng(mainActivity.latitude, mainActivity.longitude);
-//    }
+   public LatLng getUserLatitudeLongitude(){
+        return new LatLng(mainActivity.latitude, mainActivity.longitude);
+    }
 
     private void setViewCafeOnClickListener(){
         viewCafeButton.setOnClickListener((View v) ->
