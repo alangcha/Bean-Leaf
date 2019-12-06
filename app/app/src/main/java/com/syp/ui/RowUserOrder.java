@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 
 // Data Structure Imports
 import java.util.Locale;
+import android.util.Log;
 
 // -----------------------------------------------------------
 // Row representing a User Order ( connected to Recycle View)
@@ -35,7 +36,7 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
 
     // --------------------------
     // Constructor of User Order
-    // --------------------------
+    // --------------------------userOrderRowCafeName
     public RowUserOrder(View itemView) {
         super(itemView);
         userOrderRowCafeName = itemView.findViewById(R.id.userOrderRowCafeName);
@@ -65,6 +66,7 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // Setters for order informations on UI Views
     // -------------------------------------------
     private void setOrderCafeName() {
+        //Log.d("order.getCafe(): ", order.getCafe());
         userOrderRowCafeName.setText(order.getCafe());
     }
     private void setOrderCafeDate() {

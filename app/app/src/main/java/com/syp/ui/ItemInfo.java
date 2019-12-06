@@ -51,7 +51,7 @@ public class ItemInfo extends RecyclerView.ViewHolder {
     // ------------------------------------------------------
         public void setItemInfo(Item item, MainActivity mainActivity, NavDirections action){
         // Set appropriate views
-        itemName.setText(item.getName());
+        setOrderName(item);
         itemCaffeine.setText(Double.toString(item.getCaffeine()));
         itemCount.setText(Integer.toString(item.getCount()));
         itemPrice.setText(Double.toString(item.getPrice()));
@@ -64,17 +64,17 @@ public class ItemInfo extends RecyclerView.ViewHolder {
     // -------------------------------------------
     // Setters for order informations on UI Views
     // -------------------------------------------
-    private void setOrderName() {
+    private void setOrderName(Item item) {
         itemName.setText(item.getName());
     }
     private void setOrderCaffeine() {
-        itemCaffeine.setText(Double.toString(item.getCaffeine()));
+        itemCaffeine.setText(String.format(Locale.ENGLISH, "%.2f mg per item", item.getCaffeine()));
     }
     private void setOrderCount() {
-        itemCount.setText(Integer.toString(item.getCount()));
+        itemCount.setText("Count: " + Integer.toString(item.getCount()));
     }
     private void setOrderPrice() {
-        itemPrice.setText(Double.toString(item.getPrice()));
+        itemPrice.setText("$" + Double.toString(item.getPrice())+ " per item");
     }
 
 }
