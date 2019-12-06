@@ -1,19 +1,29 @@
 package com.syp;
 
 import com.syp.model.Cafe;
+import com.syp.model.Singleton;
+import com.syp.ui.CheckoutFragmentDirections;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 
 public class CafeAdapter extends ArrayAdapter<Cafe> {
+    private MainActivity mainActivity;
     public CafeAdapter(Context context, ArrayList<Cafe> cafes) {
         super(context, 0, cafes);
+        this.mainActivity = (MainActivity) context;
     }
 
     @Override

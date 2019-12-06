@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -131,6 +132,7 @@ public class MapFragment extends Fragment {
         searchResults = new ArrayList<>();
         adapter = new CafeAdapter(mainActivity, searchResults);
         searchResultView.setAdapter(adapter);
+        setListItemListener(searchResultView);
         TESTinvisibleRedMarkerButton_PotofChange = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfChang);
         TESTinvisibleRedMarkerButton_PotofCha = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfCha);
         TESTinvisibleRedMarkerButton_PotofCha.setVisibility(View.VISIBLE);
@@ -271,6 +273,7 @@ public class MapFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("Gautam", "hello");
                 searchResults = filterCafes(cafes, s);
                 adapter.clear();
                 if (s.length() != 0) {
@@ -278,6 +281,19 @@ public class MapFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void setListItemListener(ListView lv) {
+        lv.setOnItemClickListener((AdapterView<?> adapter, View v, int position,
+                                    long arg3) ->
+            {
+
+                Cafe cafe = (Cafe) adapter.getItemAtPosition(position);
+                Singleton.get(mainActivity).setCurrentCafeId(cafe.getId());
+                NavDirections action = MapFragmentDirections.actionMapFragmentToCafeFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        );
     }
 
     private void addTESTInvisibleRedMarkerButtonOnClick(){
