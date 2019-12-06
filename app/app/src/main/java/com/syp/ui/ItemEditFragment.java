@@ -31,7 +31,7 @@ import com.syp.model.Singleton;
 
 public class ItemEditFragment extends Fragment {
 
-    private static int RESULT_LOAD_IMAGE = 1;
+    public static int RESULT_LOAD_IMAGE = 7;
     public TextView itemName;
     public TextView itemPrice;
     public TextView itemCaffeine;
@@ -101,9 +101,9 @@ public class ItemEditFragment extends Fragment {
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
+            public void onClick(View v) {openFileChooser();
+//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
 
@@ -187,5 +187,12 @@ public class ItemEditFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getActivity().startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 }

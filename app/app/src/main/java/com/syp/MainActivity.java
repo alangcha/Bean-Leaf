@@ -92,6 +92,7 @@ import com.syp.ui.AddShopFragment;
 import com.syp.ui.CafeFragment;
 import com.syp.ui.CheckoutFragment;
 import com.syp.ui.EditMerchantCafeFragment;
+import com.syp.ui.ItemEditFragment;
 import com.syp.ui.OrderItemFragment;
 
 import java.util.ArrayList;
@@ -364,6 +365,13 @@ public class MainActivity extends AppCompatActivity
                 selectedImage = data.getData();
                 Picasso.get().load(selectedImage).into(imageView);
                 uploadFile(requestCode);
+            }
+            else if (requestCode == ItemEditFragment.RESULT_LOAD_IMAGE) {
+                Log.d("test", "777777777777777777");
+                imageView = (ImageView) findViewById(R.id.orderItemItemImage);
+                selectedImage = data.getData();
+                Picasso.get().load(selectedImage).into(imageView);
+                uploadFile(requestCode);
             } else {
                 Log.d("test", "ELSEEEEEEE");
                 imageView = (ImageView) findViewById(R.id.addshop_cafe_image);
@@ -498,6 +506,9 @@ public class MainActivity extends AppCompatActivity
                                 dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("CafeImage");
                                 dbRef.setValue(upload);
                                 return;
+                            }
+                            else if (requestCode == ItemEditFragment.RESULT_LOAD_IMAGE) {
+                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId()).child("ItemImage");
                             }
                             else {
                                 //TEMP
