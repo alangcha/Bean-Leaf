@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/replacementFragmentId">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    <EditText
+        android:id="@+id/searchCafeInput"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"></EditText>
+    <ListView
+        android:id="@+id/searchResults"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        ></ListView>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,6 +36,7 @@
             android:visibility="invisible">
         </Button>
 
+
         <Button
             android:id="@+id/TESTinvisibleRedMarker_PotOfCha"
             android:layout_width="5dp"
@@ -31,15 +45,12 @@
             android:layout_alignParentBottom="true">
         </Button>
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+
+        <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-
-
 
         <LinearLayout
             android:id="@+id/cafe_infobox"
