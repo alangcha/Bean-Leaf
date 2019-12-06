@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -198,25 +199,28 @@ public class CheckoutFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Cafe cafe = dataSnapshot.getValue(Cafe.class);
                                 order.setUser(cafe.getName());
+                                Log.d("cafe name:" , cafe.getName());
                                 order.setCafeName(cafe.getName());
+                                order.setTimestamp(System.currentTimeMillis());
+                                order.setItems(items);
+                                if(items.size() == 0) {
+                                    Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                checkUserCaffeine();
+                                checkoutQuery.removeValue();
+                                pushOrder(order);
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                             }
                         });
-                        order.setTimestamp(System.currentTimeMillis());
-                        order.setItems(items);
+
+//                        order.setCafeName(singleton.getCurrentCafeId().get);
 
 
-                        if(items.size() == 0) {
-                            Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        checkUserCaffeine();
-                        checkoutQuery.removeValue();
-                        pushOrder(order);
 
                         NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
                         Navigation.findNavController(view).navigate(action);
@@ -233,7 +237,7 @@ public class CheckoutFragment extends Fragment {
         });
     }
     public void pushOrder(Order order){
-
+        if (order.getCafeName() == null) Log.d("order get cafe name", "order null");
         // Insert order into user
         DatabaseReference checkoutRef = singleton.getDatabase().child("users").child(singleton.getUserId())
                 .child("orders");
