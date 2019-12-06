@@ -37,6 +37,10 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
         userOrderRowOrderDate = itemView.findViewById(R.id.userOrderRowOrderDate);
         userOrderRowOrderTotal = itemView.findViewById(R.id.userOrderRowOrderTotal);
         userOrderRowOrderCaffeineTotal = itemView.findViewById(R.id.userOrderRowOrderCaffeineTotal);
+        itemView.setOnClickListener((View v) -> {
+            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
+            Navigation.findNavController(v).navigate(action);
+        });
     }
 
     // ------------------------------------------------------
