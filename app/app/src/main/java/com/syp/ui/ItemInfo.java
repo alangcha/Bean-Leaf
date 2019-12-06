@@ -52,9 +52,9 @@ public class ItemInfo extends RecyclerView.ViewHolder {
         public void setItemInfo(Item item, MainActivity mainActivity, NavDirections action){
         // Set appropriate views
         setOrderName(item);
-        itemCaffeine.setText(Double.toString(item.getCaffeine()));
-        itemCount.setText(Integer.toString(item.getCount()));
-        itemPrice.setText(Double.toString(item.getPrice()));
+        setOrderCaffeine(item);
+        setOrderCount(item);
+        setOrderPrice(item);
         if(action == null)
             return;
 
@@ -67,14 +67,14 @@ public class ItemInfo extends RecyclerView.ViewHolder {
     private void setOrderName(Item item) {
         itemName.setText(item.getName());
     }
-    private void setOrderCaffeine() {
+    private void setOrderCaffeine(Item item) {
         itemCaffeine.setText(String.format(Locale.ENGLISH, "%.2f mg per item", item.getCaffeine()));
     }
-    private void setOrderCount() {
+    private void setOrderCount(Item item) {
         itemCount.setText("Count: " + Integer.toString(item.getCount()));
     }
-    private void setOrderPrice() {
-        itemPrice.setText("$" + Double.toString(item.getPrice())+ " per item");
+    private void setOrderPrice(Item item) {
+        itemPrice.setText(String.format(Locale.ENGLISH, "$%.2f per item", item.getPrice()));
     }
 
 }

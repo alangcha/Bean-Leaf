@@ -23,6 +23,7 @@ public class Order implements Serializable {
     private long timestamp; // Millisecond timestamp
     private String user;
     private String cafe;
+    private String cafeName;
     private Map<String, Item> items;
     private long travelTime;
     private long distance;
@@ -46,6 +47,7 @@ public class Order implements Serializable {
     public String getCafe() {
         return cafe;
     }
+    public String getCafeName() { return cafeName; };
     public Map<String, Item> getItems() {
         return items;
     }
@@ -70,6 +72,9 @@ public class Order implements Serializable {
     }
     public void setCafe(String owner) {
         this.cafe = owner;
+    }
+    public void setCafeName(String cafeName) {
+        this.cafeName = cafeName;
     }
     public void setItems(Map<String, Item> items) { this.items = items; }
     public void setTimestamp(long timestamp) {

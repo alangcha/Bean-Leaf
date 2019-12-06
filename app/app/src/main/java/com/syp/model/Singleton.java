@@ -218,7 +218,7 @@ public class Singleton {
     }
 
     // --------------------
-    // Set if user logged in
+    // Set if user logged info
     // --------------------
     public void setLoggedIn() {
         isLoggedIn = true;

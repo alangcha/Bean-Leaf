@@ -198,6 +198,7 @@ public class CheckoutFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Cafe cafe = dataSnapshot.getValue(Cafe.class);
                                 order.setUser(cafe.getName());
+                                order.setCafeName(cafe.getName());
                             }
 
                             @Override
@@ -206,6 +207,7 @@ public class CheckoutFragment extends Fragment {
                         });
                         order.setTimestamp(System.currentTimeMillis());
                         order.setItems(items);
+
 
                         if(items.size() == 0) {
                             Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
@@ -237,6 +239,8 @@ public class CheckoutFragment extends Fragment {
                 .child("orders");
         String id = checkoutRef.push().getKey();
         order.setId(id);
+
+
         checkoutRef.child(id).setValue(order);
 
         // Insert order into cafe

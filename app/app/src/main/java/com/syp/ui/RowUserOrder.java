@@ -66,8 +66,8 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // Setters for order informations on UI Views
     // -------------------------------------------
     private void setOrderCafeName() {
-        //Log.d("order.getCafe(): ", order.getCafe());
-        userOrderRowCafeName.setText(order.getCafe());
+        if (order.getCafeName() == null) Log.d("order", "order.getCafeName() is null");
+        userOrderRowCafeName.setText(order.getCafeName());
     }
     private void setOrderCafeDate() {
         userOrderRowOrderDate.setText(DateFormats.getDateString(order.getTimestampAsDate()));
