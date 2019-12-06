@@ -42,6 +42,7 @@ public class Singleton {
     private String currentUserId;
     private String currentCafeId;
     private String currentItemId;
+    private String currentOrderId;
     private long startTime;
     private long endTime;
 
@@ -168,6 +169,13 @@ public class Singleton {
     }
 
     public String getCurrentItemId() { return currentItemId; }
+
+    public void setCurrentOrderId(String id) {
+        this.currentOrderId = id;
+    }
+    public String getCurrentOrderId() {
+        return this.currentOrderId;
+    }
 
     public long getStartTime() {
         return startTime;
