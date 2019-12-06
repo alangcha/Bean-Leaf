@@ -27,6 +27,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.EditText;
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.util.Log;
 
 // Firebase GeoLocation Imports
 import com.firebase.geofire.GeoFire;
@@ -66,6 +72,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 // Internal Class Imports
+import com.syp.CafeAdapter;
 import com.syp.IOnLoadLocationListener;
 import com.syp.MyLatLng;
 import com.syp.model.Cafe;
@@ -90,6 +97,10 @@ public class MapFragment extends Fragment {
     public TextView shopName;
     public TextView shopAddress;
     public TextView shopHours;
+    public EditText searchInput;
+    public ArrayList<Cafe> searchResults;
+    public ListView searchResultView;
+    public CafeAdapter adapter;
     public MainActivity mainActivity;
     public GoogleMap mMap;
     public List<Marker> markers;
@@ -115,6 +126,11 @@ public class MapFragment extends Fragment {
         shopName = v.findViewById(R.id.map_shopName);
         shopAddress = v.findViewById(R.id.map_shopAddress);
         shopHours = v.findViewById(R.id.map_shopTime);
+        searchInput = v.findViewById(R.id.searchCafeInput);
+        searchResultView = v.findViewById(R.id.searchResults);
+        searchResults = new ArrayList<>();
+        adapter = new CafeAdapter(mainActivity, searchResults);
+        searchResultView.setAdapter(adapter);
         TESTinvisibleRedMarkerButton_PotofChange = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfChang);
         TESTinvisibleRedMarkerButton_PotofCha = v.findViewById(R.id.TESTinvisibleRedMarker_PotOfCha);
         TESTinvisibleRedMarkerButton_PotofCha.setVisibility(View.VISIBLE);
@@ -142,6 +158,7 @@ public class MapFragment extends Fragment {
 
             fetchCafes();
             setAllMarkerOnClickListeners();
+//            setOnSearchInputChanged();
         });
     }
 
@@ -191,12 +208,13 @@ public class MapFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap<String, MyLatLng> latLngList = new HashMap<>();
-
+                ArrayList<Cafe> cafes = new ArrayList<>();
                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
 
 
                     MyLatLng latLng = locationSnapshot.getValue(MyLatLng.class);
                     Cafe cafe = locationSnapshot.getValue(Cafe.class);
+                    cafes.add(cafe);
 
                     latLngList.put(locationSnapshot.getKey(), latLng);
 
@@ -210,6 +228,7 @@ public class MapFragment extends Fragment {
                         potOfCha = marker;
 
                 }
+                setOnSearchInputChanged(cafes);
                 //listener.onLoadLocationSuccess(latLngList);
             }
 
@@ -226,6 +245,38 @@ public class MapFragment extends Fragment {
             Singleton.get(mainActivity).setCurrentCafeId((String) marker.getTag());
             showInfoBox();
             return false;
+        });
+    }
+
+    private ArrayList<Cafe> filterCafes(ArrayList<Cafe> allCafes, CharSequence query) {
+        ArrayList<Cafe> cafes = new ArrayList<>();
+        for (int i = 0; i < allCafes.size(); i++) {
+            if (allCafes.get(i).getName().toLowerCase().contains(query.toString().toLowerCase())) {
+                cafes.add(allCafes.get(i));
+            }
+        }
+        return cafes;
+    }
+
+    private void setOnSearchInputChanged(ArrayList<Cafe> cafes) {
+        searchInput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchResults = filterCafes(cafes, s);
+                adapter.clear();
+                if (s.length() != 0) {
+                    adapter.addAll(searchResults);
+                }
+            }
         });
     }
 
