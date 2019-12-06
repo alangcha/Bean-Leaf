@@ -7,8 +7,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Package class imports
+import com.syp.MainActivity;
 import com.syp.R;
-import com.syp.model.DateFormats;
+import com.syp.model.Item;
 import com.syp.model.Order;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -19,26 +20,26 @@ import java.util.Locale;
 // -----------------------------------------------------------
 // Row representing a User Order ( connected to Recycle View)
 // -----------------------------------------------------------
-public class UserOrderRow extends RecyclerView.ViewHolder {
+public class ItemInfo extends RecyclerView.ViewHolder {
 
     // Views
-    private TextView orderName;
-    private TextView orderCaffeine;
-    private TextView orderCount;
-    private TextView orderPrice;
+    private TextView itemName;
+    private TextView itemCaffeine;
+    private TextView itemCount;
+    private TextView itemPrice;
 
     // Order associated with row
-    private Order order;
+    private Item item;
 
     // --------------------------
     // Constructor of User Order
     // --------------------------
-    public UserOrderRow(View itemView) {
+    public ItemInfo(View itemView) {
         super(itemView);
-        userOrderRowCafeName = itemView.findViewById(R.id.userOrderRowCafeName);
-        userOrderRowOrderDate = itemView.findViewById(R.id.userOrderRowOrderDate);
-        userOrderRowOrderTotal = itemView.findViewById(R.id.userOrderRowOrderTotal);
-        userOrderRowOrderCaffeineTotal = itemView.findViewById(R.id.userOrderRowOrderCaffeineTotal);
+        itemName = itemView.findViewById(R.id.userOrderRowItemName);
+        itemCaffeine = itemView.findViewById(R.id.userOrderRowOrderCaffeinePerItem);
+        itemCount = itemView.findViewById(R.id.userOrderRowOrderCount);
+        itemPrice = itemView.findViewById(R.id.userOrderRowOrderPricePerItem);
         itemView.setOnClickListener((View v) -> {
             NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
             Navigation.findNavController(v).navigate(action);
@@ -48,28 +49,32 @@ public class UserOrderRow extends RecyclerView.ViewHolder {
     // ------------------------------------------------------
     // Configures cell with information from order passed in
     // ------------------------------------------------------
-        public void setOrderInfo(Order order){
+        public void setItemInfo(Item item, MainActivity mainActivity, NavDirections action){
         // Set appropriate views
-        orderName.setText(order.getItemsAsList().get(0).getName());
-        orderCaffeine.setText(Double.toString(order.getItemsAsList().get(0).getCaffeine()));
-        orderCount.setText(Integer.toString(order.getItemsAsList().get(0).getCount()));
-        orderPrice.setText(Double.toString(order.getItemsAsList().get(0).getPrice()));
+        itemName.setText(item.getName());
+        itemCaffeine.setText(Double.toString(item.getCaffeine()));
+        itemCount.setText(Integer.toString(item.getCount()));
+        itemPrice.setText(Double.toString(item.getPrice()));
+        if(action == null)
+            return;
+
+        //setViewCafeOnClickListener(mainActivity, action);
     }
 
     // -------------------------------------------
     // Setters for order informations on UI Views
     // -------------------------------------------
     private void setOrderName() {
-        orderName.setText(order.getItemsAsList().get(0).getName());
+        itemName.setText(item.getName());
     }
     private void setOrderCaffeine() {
-        orderCaffeine.setText(Double.toString(order.getItemsAsList().get(0).getCaffeine()));
+        itemCaffeine.setText(Double.toString(item.getCaffeine()));
     }
     private void setOrderCount() {
-        orderCount.setText(Integer.toString(order.getItemsAsList().get(0).getCount()));
+        itemCount.setText(Integer.toString(item.getCount()));
     }
     private void setOrderPrice() {
-        orderPrice.setText(Double.toString(order.getItemsAsList().get(0).getPrice()));
+        itemPrice.setText(Double.toString(item.getPrice()));
     }
 
 }

@@ -199,7 +199,7 @@ public class UserProfileFragment extends Fragment {
             }
             @Override
             protected void onBindViewHolder(RowUserOrder holder, final int position, @NonNull Order order) {
-                holder.setOrder(order);
+                holder.setOrder(order, mainActivity);
             }
         };
 

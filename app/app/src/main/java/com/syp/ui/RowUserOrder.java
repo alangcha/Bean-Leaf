@@ -7,9 +7,14 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Package class imports
+import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.DateFormats;
 import com.syp.model.Order;
+import com.syp.model.Singleton;
+
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 // Data Structure Imports
 import java.util.Locale;
@@ -37,21 +42,23 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
         userOrderRowOrderDate = itemView.findViewById(R.id.userOrderRowOrderDate);
         userOrderRowOrderTotal = itemView.findViewById(R.id.userOrderRowOrderTotal);
         userOrderRowOrderCaffeineTotal = itemView.findViewById(R.id.userOrderRowOrderCaffeineTotal);
-        itemView.setOnClickListener((View v) -> {
-            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
-            Navigation.findNavController(v).navigate(action);
-        });
+
     }
 
     // ------------------------------------------------------
     // Configures cell with information from order passed in
     // ------------------------------------------------------
-    public void setOrder(Order order){
+    public void setOrder(Order order, MainActivity mainActivity){
         this.order = order;
         this.setOrderCafeName();
         this.setOrderCafeDate();
         this.setOrderPrice();
         this.setOrderCaffeine();
+        itemView.setOnClickListener((View v) -> {
+            Singleton.get(mainActivity).setCurrentOrderId(order.getId());
+            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
+            Navigation.findNavController(v).navigate(action);
+        });
     }
 
     // -------------------------------------------
