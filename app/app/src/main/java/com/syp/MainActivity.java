@@ -43,6 +43,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
 
         // Creating top level destinations in nav graph hierarchy
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.mapFragment, R.id.userFragment,
@@ -408,6 +410,44 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(MainActivity.this, "Sign in successful", Toast.LENGTH_LONG).show();
                             Singleton.get(MainActivity.this).setUserId(id);
                             Singleton.get(MainActivity.this).setLoggedIn();
+                            TextView profileName = findViewById(R.id.navigationProfileName);
+                            TextView merchant = findViewById(R.id.textViewMerchant);
+                            DatabaseReference p = Singleton.get(mainActivity).getDatabase()
+                                    .child(Singleton.firebaseUserTag)
+                                    .child(Singleton.get(mainActivity).getUserId())
+                                    .child("displayName");
+                            p.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String pname = dataSnapshot.getValue(String.class);
+                                    profileName.setText(pname);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            DatabaseReference m = Singleton.get(mainActivity).getDatabase()
+                                    .child(Singleton.firebaseUserTag)
+                                    .child(Singleton.get(mainActivity).getUserId())
+                                    .child("merchant");
+                            m.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Boolean merchantBoolean = dataSnapshot.getValue(Boolean.class);
+                                    if (merchantBoolean) {
+                                        merchant.setText("Merchant");
+                                    } else {
+                                        merchant.setText("User");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                         }
                     } else {
@@ -419,6 +459,8 @@ public class MainActivity extends AppCompatActivity
                         user.setEmail(email);
                         user.setDisplayName(displayName != null ? displayName : "");
                         user.setGender("Male");
+                        TextView merchant = findViewById(R.id.textViewMerchant);
+                        merchant.setText("Merchant");
                         user.setMerchant(false);
                         userRef.child(id).setValue(user);
                         Singleton.get(MainActivity.this).setUserId(id);
