@@ -299,10 +299,13 @@ public class MapFragment extends Fragment {
                 searchResults = filterCafes(cafes, newText);
                 adapter.clear();
                 int bgColour = 0x00000000;
+                int visible = View.GONE;
                 if (newText.length() != 0) {
                     adapter.addAll(searchResults);
                     bgColour = Color.WHITE;
+                    visible = View.VISIBLE;
                 }
+                searchResultView.setVisibility(visible);
                 searchResultView.setBackgroundColor(bgColour);
                 return false;
             }

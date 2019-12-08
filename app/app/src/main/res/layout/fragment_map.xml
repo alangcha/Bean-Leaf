@@ -132,7 +132,8 @@
             android:layout_width="437dp"
             android:layout_height="550dp"
             android:layout_above="@+id/map"
-            android:layout_marginBottom="-600dp"></ListView>
+            android:layout_marginBottom="-600dp"
+            android:visibility="gone"></ListView>
 
 
     </RelativeLayout>
