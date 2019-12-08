@@ -118,10 +118,13 @@ public class UserProfileFragment extends Fragment {
     private void setEditOnClickListener(){
         edit.setOnClickListener((View view) ->{
             userProfileUserDisplayName.setVisibility(View.GONE);
+            editUserProfileUserDisplayName.setText(userProfileUserDisplayName.getText());
             editUserProfileUserDisplayName.setVisibility(View.VISIBLE);
             userProfileUserEmail.setVisibility(View.GONE);
+            editUserProfileUserEmail.setText(userProfileUserEmail.getText());
             editUserProfileUserEmail.setVisibility(View.VISIBLE);
             userProfileUserGender.setVisibility(View.GONE);
+            editUserProfileUserGender.setText(userProfileUserGender.getText());
             editUserProfileUserGender.setVisibility(View.VISIBLE);
             edit.hide();
             done.show();
@@ -135,13 +138,17 @@ public class UserProfileFragment extends Fragment {
         done.setOnClickListener((View view)->{
 
             // Set shop hours and edit visibility
+
             userProfileUserDisplayName.setVisibility(View.VISIBLE);
             editUserProfileUserDisplayName.setVisibility(View.GONE);
             userProfileUserDisplayName.setText(editUserProfileUserDisplayName.getText());
 
+
+
             userProfileUserEmail.setVisibility(View.VISIBLE);
             editUserProfileUserEmail.setVisibility(View.GONE);
             userProfileUserEmail.setText(editUserProfileUserEmail.getText());
+
 
             userProfileUserGender.setVisibility(View.VISIBLE);
             editUserProfileUserGender.setVisibility(View.GONE);
