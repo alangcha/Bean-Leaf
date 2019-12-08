@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,11 +23,14 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.text.TextWatcher;
@@ -98,7 +102,7 @@ public class MapFragment extends Fragment {
     public TextView shopName;
     public TextView shopAddress;
     public TextView shopHours;
-    public EditText searchInput;
+    public SearchView searchInput;
     public ArrayList<Cafe> searchResults;
     public ListView searchResultView;
     public CafeAdapter adapter;
@@ -128,6 +132,7 @@ public class MapFragment extends Fragment {
         shopAddress = v.findViewById(R.id.map_shopAddress);
         shopHours = v.findViewById(R.id.map_shopTime);
         searchInput = v.findViewById(R.id.searchCafeInput);
+        setOnSearchClicked();
         searchResultView = v.findViewById(R.id.searchResults);
         searchResults = new ArrayList<>();
         adapter = new CafeAdapter(mainActivity, searchResults);
@@ -260,25 +265,46 @@ public class MapFragment extends Fragment {
         return cafes;
     }
 
+    private void setOnSearchClicked() {
+        searchInput.setOnSearchClickListener((View v) -> {
+            searchInput.setBackgroundColor(Color.WHITE);
+        });
+        searchInput.setOnCloseListener(() -> {
+            searchInput.setBackgroundColor(0x00000000);
+            hideKeyboard(mainActivity);
+            return false;
+        });
+    }
+
+    private void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void setOnSearchInputChanged(ArrayList<Cafe> cafes) {
-        searchInput.addTextChangedListener(new TextWatcher() {
-
+        searchInput.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("Gautam", "hello");
-                searchResults = filterCafes(cafes, s);
+            public boolean onQueryTextChange(String newText) {
+                searchResults = filterCafes(cafes, newText);
                 adapter.clear();
-                if (s.length() != 0) {
+                int bgColour = 0x00000000;
+                if (newText.length() != 0) {
                     adapter.addAll(searchResults);
+                    bgColour = Color.WHITE;
                 }
+                searchResultView.setBackgroundColor(bgColour);
+                return false;
             }
         });
     }
@@ -287,7 +313,7 @@ public class MapFragment extends Fragment {
         lv.setOnItemClickListener((AdapterView<?> adapter, View v, int position,
                                     long arg3) ->
             {
-
+                hideKeyboard(mainActivity);
                 Cafe cafe = (Cafe) adapter.getItemAtPosition(position);
                 Singleton.get(mainActivity).setCurrentCafeId(cafe.getId());
                 NavDirections action = MapFragmentDirections.actionMapFragmentToCafeFragment();
