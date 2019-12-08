@@ -101,7 +101,8 @@ public class ItemEditFragment extends Fragment {
 
         changeImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {openFileChooser();
+            public void onClick(View v) {
+                openFileChooser();
 //                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //                startActivityForResult(i, RESULT_LOAD_IMAGE);
             }

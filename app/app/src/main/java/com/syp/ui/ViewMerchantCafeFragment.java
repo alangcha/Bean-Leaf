@@ -3,6 +3,7 @@ package com.syp.ui;
 
 // View & Nav Imports
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,16 +204,17 @@ public class ViewMerchantCafeFragment extends Fragment {
             .build();
 
         // Firebase Recycler View
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Item, RowMerchantItemStatisticsFragment>(options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Item, RowUserItemFragment>(options) {
             @NonNull
             @Override
-            public RowMerchantItemStatisticsFragment onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return new RowMerchantItemStatisticsFragment(layoutInflater.inflate(R.layout.fragment_row_merchant_item_statistics, parent, false));
+            public RowUserItemFragment onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return new RowUserItemFragment(layoutInflater.inflate(R.layout.fragment_cafe_menu_item, parent, false));
             }
             @NonNull
             @Override
-            protected void onBindViewHolder(RowMerchantItemStatisticsFragment holder, final int position, @NonNull Item item) {
-                holder.setCafeItemStatisticsInfo(item, mainActivity, null);
+            protected void onBindViewHolder(RowUserItemFragment holder, final int position, @NonNull Item item) {
+                Log.d("ITEM_LOG", item.getName());
+                holder.setUserItemInfo(item, mainActivity, null);
             }
         };
 

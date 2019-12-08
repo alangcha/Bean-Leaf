@@ -4,7 +4,9 @@ package com.syp.ui;
 // View & Navigation Imports
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 // Firebase Imports
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +37,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 // Package Class Imports
+import com.squareup.picasso.Picasso;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
@@ -107,6 +112,8 @@ public class EditMerchantCafeFragment extends Fragment {
         // Fetch Info from
         fetchMerchantCafeInfo();
         fetchMerchantCafeItems();
+
+        setImage();
 
         return v;
     }
@@ -258,5 +265,47 @@ public class EditMerchantCafeFragment extends Fragment {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         getActivity().startActivityForResult(intent, RESULT_LOAD_IMAGE_CHANGESHOP);
+    }
+
+    private void setImage() {
+        Singleton.get(mainActivity).getDatabase()
+                .child("cafes")
+                .child(Singleton.get(mainActivity)
+                        .getCurrentCafeId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.child("CafeImage").child("imageUrl").getValue(String.class) == null) {
+                    Log.d("Image2", "null");
+                    return;
+                }
+
+                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("CafeImage").child("imageUrl").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if(uri == null){
+                            Log.d("Image", "null");
+                            return;
+                            // Got the download URL for 'users/me/profile.png'
+                        }
+                        String link = uri.toString();
+                        Log.d("Link", link);
+                        Picasso.get().load(link).into(image);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 }

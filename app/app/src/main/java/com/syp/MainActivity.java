@@ -465,8 +465,8 @@ public class MainActivity extends AppCompatActivity
 
     private void uploadFile(int requestCode) {
         if (selectedImage != null) {
-            StorageReference fileReference = mStorageRef
-                    .child(System.currentTimeMillis() + "." + getFileExtension(selectedImage));
+            String currImage = System.currentTimeMillis() + "." + getFileExtension(selectedImage);
+            StorageReference fileReference = mStorageRef.child(currImage);
 
             mUploadTask = fileReference.putFile(selectedImage)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity
 //                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("MenuImages");
                             }
                             else if (requestCode == AddItemExistingFragment.RESULT_LOAD_IMAGE_EXISTING) {
-                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("MenuImages");
+                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId()).child("ItemImage");
                             }
                             else if (requestCode == AddShopFragment.RESULT_LOAD_IMAGE_REG) {
                                 // NEED TO PUSH CAFE TO DATABASE FIRST
@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity
                             }
                             else if (requestCode == EditMerchantCafeFragment.RESULT_LOAD_IMAGE_CHANGESHOP) {
                                 dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("CafeImage");
-                                dbRef.setValue(upload);
+                                dbRef.child("imageUrl").setValue(currImage);
                                 return;
                             }
                             else if (requestCode == ItemEditFragment.RESULT_LOAD_IMAGE) {
@@ -514,8 +514,9 @@ public class MainActivity extends AppCompatActivity
                                 //TEMP
                             }
 
-                            String uploadId = dbRef.push().getKey();
-                            dbRef.child(uploadId).setValue(upload);
+//                            String uploadId = dbRef.push().getKey();
+//                            dbRef.child("ItemImage").setValue(upload);
+                            dbRef.child("imageUrl").setValue(currImage);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

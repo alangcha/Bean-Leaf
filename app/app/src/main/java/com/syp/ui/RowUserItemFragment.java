@@ -2,14 +2,27 @@
 package com.syp.ui;
 
 // View & Nav Imports
+import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Package class imports
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Item;
@@ -27,6 +40,10 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
     private ImageView userItemRowItemImage;
     private View userItemRow;   // View for On Click
 
+    private MainActivity mainActivity;
+    private Singleton singleton;
+    private StorageReference storageRef;
+
     // Item associated with row
     private Item item;
 
@@ -35,6 +52,8 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
     // -----------------------------
     public RowUserItemFragment(View itemView) {
         super(itemView);
+        singleton = Singleton.get(mainActivity);
+
 
         // Find Views
         userItemRowItemName = itemView.findViewById(R.id.userItemRowItemName);
@@ -52,6 +71,7 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
         setItemName();
         setItemPrice();
         setItemCaffeine();
+        setImage();
 
         // If Action is required set On Click for Row
         if(action != null)
@@ -60,6 +80,7 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
 
     private void setItemName() {
         userItemRowItemName.setText(item.getName());
+        Log.d("ITEM_LOG1", item.getName());
     }
     private void setItemPrice() {
         userItemRowItemPrice.setText( "$" + item.getPrice());
@@ -70,5 +91,61 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
             Singleton.get(mainActivity).setCurrentItemId(item.getId());
             Navigation.findNavController(v).navigate(action);
         });
+    }
+
+    private void setImage() {
+//        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("cafes").child(singleton.getCurrentCafeId()).child("items").child(item.getId()).child("ItemImage").child("-LvSRStxHRW8YsdC7VC9").child("imageUrl");
+//        dbref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String link = dataSnapshot.getValue(String.class);
+//                System.out.println("HEREEEEE:    " + link);
+//                Picasso.get().load(link).into(userItemRowItemImage);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });
+        Singleton.get(mainActivity).getDatabase()
+                .child("cafes")
+                .child(Singleton.get(mainActivity)
+                .getCurrentCafeId()).child("items").child(item.getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class) == null) {
+                    Log.d("Image2", "null");
+                    return;
+                }
+
+                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if(uri == null){
+                            Log.d("Image", "null");
+                            return;
+                            // Got the download URL for 'users/me/profile.png'
+                        }
+                        String link = uri.toString();
+                        Log.d("Link", link);
+                        Picasso.get().load(link).into(userItemRowItemImage);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 }
