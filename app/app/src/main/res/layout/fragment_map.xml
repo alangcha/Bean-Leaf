@@ -7,19 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/replacementFragmentId">
 
-    <EditText
-        android:id="@+id/searchCafeInput"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="30dp"></EditText>
-    <ListView
-        android:id="@+id/searchResults"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        ></ListView>
-
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -51,6 +39,14 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <SearchView
+            android:id="@+id/searchCafeInput"
+            android:layout_width="343dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="17dp"
+            android:clickable="true" />
 
         <LinearLayout
             android:id="@+id/cafe_infobox"
@@ -131,7 +127,12 @@
             </Button>
         </LinearLayout>
 
-
+        <ListView
+            android:id="@+id/searchResults"
+            android:layout_width="437dp"
+            android:layout_height="550dp"
+            android:layout_above="@+id/map"
+            android:layout_marginBottom="-600dp"></ListView>
 
 
     </RelativeLayout>
