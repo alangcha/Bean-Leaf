@@ -49,6 +49,16 @@
                             android:textSize="20sp"
                             android:gravity="center_vertical">
                         </TextView>
+                        <EditText
+                            android:id="@+id/editUserProfileUserDisplayName"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Jackie Dong"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+                        </EditText>
 
                     </LinearLayout>
 
@@ -75,6 +85,16 @@
                             android:maxLines="1"
                             android:gravity="center_vertical">
                         </TextView>
+                        <EditText
+                            android:id="@+id/editUserProfileUserEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="eldong@usc.edu"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+                        </EditText>
 
                     </LinearLayout>
 
@@ -101,6 +121,16 @@
                             android:textSize="20sp"
                             android:gravity="center_vertical">
                         </TextView>
+                        <EditText
+                            android:id="@+id/editUserProfileUserGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Non-binary"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+                        </EditText>
 
                     </LinearLayout>
 
@@ -132,7 +162,29 @@
             </ScrollView>
 
         </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editMerchantCafeEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_edit_white_24dp" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editMerchantCafeDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_done_black_24dp" />
 
     </RelativeLayout>
 
