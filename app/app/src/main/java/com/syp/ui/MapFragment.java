@@ -229,10 +229,6 @@ public class MapFragment extends Fragment {
                     marker.setTag(cafe.getId());
                     marker.showInfoWindow();
                     markers.add(marker);
-                    if(cafe.getName().equalsIgnoreCase("Pot of Chang"))
-                        potOfChang = marker;
-                    if(cafe.getName().equalsIgnoreCase("Pot of Cha"))
-                        potOfCha = marker;
 
                 }
                 setOnSearchInputChanged(cafes);

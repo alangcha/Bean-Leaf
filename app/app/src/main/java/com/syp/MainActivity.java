@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity
                         User user = new User();
                         user.setEmail(email);
                         user.setDisplayName(displayName != null ? displayName : "");
-                        user.setGender("Male");
+                        user.setGender(" ");
                         TextView merchant = findViewById(R.id.textViewMerchant);
                         merchant.setText("Merchant");
                         user.setMerchant(false);
