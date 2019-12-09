@@ -16,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -34,6 +36,7 @@ public class GoogleLoginFragment extends Fragment {
     static final int GOOGLE_SIGN = 12345;
     FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
+    Button manualLoginButton;
     private MainActivity mainActivity;
 
     Button signInButton;
@@ -51,6 +54,8 @@ public class GoogleLoginFragment extends Fragment {
         text = (TextView) v.findViewById(R.id.appName);
         image = (ImageView) v.findViewById(R.id.sypLogo);
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+//        manualLoginButton = (Button) v.findViewById(R.id.manualLogin);
+        setManualLoginButtonOnClick();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -77,6 +82,17 @@ public class GoogleLoginFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         Intent signIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signIntent, GOOGLE_SIGN);
+    }
+
+    void setManualLoginButtonOnClick(){
+        Log.d("Moving", "Aasdf");
+
+        manualLoginButton.setOnClickListener((View v) ->{
+            Log.d("Moving", "Aasdf");
+
+            NavDirections action = GoogleLoginFragmentDirections.actionGoogleLoginFragmentToLoginFragment();
+            Navigation.findNavController(v).navigate(action);
+        });
     }
 
 

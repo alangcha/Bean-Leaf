@@ -152,41 +152,35 @@ public class AddShopFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
-                        .child("users").child(userID)
-                        .child("currentCafe");
-
-                newCafe = new Cafe();
-                boolean failed = false;
-                newCafe.setName(shopName.getText().toString());
-                double latitude = 34.02686, longitude = -118.280857;
-
-                try {
-                    Log.d("Address", shopAddress.getText().toString().trim());
-                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
-                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
-                    Address address = addresses.get(0);
-                    Log.d("address", address.toString());
-                    longitude = address.getLongitude();
-                    latitude = address.getLatitude();
-                } catch (IOException io){
-                    Log.d("io", io.getMessage());
-                    shopAddress.setHint("Invalid Address");
-                    shopAddress.setText("");
-                    failed = true;
-                }
-
-                newCafe.setLatitude(latitude);
-                newCafe.setLongitude(longitude);
-                newCafe.setAddress(shopAddress.getText().toString());
-                newCafe.setHours(shopHours.getText().toString());
-                ref.setValue(newCafe);
-
-
-
-
-
-
+//                DatabaseReference ref = Singleton.get(mainActivity).getDatabase()
+//                        .child("users").child(userID)
+//                        .child("currentCafe");
+//
+//                newCafe = new Cafe();
+//                boolean failed = false;
+//                newCafe.setName(shopName.getText().toString());
+//                double latitude = 34.02686, longitude = -118.280857;
+//
+//                try {
+//                    Log.d("Address", shopAddress.getText().toString().trim());
+//                    Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
+//                    List<Address> addresses = geocoder.getFromLocationName(shopAddress.getText().toString().trim(), 1);
+//                    Address address = addresses.get(0);
+//                    Log.d("address", address.toString());
+//                    longitude = address.getLongitude();
+//                    latitude = address.getLatitude();
+//                } catch (IOException io){
+//                    Log.d("io", io.getMessage());
+//                    shopAddress.setHint("Invalid Address");
+//                    shopAddress.setText("");
+//                    failed = true;
+//                }
+//
+//                newCafe.setLatitude(latitude);
+//                newCafe.setLongitude(longitude);
+//                newCafe.setAddress(shopAddress.getText().toString());
+//                newCafe.setHours(shopHours.getText().toString());
+//                ref.setValue(newCafe);
 
                 NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment();
                 Navigation.findNavController(v).navigate(action);

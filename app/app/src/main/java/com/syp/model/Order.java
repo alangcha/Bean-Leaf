@@ -1,6 +1,7 @@
 package com.syp.model;
 
 // Firebase imports
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 import java.io.Serializable;
 
@@ -90,6 +91,7 @@ public class Order implements Serializable {
     // ---------------------------
     // Return Items as List<Item>
     // ---------------------------
+    @Exclude
     public List<Item> getItemsAsList() {
         List<Item> itemsList = new ArrayList<>();
 
@@ -102,6 +104,7 @@ public class Order implements Serializable {
     // -------------------------------------
     // Return Timestamp (ms) as Date Object
     // -------------------------------------
+    @Exclude
     public Date getTimestampAsDate(){
         return new Date(timestamp);
     }

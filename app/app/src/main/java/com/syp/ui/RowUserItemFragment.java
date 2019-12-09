@@ -38,8 +38,6 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
     private TextView userItemRowItemPrice;
     private TextView userItemRowItemCaffeine;
     private ImageView userItemRowItemImage;
-    private TextView userItemRowItemTravelTime;
-    private TextView userItemRowItemDistance;
     private View userItemRow;   // View for On Click
 
     private MainActivity mainActivity;
@@ -99,61 +97,72 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
     }
 
     private void setImage() {
-//        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("cafes").child(singleton.getCurrentCafeId()).child("items").child(item.getId()).child("ItemImage").child("-LvSRStxHRW8YsdC7VC9").child("imageUrl");
-//        dbref.addValueEventListener(new ValueEventListener() {
+
+//        if (Singleton.get(mainActivity).getCurrentCafeId() == null) {
+//            return;
+//        }
+        Log.d("itemimage", item.getImage());
+        Singleton.get(mainActivity).getStorage().getReference()
+                .child("uploads")
+                .child(item.getImage())
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                if(uri == null){
+                    Log.d("Image", "null");
+                    return;
+                    // Got the download URL for 'users/me/profile.png'
+                }
+                String link = uri.toString();
+                Log.d("Link", link);
+                Picasso.get().load(link).into(userItemRowItemImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+
+
+//        Singleton.get(mainActivity).getDatabase()
+//                .child("cafes")
+//                .child(Singleton.get(mainActivity)
+//                .getCurrentCafeId()).child("items").child(item.getId()).addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String link = dataSnapshot.getValue(String.class);
-//                System.out.println("HEREEEEE:    " + link);
-//                Picasso.get().load(link).into(userItemRowItemImage);
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                if (dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class) == null) {
+//                    Log.d("Image2", "null");
+//                    return;
+//                }
+//
+//                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        if(uri == null){
+//                            Log.d("Image", "null");
+//                            return;
+//                            // Got the download URL for 'users/me/profile.png'
+//                        }
+//                        String link = uri.toString();
+//                        Log.d("Link", link);
+//                        Picasso.get().load(link).into(userItemRowItemImage);
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception exception) {
+//                        // Handle any errors
+//                    }
+//                });
 //            }
 //
 //            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
 //            }
 //        });
-        if (Singleton.get(mainActivity).getCurrentCafeId() == null) {
-            return;
-        }
-
-        Singleton.get(mainActivity).getDatabase()
-                .child("cafes")
-                .child(Singleton.get(mainActivity)
-                .getCurrentCafeId()).child("items").child(item.getId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class) == null) {
-                    Log.d("Image2", "null");
-                    return;
-                }
-
-                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        if(uri == null){
-                            Log.d("Image", "null");
-                            return;
-                            // Got the download URL for 'users/me/profile.png'
-                        }
-                        String link = uri.toString();
-                        Log.d("Link", link);
-                        Picasso.get().load(link).into(userItemRowItemImage);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
 
     }

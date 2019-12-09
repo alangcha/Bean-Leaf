@@ -531,10 +531,19 @@ public class MainActivity extends AppCompatActivity
                             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
                             if (requestCode == AddItemNewFragment.RESULT_LOAD_IMAGE_NEW) {
                                 // NEED TO PUSH CAFE TO DATABASE FIRST
-//                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("MenuImages");
+                                dbRef = Singleton.get(mainActivity).getDatabase()
+                                        .child("users")
+                                        .child(Singleton.get(mainActivity).getUserId())
+                                        .child("currentItem");
+                                dbRef.setValue(currImage);
                             }
                             else if (requestCode == AddItemExistingFragment.RESULT_LOAD_IMAGE_EXISTING) {
-                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId()).child("ItemImage");
+                                dbRef = Singleton.get(mainActivity).getDatabase()
+                                        .child("users")
+                                        .child(Singleton.get(mainActivity).getUserId())
+                                        .child("currentItem");
+                                dbRef.setValue(currImage);
+
                             }
                             else if (requestCode == AddShopFragment.RESULT_LOAD_IMAGE_REG) {
                                 // NEED TO PUSH CAFE TO DATABASE FIRST
@@ -550,7 +559,9 @@ public class MainActivity extends AppCompatActivity
                                 return;
                             }
                             else if (requestCode == ItemEditFragment.RESULT_LOAD_IMAGE) {
-                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId()).child("ItemImage");
+                                dbRef = Singleton.get(mainActivity).getDatabase().child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId()).child("items").child(Singleton.get(mainActivity).getCurrentItemId()).child("image");
+                                dbRef.setValue(currImage);
+
                             }
                             else {
                                 //TEMP
@@ -558,7 +569,6 @@ public class MainActivity extends AppCompatActivity
 
 //                            String uploadId = dbRef.push().getKey();
 //                            dbRef.child("ItemImage").setValue(upload);
-                            dbRef.child("imageUrl").setValue(currImage);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

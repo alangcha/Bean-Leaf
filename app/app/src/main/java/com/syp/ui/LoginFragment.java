@@ -71,7 +71,7 @@ public class LoginFragment extends Fragment {
         DatabaseReference allUserRef = Singleton.get(mainActivity).getDatabase()
                 .child(Singleton.firebaseUserTag);
 
-        allUserRef.addValueEventListener(new ValueEventListener() {
+        allUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot child: dataSnapshot.getChildren()){

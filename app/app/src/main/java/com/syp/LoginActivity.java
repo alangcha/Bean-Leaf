@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.icu.util.BuddhistCalendar;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,12 +31,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.maps.errors.ApiException;
 import com.syp.model.Singleton;
 import com.syp.model.User;
+import com.syp.ui.GoogleLoginFragmentDirections;
 
 public class LoginActivity extends AppCompatActivity {
     static final int GOOGLE_SIGN = 12345;
     FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
     Button signInButton;
+    Button manualLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_google_login);
 
         signInButton = findViewById(R.id.signInButton);
+//        manualLogin = findViewById((R.id.manualLogin));
+
+
 
         // Connect to firebase
         mAuth = FirebaseAuth.getInstance();

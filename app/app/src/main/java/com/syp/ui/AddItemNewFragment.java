@@ -17,7 +17,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Cafe;
@@ -98,19 +101,8 @@ public class AddItemNewFragment extends Fragment {
                 }
 
                 if(!failed){
-                    DatabaseReference ref = Singleton.get(mainActivity).getDatabase().child("users").child(userID)
-                            .child("cafes").child(Singleton.get(mainActivity).getCurrentCafeId())
-                            .child("items");
 
-                    DatabaseReference cafeRef = Singleton.get(mainActivity).getDatabase().child("cafes")
-                            .child(Singleton.get(mainActivity).getCurrentCafeId())
-                            .child("items");
-
-                    String id = ref.push().getKey();
-                    i.setId(id);
-
-                    ref.child(id).setValue(i);
-                    cafeRef.child(id).setValue(i);
+                    fetchCurrentItemImage(i);
 
                     NavDirections action = AddItemNewFragmentDirections.actionAddItemNewFragmentToAddShopFragment();
                     Navigation.findNavController(v).navigate(action);
@@ -122,6 +114,34 @@ public class AddItemNewFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void fetchCurrentItemImage(Item i){
+        DatabaseReference imageRef = Singleton.get(mainActivity).getDatabase()
+                .child("users")
+                .child(Singleton.get(mainActivity).getUserId())
+                .child("currentItem");
+
+        imageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                i.setImage(dataSnapshot.getValue(String.class));
+                DatabaseReference ref = Singleton.get(mainActivity).getDatabase().child("users")
+                        .child(Singleton.get(mainActivity).getUserId())
+                        .child("currentCafe")
+                        .child("items");
+
+                String id = ref.push().getKey();
+                i.setId(id);
+                ref.child(id).setValue(i);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void openFileChooser() {

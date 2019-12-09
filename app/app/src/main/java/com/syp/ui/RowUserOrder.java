@@ -4,9 +4,14 @@ package com.syp.ui;
 // View Imports
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Package class imports
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.DateFormats;
@@ -54,7 +59,7 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // ------------------------------------------------------
     public void setOrder(Order order, MainActivity mainActivity){
         this.order = order;
-        this.setOrderCafeName();
+        this.setOrderCafeName(mainActivity);
         this.setOrderCafeDate();
         this.setOrderPrice();
         this.setOrderCaffeine();
@@ -71,21 +76,35 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     // -------------------------------------------
     // Setters for order informations on UI Views
     // -------------------------------------------
-    private void setOrderCafeName() {
-        if (order.getCafeName() == null) Log.d("order", "order.getCafeName() is null");
-        userOrderRowCafeName.setText(order.getCafeName());
+    private void setOrderCafeName(MainActivity mainActivity) {
+        Singleton.get(mainActivity).getDatabase()
+                .child("cafes")
+                .child(order.getCafe())
+                .child("name")
+            .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    userOrderRowCafeName.setText(dataSnapshot.getValue(String.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
     }
     private void setOrderCafeDate() {
         userOrderRowOrderDate.setText(DateFormats.getDateString(order.getTimestampAsDate()));
     }
-    private void setOrderRowOrderDistance()
-    {
+    private void setOrderRowOrderDistance() {
         userOrderRowOrderDistance.setText(String.format(Locale.ENGLISH, "%.2f km", order.getDistance()));
     }
 
-    private void setOrderRowOrderTravelTime()
-    {
-        userOrderRowOrderTravelTime.setText(order.getTravelTime());
+    private void setOrderRowOrderTravelTime() {
+        String travelTime = "NA m";
+        if(order.getTravelTime() != null && order.getTravelTime().trim().length() != 0)
+            travelTime = order.getTravelTime().trim() + " m";
+        userOrderRowOrderTravelTime.setText(travelTime);
     }
 
     private void setOrderPrice() {

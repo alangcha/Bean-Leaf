@@ -91,6 +91,10 @@ public class CheckoutFragment extends Fragment {
         return v;
     }
 
+    public void checkoutCurrentOrder(){
+
+    }
+
     public void fetchCheckoutItems(){
 
         // Query
@@ -140,6 +144,7 @@ public class CheckoutFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
+
     public void decrementCheckoutItemCount(Item item){
         int currCount = item.getCount();
 
@@ -155,6 +160,7 @@ public class CheckoutFragment extends Fragment {
             ref.removeValue();
         }
     }
+
     public void fetchCheckoutData(){
         // Calculate totals
         Query totalQuery = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder").child("items");
@@ -178,6 +184,7 @@ public class CheckoutFragment extends Fragment {
             }
         });
     }
+
     public void setCheckoutData(int totalCount, double subtotal){
         countTv.setText(totalCount + " Items");
         subTotalTv.setText("$ " + String.format("%.2f", subtotal));
@@ -185,135 +192,35 @@ public class CheckoutFragment extends Fragment {
         taxTv.setText("$ " + String.format("%.2f", subtotal*0.08));
         totalTv.setText("$ " + String.format("%.2f", subtotal * 1.08));
     }
+
     public void setCheckoutOnClickListener(){
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                DatabaseReference checkoutQuery = singleton.getDatabase().child("users").child(singleton.getUserId())
-                        .child("currentOrder").child("items");
-                checkoutQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    Map<String, Item> items = new HashMap<>();
+            public void onClick(View v) {
+
+                DatabaseReference orderRef = singleton.getDatabase().child("users").child(singleton.getUserId()).child("currentOrder");
+
+                orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Order order = new Order();
-                        for(DataSnapshot childSnapShot: dataSnapshot.getChildren()) {
-                            items.put(childSnapShot.getKey(), childSnapShot.getValue(Item.class));
+                        Order order = dataSnapshot.getValue(Order.class);
+
+                        if(order == null){
+                            Log.d("Order", "Order is null");
+                            return;
                         }
-
-                        DatabaseReference cafeId = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId());
-                        cafeId.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                cafe = dataSnapshot.getValue(Cafe.class);
-                                order.setUser(cafe.getName());
-                                Log.d("cafe name:" , cafe.getName());
-                                order.setCafeName(cafe.getName());
-                                order.setTimestamp(System.currentTimeMillis());
-                                order.setItems(items);
-
-                                cafe.setTotalSales(cafe.getTotalSales() + order.getTotalSpent());
-
-                                LocationManager lm = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
-                                try{
-                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    double latitude = location.getLatitude();
-                                    double longitude = location.getLongitude();
-                                    float[] dist = new float[1];
-                                    Location.distanceBetween(cafe.getLatitude(), cafe.getLongitude(), latitude, longitude, dist);
-                                    StringBuilder fromLocationBuilder = new StringBuilder();
-                                    fromLocationBuilder.append(latitude);
-                                    fromLocationBuilder.append(",");
-                                    fromLocationBuilder.append(longitude);
-                                    StringBuilder toLocationBuilder = new StringBuilder();
-                                    toLocationBuilder.append(cafe.getLatitude());
-                                    toLocationBuilder.append(",");
-                                    toLocationBuilder.append(cafe.getLongitude());
-
-                                    String fromLocation = fromLocationBuilder.toString();
-                                    String destLocation = toLocationBuilder.toString();
-
-                                    Log.d("YoyoTag","World Ser look over here");
-                                    Intent i = new Intent(getActivity().getBaseContext(), GeoTaskActivity.class);
-                                    i.setPackage("com.syp");
-
-                                    i.putExtra("originQuery",fromLocation);
-                                    i.putExtra("destQuery", destLocation);
-                                    startActivity(i);
-
-
-
-                                } catch (SecurityException e){
-                                }
-
-
-
-
-                                if(items.size() == 0) {
-                                    Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                checkUserCaffeine();
-                                DatabaseReference checkoutDistance = (DatabaseReference) singleton.getDatabase().child("users").child(singleton.getUserId())
-                                        .child("currentOrder").child("distance");
-                                    checkoutDistance.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                               Log.d("glacialTag", Double.toString(dataSnapshot.getValue(Double.class)));
-                                                order.setDistance(dataSnapshot.getValue(Double.class));
-
-                                                DatabaseReference checkoutDuration = (DatabaseReference)  singleton.getDatabase().child("users").child(singleton.getUserId())
-                                                        .child("currentOrder").child("travelTime");
-                                                checkoutDuration.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        order.setTravelTime(dataSnapshot.getValue(String.class));
-                                                        checkoutQuery.removeValue();
-                                                        checkoutDuration.removeValue();
-                                                        checkoutDistance.removeValue();
-
-
-                                                        pushOrder(order);
-
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                    }
-                                                });
-
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-
-
-
-
-
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                            }
-                        });
-
-//                        order.setCafeName(singleton.getCurrentCafeId().get);
-
-
-
+                        if(order.getItemsAsList().size() == 0) {
+                            Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        order.setUser(Singleton.get(mainActivity).getUserId());
+                        order.setTimestamp(System.currentTimeMillis());
+                        order.setCafe(Singleton.get(mainActivity).getCurrentCafeId());
+                        pushOrder(order);
+                        checkUserCaffeine();
+                        orderRef.removeValue();
                         NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
-                        Navigation.findNavController(view).navigate(action);
-
-
+                        Navigation.findNavController(v).navigate(action);
                     }
 
                     @Override
@@ -323,11 +230,152 @@ public class CheckoutFragment extends Fragment {
                 });
             }
         });
+//        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DatabaseReference checkoutQuery = singleton.getDatabase().child("users").child(singleton.getUserId())
+//                        .child("currentOrder").child("items");
+//                checkoutQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    Map<String, Item> items = new HashMap<>();
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        Order order = new Order();
+//                        for(DataSnapshot childSnapShot: dataSnapshot.getChildren()) {
+//                            items.put(childSnapShot.getKey(), childSnapShot.getValue(Item.class));
+//                        }
+//
+//                        DatabaseReference cafeId = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId());
+//                        cafeId.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                cafe = dataSnapshot.getValue(Cafe.class);
+//                                order.setUser(cafe.getName());
+//                                Log.d("cafe name:" , cafe.getName());
+//                                order.setCafeName(cafe.getName());
+//                                order.setTimestamp(System.currentTimeMillis());
+//                                order.setItems(items);
+//
+//                                cafe.setTotalSales(cafe.getTotalSales() + order.getTotalSpent());
+//
+//                                LocationManager lm = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
+//                                try{
+//                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                                    double latitude = location.getLatitude();
+//                                    double longitude = location.getLongitude();
+//                                    float[] dist = new float[1];
+//                                    Location.distanceBetween(cafe.getLatitude(), cafe.getLongitude(), latitude, longitude, dist);
+//                                    StringBuilder fromLocationBuilder = new StringBuilder();
+//                                    fromLocationBuilder.append(latitude);
+//                                    fromLocationBuilder.append(",");
+//                                    fromLocationBuilder.append(longitude);
+//                                    StringBuilder toLocationBuilder = new StringBuilder();
+//                                    toLocationBuilder.append(cafe.getLatitude());
+//                                    toLocationBuilder.append(",");
+//                                    toLocationBuilder.append(cafe.getLongitude());
+//
+//                                    String fromLocation = fromLocationBuilder.toString();
+//                                    String destLocation = toLocationBuilder.toString();
+//
+//                                    Log.d("YoyoTag","World Ser look over here");
+//                                    Intent i = new Intent(getActivity().getBaseContext(), GeoTaskActivity.class);
+//                                    i.setPackage("com.syp");
+//
+//                                    i.putExtra("originQuery",fromLocation);
+//                                    i.putExtra("destQuery", destLocation);
+//                                    startActivity(i);
+//
+//
+//
+//                                } catch (SecurityException e){
+//                                }
+//
+//
+//
+//
+//                                if(items.size() == 0) {
+//                                    Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//
+//                                checkUserCaffeine();
+//                                DatabaseReference checkoutDistance = (DatabaseReference) singleton.getDatabase().child("users").child(singleton.getUserId())
+//                                        .child("currentOrder").child("distance");
+//                                    checkoutDistance.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                            @Override
+//                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                                               Log.d("glacialTag", Double.toString(dataSnapshot.getValue(Double.class)));
+//                                                order.setDistance(dataSnapshot.getValue(Double.class));
+//
+//                                                DatabaseReference checkoutDuration = (DatabaseReference)  singleton.getDatabase().child("users").child(singleton.getUserId())
+//                                                        .child("currentOrder").child("travelTime");
+//                                                checkoutDuration.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                    @Override
+//                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                                        order.setTravelTime(dataSnapshot.getValue(String.class));
+//                                                        checkoutQuery.removeValue();
+//                                                        checkoutDuration.removeValue();
+//                                                        checkoutDistance.removeValue();
+//
+//
+//                                                        pushOrder(order);
+//
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                                    }
+//                                                });
+//
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                            }
+//                                        });
+//
+//
+//
+//
+//
+//
+//
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            }
+//                        });
+//
+////                        order.setCafeName(singleton.getCurrentCafeId().get);
+//
+//
+//
+//                        NavDirections action = CheckoutFragmentDirections.actionCheckoutFragmentToMapFragment();
+//                        Navigation.findNavController(view).navigate(action);
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//        });
     }
+
     public void pushOrder(Order order){
         if (order.getCafeName() == null) Log.d("order get cafe name", "order null");
         // Insert order into user
-        DatabaseReference checkoutRef = singleton.getDatabase().child("users").child(singleton.getUserId())
+        DatabaseReference checkoutRef = singleton.getDatabase()
+                .child("users")
+                .child(singleton.getUserId())
                 .child("orders");
         String id = checkoutRef.push().getKey();
         order.setId(id);
@@ -335,9 +383,10 @@ public class CheckoutFragment extends Fragment {
         checkoutRef.child(id).setValue(order);
 
         // Insert order into cafe
-        checkoutRef = singleton.getDatabase().child("cafes").child(singleton.getCurrentCafeId())
+        checkoutRef = singleton.getDatabase()
+                .child("cafes")
+                .child(order.getCafe())
                 .child("orders");
-        id = checkoutRef.push().getKey();
         checkoutRef.child(id).setValue(order);
 
     }
