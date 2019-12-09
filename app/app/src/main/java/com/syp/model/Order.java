@@ -26,7 +26,7 @@ public class Order implements Serializable {
     private String cafeName;
     private Map<String, Item> items;
     private String travelTime;
-    private Double distance;
+    private double distance;
 
     // ----------------------------------------------
     // Public Default Constructor (Firebase Required)
@@ -57,7 +57,7 @@ public class Order implements Serializable {
     public String getTravelTime() {
         return travelTime;
     }
-    public Double getDistance() {
+    public double getDistance() {
         return distance;
     }
 
@@ -83,7 +83,7 @@ public class Order implements Serializable {
     public void setTravelTime(String travelTime) {
         this.travelTime = travelTime;
     }
-    public void setDistance(Double distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
