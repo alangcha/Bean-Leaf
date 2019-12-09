@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity
                                     .child(Singleton.firebaseUserTag)
                                     .child(Singleton.get(mainActivity).getUserId())
                                     .child("displayName");
-                            p.addListenerForSingleValueEvent(new ValueEventListener() {
+                            p.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     String pname = dataSnapshot.getValue(String.class);
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity
                                     .child(Singleton.firebaseUserTag)
                                     .child(Singleton.get(mainActivity).getUserId())
                                     .child("merchant");
-                            m.addListenerForSingleValueEvent(new ValueEventListener() {
+                            m.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Boolean merchantBoolean = dataSnapshot.getValue(Boolean.class);

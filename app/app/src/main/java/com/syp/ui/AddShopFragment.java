@@ -182,6 +182,12 @@ public class AddShopFragment extends Fragment {
                 newCafe.setHours(shopHours.getText().toString());
                 ref.setValue(newCafe);
 
+
+
+
+
+
+
                 NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToAddItemNewFragment();
                 Navigation.findNavController(v).navigate(action);
             }
@@ -303,6 +309,10 @@ public class AddShopFragment extends Fragment {
                         }
                     });
 
+                    Singleton.get(mainActivity).getDatabase()
+                            .child(Singleton.firebaseUserTag)
+                            .child(Singleton.get(mainActivity).getUserId())
+                            .child("merchant").setValue(true);
                     NavDirections action = AddShopFragmentDirections.actionAddShopFragmentToUserFragment();
                     Navigation.findNavController(v).navigate(action);
                 }

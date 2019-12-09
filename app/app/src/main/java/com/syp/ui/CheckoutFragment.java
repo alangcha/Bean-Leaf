@@ -90,6 +90,7 @@ public class CheckoutFragment extends Fragment {
 
         return v;
     }
+
     public void fetchCheckoutItems(){
 
         // Query
@@ -330,7 +331,6 @@ public class CheckoutFragment extends Fragment {
                 .child("orders");
         String id = checkoutRef.push().getKey();
         order.setId(id);
-
 
         checkoutRef.child(id).setValue(order);
 
