@@ -29,12 +29,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.syp.GeoTaskActivity;
 import com.syp.model.Cafe;
 import com.syp.MainActivity;
 import com.syp.R;
 import com.syp.model.Item;
 import com.syp.model.Singleton;
-
+import com.syp.GeoTaskActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -120,6 +121,30 @@ public class CafeFragment extends Fragment {
                                     double longitude = location.getLongitude();
                                     float[] dist = new float[1];
                                     Location.distanceBetween(cafe.getLatitude(), cafe.getLongitude(), latitude, longitude, dist);
+                                    StringBuilder fromLocationBuilder = new StringBuilder();
+                                    fromLocationBuilder.append(latitude);
+                                    fromLocationBuilder.append(",");
+                                    fromLocationBuilder.append(longitude);
+                                    StringBuilder toLocationBuilder = new StringBuilder();
+                                    toLocationBuilder.append(cafe.getLatitude());
+                                    toLocationBuilder.append(",");
+                                    toLocationBuilder.append(cafe.getLongitude());
+
+                                    String fromLocation = fromLocationBuilder.toString();
+                                    String destLocation = toLocationBuilder.toString();
+
+                                    Log.d("YoyoTag","World Ser look over here");
+                                    Intent i = new Intent(getActivity().getBaseContext(), GeoTaskActivity.class);
+                                    i.setPackage("com.syp");
+
+                                    i.putExtra("originQuery",fromLocation);
+                                    i.putExtra("destQuery", destLocation);
+                                    startActivity(i);
+
+
+
+
+
 
                                     Singleton.get(mainActivity).getDatabase()
                                             .child("users").child(Singleton.get(mainActivity).getUserId())
@@ -133,7 +158,23 @@ public class CafeFragment extends Fragment {
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
+
+
+
+
+                                //Log.d("addyTag", ((GeoTaskActivity)getActivity().getApplicationContext()).getDistInfo());
+//                                Log.d("addyTag", activity.getDurationData());
                             }});
+                    }
+
+
+                    public void setDouble(String result) {
+                        String res[]=result.split(",");
+                        Double min=Double.parseDouble(res[0])/60;
+                        int dist=Integer.parseInt(res[1])/1000;
+                        Log.d("goodTag","Duration= " + (int) (min / 60) + " hr " + (int) (min % 60) + " mins");
+                        Log.d("goodTag","Distance= " + dist + " kilometers");
+
                     }
 
                     @Override

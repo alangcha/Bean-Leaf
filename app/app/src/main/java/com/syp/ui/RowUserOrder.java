@@ -30,6 +30,8 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     private TextView userOrderRowOrderDate;
     private TextView userOrderRowOrderTotal;
     private TextView userOrderRowOrderCaffeineTotal;
+    private TextView userOrderRowOrderTravelTime;
+    private TextView userOrderRowOrderDistance;
 
     // Order associated with row
     private Order order;
@@ -43,7 +45,8 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
         userOrderRowOrderDate = itemView.findViewById(R.id.userOrderRowOrderDate);
         userOrderRowOrderTotal = itemView.findViewById(R.id.userOrderRowOrderTotal);
         userOrderRowOrderCaffeineTotal = itemView.findViewById(R.id.userOrderRowOrderCaffeineTotal);
-
+        userOrderRowOrderTravelTime = itemView.findViewById(R.id.userOrderRowOrderTravelTime);
+        userOrderRowOrderDistance = itemView.findViewById(R.id.userOrderRowOrderDistance);
     }
 
     // ------------------------------------------------------
@@ -55,6 +58,9 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
         this.setOrderCafeDate();
         this.setOrderPrice();
         this.setOrderCaffeine();
+        this.setOrderRowOrderDistance();
+        this.setOrderRowOrderTravelTime();
+
         itemView.setOnClickListener((View v) -> {
             Singleton.get(mainActivity).setCurrentOrderId(order.getId());
             NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
@@ -72,6 +78,16 @@ public class RowUserOrder extends RecyclerView.ViewHolder {
     private void setOrderCafeDate() {
         userOrderRowOrderDate.setText(DateFormats.getDateString(order.getTimestampAsDate()));
     }
+    private void setOrderRowOrderDistance()
+    {
+        userOrderRowOrderDistance.setText(String.format(Locale.ENGLISH, "%.2f km", order.getDistance()));
+    }
+
+    private void setOrderRowOrderTravelTime()
+    {
+        userOrderRowOrderTravelTime.setText(order.getTravelTime());
+    }
+
     private void setOrderPrice() {
         userOrderRowOrderTotal.setText(String.format(Locale.ENGLISH, "$%.2f", order.getTotalSpent()));
     }

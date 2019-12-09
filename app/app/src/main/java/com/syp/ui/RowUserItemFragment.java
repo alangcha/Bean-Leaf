@@ -38,6 +38,8 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
     private TextView userItemRowItemPrice;
     private TextView userItemRowItemCaffeine;
     private ImageView userItemRowItemImage;
+    private TextView userItemRowItemTravelTime;
+    private TextView userItemRowItemDistance;
     private View userItemRow;   // View for On Click
 
     private MainActivity mainActivity;
@@ -60,6 +62,9 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
         userItemRowItemPrice = itemView.findViewById(R.id.userItemRowItemPrice);
         userItemRowItemCaffeine = itemView.findViewById(R.id.userItemRowItemCaffeine);
         userItemRowItemImage = itemView.findViewById(R.id.userItemRowItemImage);
+
+
+
         userItemRow = itemView.findViewById(R.id.userItemRow);
     }
 

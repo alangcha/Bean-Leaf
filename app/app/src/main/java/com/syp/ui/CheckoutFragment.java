@@ -203,14 +203,60 @@ public class CheckoutFragment extends Fragment {
                                 order.setCafeName(cafe.getName());
                                 order.setTimestamp(System.currentTimeMillis());
                                 order.setItems(items);
+
+
+
+
+
+
+
                                 if(items.size() == 0) {
                                     Toast.makeText(mainActivity, "There is no item in your cart.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
                                 checkUserCaffeine();
-                                checkoutQuery.removeValue();
-                                pushOrder(order);
+                                DatabaseReference checkoutDistance = (DatabaseReference) singleton.getDatabase().child("users").child(singleton.getUserId())
+                                        .child("currentOrder").child("distance");
+                                    checkoutDistance.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                               Log.d("glacialTag", Double.toString(dataSnapshot.getValue(Double.class)));
+                                                order.setDistance(dataSnapshot.getValue(Double.class));
+
+                                                DatabaseReference checkoutDuration = (DatabaseReference)  singleton.getDatabase().child("users").child(singleton.getUserId())
+                                                        .child("currentOrder").child("travelTime");
+                                                checkoutDuration.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        order.setTravelTime(dataSnapshot.getValue(String.class));
+                                                        checkoutQuery.removeValue();
+                                                        checkoutDuration.removeValue();
+                                                        checkoutDistance.removeValue();
+
+
+                                                        pushOrder(order);
+
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
+
                             }
 
                             @Override

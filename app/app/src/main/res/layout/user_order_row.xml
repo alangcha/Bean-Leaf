@@ -60,6 +60,22 @@
                     android:text="Price Per Item">
                 </TextView>
 
+<!--                <TextView-->
+<!--                    android:id="@+id/userOrderRowOrderTotalTravelTime"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Price Per Item">-->
+<!--                </TextView>-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/userOrderRowOrderTotalDistance"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Price Per Item">-->
+<!--                </TextView>-->
+
+
+
 
 
             </LinearLayout>

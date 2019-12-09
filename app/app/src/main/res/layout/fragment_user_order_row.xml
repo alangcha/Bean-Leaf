@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="110dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -10,9 +10,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_height="300dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="50dp"
@@ -23,50 +23,58 @@
             </ImageView>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="90dp"
+                android:layout_height="150dp"
                 android:layout_marginLeft="20dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/userOrderRowCafeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="Dong Cha"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginLeft="40dp"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/userOrderRowOrderDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Date">
-                </TextView>
+                    android:text="Date"></TextView>
 
                 <TextView
                     android:id="@+id/userOrderRowOrderTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Spent">
-                </TextView>
+                    android:text="Spent"></TextView>
 
                 <TextView
                     android:id="@+id/userOrderRowOrderCaffeineTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Caffeine">
-                </TextView>
+                    android:text="Caffeine"></TextView>
 
+                <TextView
+                    android:id="@+id/userOrderRowOrderTravelTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TravelTime"></TextView>
+
+                <TextView
+                    android:id="@+id/userOrderRowOrderDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance"></TextView>
 
 
             </LinearLayout>
