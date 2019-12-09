@@ -37,8 +37,8 @@
             android:id="@+id/action_userFragment_to_viewMerchantCafeFragment"
             app:destination="@id/viewMerchantCafeFragment" />
         <action
-            android:id="@+id/action_userFragment_to_userOrderFragment"
-            app:destination="@id/userOrder" />
+            android:id="@+id/action_userFragment_to_userOrderItemsFragment"
+            app:destination="@+id/userOrderItemsFragment" />
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
@@ -164,8 +164,8 @@
             app:destination="@id/mapFragment" />
     </fragment>
     <fragment
-        android:id="@+id/userOrder"
-        android:name="com.syp.ui.UserOrder"
-        android:label="UserOrder"
-        />
+        android:id="@+id/userOrderItemsFragment"
+        android:name="com.syp.ui.UserOrderItemsFragment"
+        android:label="fragment_user_order"
+        tools:layout="@layout/fragment_user_order" />
 </navigation>

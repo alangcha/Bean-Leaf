@@ -20,7 +20,7 @@ import com.syp.model.Item;
 import com.syp.model.Singleton;
 import com.syp.MainActivity;
 
-public class UserOrder extends Fragment {
+public class UserOrderItemsFragment extends Fragment {
     private MainActivity mainActivity;
     private LayoutInflater layoutInflater;
     private View v;
@@ -32,7 +32,7 @@ public class UserOrder extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // Inflate view tih user fragment xml
-        v = inflater.inflate(R.layout.user_order, container, false);
+        v = inflater.inflate(R.layout.fragment_user_order, container, false);
 
         // Assign each view to variables
         mainActivity = (MainActivity) getActivity();
@@ -63,14 +63,14 @@ public class UserOrder extends Fragment {
                 .build();
 
         // Firebase Create Cafe View Holder
-        FirebaseRecyclerAdapter userOrderAdapter = new FirebaseRecyclerAdapter<Item, ItemInfo>(options) {
+        FirebaseRecyclerAdapter userOrderAdapter = new FirebaseRecyclerAdapter<Item, UserOrderItemRow>(options) {
             @NonNull
             @Override
-            public ItemInfo onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return new ItemInfo(layoutInflater.inflate(R.layout.user_order_row, parent, false));
+            public UserOrderItemRow onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return new UserOrderItemRow(layoutInflater.inflate(R.layout.user_order_item_row, parent, false));
             }
             @Override
-            protected void onBindViewHolder(@NonNull ItemInfo holder, final int position, @NonNull Item item) {
+            protected void onBindViewHolder(@NonNull UserOrderItemRow holder, final int position, @NonNull Item item) {
                 holder.setItemInfo(item, mainActivity, UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment());
             }
         };

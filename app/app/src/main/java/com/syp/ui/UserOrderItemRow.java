@@ -20,7 +20,7 @@ import java.util.Locale;
 // -----------------------------------------------------------
 // Row representing a User Order ( connected to Recycle View)
 // -----------------------------------------------------------
-public class ItemInfo extends RecyclerView.ViewHolder {
+public class UserOrderItemRow extends RecyclerView.ViewHolder {
 
     // Views
     private TextView itemName;
@@ -34,16 +34,16 @@ public class ItemInfo extends RecyclerView.ViewHolder {
     // --------------------------
     // Constructor of User Order
     // --------------------------
-    public ItemInfo(View itemView) {
+    public UserOrderItemRow(View itemView) {
         super(itemView);
         itemName = itemView.findViewById(R.id.userOrderRowItemName);
         itemCaffeine = itemView.findViewById(R.id.userOrderRowOrderCaffeinePerItem);
         itemCount = itemView.findViewById(R.id.userOrderRowOrderCount);
         itemPrice = itemView.findViewById(R.id.userOrderRowOrderPricePerItem);
-        itemView.setOnClickListener((View v) -> {
-            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
-            Navigation.findNavController(v).navigate(action);
-        });
+//        itemView.setOnClickListener((View v) -> {
+//            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
+//            Navigation.findNavController(v).navigate(action);
+//        });
     }
 
     // ------------------------------------------------------
