@@ -237,17 +237,8 @@ public class CheckoutFragment extends Fragment {
 
 
 
-
-
-
-                                    Singleton.get(mainActivity).getDatabase()
-                                            .child("users").child(Singleton.get(mainActivity).getUserId())
-                                            .child("currentOrder")
-                                            .child("distance").setValue((double)dist[0]);
-
                                 } catch (SecurityException e){
                                 }
-
 
 
 

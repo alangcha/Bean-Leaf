@@ -142,15 +142,6 @@ public class CafeFragment extends Fragment {
                                     startActivity(i);
 
 
-
-
-
-
-                                    Singleton.get(mainActivity).getDatabase()
-                                            .child("users").child(Singleton.get(mainActivity).getUserId())
-                                            .child("currentOrder")
-                                            .child("distance").setValue((double)dist[0]);
-
                                 } catch (SecurityException e){
                                 }
 
