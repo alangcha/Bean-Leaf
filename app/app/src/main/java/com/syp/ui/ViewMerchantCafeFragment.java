@@ -143,6 +143,7 @@ public class ViewMerchantCafeFragment extends Fragment {
         viewMerchantCafeCafeName.setText(this.cafe.getName());
         viewMerchantCafeCafeAddress.setText(this.cafe.getAddress());
         viewMerchantCafeCafeHours.setText(this.cafe.getHours());
+        viewMerchantCafeCafeTotal.setText(Double.toString(this.cafe.getTotalSales()));
         setMapSettings();
         setMapLocation();
     }
