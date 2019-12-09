@@ -40,10 +40,6 @@ public class ItemInfo extends RecyclerView.ViewHolder {
         itemCaffeine = itemView.findViewById(R.id.userOrderRowOrderCaffeinePerItem);
         itemCount = itemView.findViewById(R.id.userOrderRowOrderCount);
         itemPrice = itemView.findViewById(R.id.userOrderRowOrderPricePerItem);
-        itemView.setOnClickListener((View v) -> {
-            NavDirections action = UserProfileFragmentDirections.actionUserFragmentToUserOrderFragment();
-            Navigation.findNavController(v).navigate(action);
-        });
     }
 
     // ------------------------------------------------------
