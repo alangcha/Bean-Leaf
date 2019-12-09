@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,8 @@ public class AddItemExistingFragment extends Fragment {
     private Button addImage;
     private Button addItem;
     private ImageView image;
+    private View greyView;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -51,11 +54,33 @@ public class AddItemExistingFragment extends Fragment {
         addImage = v.findViewById(R.id.additemexisting_add_image);
         addItem = v.findViewById(R.id.additemexisting_add_item);
         image =  v.findViewById(R.id.additemexisting_image);
+        progressBar = v.findViewById(R.id.addItemExistingProgress);
+        greyView = v.findViewById(R.id.newGreyProgress);
 
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+                progressBar.setVisibility(View.VISIBLE);
+                greyView.setBackgroundColor(Color.DKGRAY);
+                DatabaseReference imageRef = Singleton.get(mainActivity).getDatabase()
+                        .child("users")
+                        .child(Singleton.get(mainActivity).getUserId())
+                        .child("currentItem");
+                imageRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue(String.class) == null)
+                            return;
+                        progressBar.setVisibility(View.INVISIBLE);
+                        greyView.setBackgroundColor(Color.TRANSPARENT);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 //                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //                startActivityForResult(i, RESULT_LOAD_IMAGE_EXISTING);
@@ -136,6 +161,7 @@ public class AddItemExistingFragment extends Fragment {
                 i.setId(id);
                 userCafeRef.child(id).setValue(i);
                 cafeRef.child(id).setValue(i);
+                imageRef.removeValue();
             }
 
             @Override

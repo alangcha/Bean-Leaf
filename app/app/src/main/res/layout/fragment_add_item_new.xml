@@ -7,7 +7,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -112,6 +118,26 @@
         </LinearLayout>
 
 
+
+            <View
+                android:id="@+id/grayProgress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </View>
+            <ProgressBar
+                android:id="@+id/addItemNewProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"/>
+
+        </RelativeLayout>
+
+
+
     </ScrollView>
 
 </LinearLayout>
+

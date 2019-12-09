@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ public class AddItemNewFragment extends Fragment {
     private Button addImage;
     private Button addItem;
     private Cafe newCafe;
+    private View greyView;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -53,11 +56,31 @@ public class AddItemNewFragment extends Fragment {
         addImage = v.findViewById(R.id.additemnew_add_image);
         addItem = v.findViewById(R.id.additemnew_add_item);
         image = v.findViewById(R.id.additemnew_image);
+        progressBar = v.findViewById(R.id.addItemNewProgress);
+        greyView = v.findViewById(R.id.grayProgress);
 
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+                progressBar.setVisibility(View.VISIBLE);
+                DatabaseReference imageRef = Singleton.get(mainActivity).getDatabase()
+                        .child("users")
+                        .child(Singleton.get(mainActivity).getUserId())
+                        .child("currentItem");
+                imageRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue(String.class) == null)
+                            return;
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 //                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //                startActivityForResult(i, RESULT_LOAD_IMAGE_NEW);
@@ -134,6 +157,7 @@ public class AddItemNewFragment extends Fragment {
                 String id = ref.push().getKey();
                 i.setId(id);
                 ref.child(id).setValue(i);
+                imageRef.removeValue();
             }
 
             @Override
