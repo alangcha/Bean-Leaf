@@ -1,6 +1,9 @@
 package com.syp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.syp.DangerCaffeine;
 import com.syp.ExceedCaffeineActivity;
+import com.syp.GeoTaskActivity;
 import com.syp.model.Item;
 import com.syp.MainActivity;
 import com.syp.R;
@@ -204,7 +208,45 @@ public class CheckoutFragment extends Fragment {
                                 order.setTimestamp(System.currentTimeMillis());
                                 order.setItems(items);
 
+                                LocationManager lm = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
+                                try{
+                                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    double latitude = location.getLatitude();
+                                    double longitude = location.getLongitude();
+                                    float[] dist = new float[1];
+                                    Location.distanceBetween(cafe.getLatitude(), cafe.getLongitude(), latitude, longitude, dist);
+                                    StringBuilder fromLocationBuilder = new StringBuilder();
+                                    fromLocationBuilder.append(latitude);
+                                    fromLocationBuilder.append(",");
+                                    fromLocationBuilder.append(longitude);
+                                    StringBuilder toLocationBuilder = new StringBuilder();
+                                    toLocationBuilder.append(cafe.getLatitude());
+                                    toLocationBuilder.append(",");
+                                    toLocationBuilder.append(cafe.getLongitude());
 
+                                    String fromLocation = fromLocationBuilder.toString();
+                                    String destLocation = toLocationBuilder.toString();
+
+                                    Log.d("YoyoTag","World Ser look over here");
+                                    Intent i = new Intent(getActivity().getBaseContext(), GeoTaskActivity.class);
+                                    i.setPackage("com.syp");
+
+                                    i.putExtra("originQuery",fromLocation);
+                                    i.putExtra("destQuery", destLocation);
+                                    startActivity(i);
+
+
+
+
+
+
+                                    Singleton.get(mainActivity).getDatabase()
+                                            .child("users").child(Singleton.get(mainActivity).getUserId())
+                                            .child("currentOrder")
+                                            .child("distance").setValue((double)dist[0]);
+
+                                } catch (SecurityException e){
+                                }
 
 
 
@@ -253,6 +295,10 @@ public class CheckoutFragment extends Fragment {
 
                                             }
                                         });
+
+
+
+
 
 
 
