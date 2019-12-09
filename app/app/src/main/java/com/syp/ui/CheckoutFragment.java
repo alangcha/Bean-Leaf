@@ -58,6 +58,8 @@ public class CheckoutFragment extends Fragment {
     public TextView taxTv;
     public TextView totalTv;
 
+    private Cafe cafe;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -201,12 +203,14 @@ public class CheckoutFragment extends Fragment {
                         cafeId.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Cafe cafe = dataSnapshot.getValue(Cafe.class);
+                                cafe = dataSnapshot.getValue(Cafe.class);
                                 order.setUser(cafe.getName());
                                 Log.d("cafe name:" , cafe.getName());
                                 order.setCafeName(cafe.getName());
                                 order.setTimestamp(System.currentTimeMillis());
                                 order.setItems(items);
+
+                                cafe.setTotalSales(cafe.getTotalSales() + order.getTotalSpent());
 
                                 LocationManager lm = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
                                 try{

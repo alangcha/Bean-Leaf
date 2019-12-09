@@ -113,6 +113,10 @@ public class RowUserItemFragment extends RecyclerView.ViewHolder {
 //                System.out.println("The read failed: " + databaseError.getCode());
 //            }
 //        });
+        if (Singleton.get(mainActivity).getCurrentCafeId() == null) {
+            return;
+        }
+
         Singleton.get(mainActivity).getDatabase()
                 .child("cafes")
                 .child(Singleton.get(mainActivity)
