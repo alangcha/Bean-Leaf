@@ -20,6 +20,8 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -59,6 +62,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -77,6 +81,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 // Internal Class Imports
+import com.squareup.picasso.Picasso;
 import com.syp.CafeAdapter;
 import com.syp.IOnLoadLocationListener;
 import com.syp.MyLatLng;
@@ -113,6 +118,7 @@ public class MapFragment extends Fragment {
     public Button TESTinvisibleRedMarkerButton_PotofCha;
     public Marker potOfChang;
     public Marker potOfCha;
+    public ImageView shopImage;
     public View v;
 
     @Nullable
@@ -143,6 +149,7 @@ public class MapFragment extends Fragment {
         TESTinvisibleRedMarkerButton_PotofCha.setVisibility(View.VISIBLE);
         TESTinvisibleRedMarkerButton_PotofChange.setVisibility(View.VISIBLE);
         addTESTInvisibleRedMarkerButtonOnClick();
+//        shopImage = (ImageView) v.findViewById(R.id.map_shopImage);
 
         // View Cafe Button & On Click Listener
         viewCafeButton = v.findViewById(R.id.view_cafe_button);

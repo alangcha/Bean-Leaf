@@ -191,12 +191,12 @@ public class OrderItemFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class) == null) {
+                if (dataSnapshot.child("image").getValue(String.class) == null) {
                     Log.d("Image2", "null");
                     return;
                 }
 
-                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("ItemImage").child("imageUrl").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                Singleton.get(mainActivity).getStorage().getReference().child("uploads").child(dataSnapshot.child("image").getValue(String.class)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         if (uri == null) {

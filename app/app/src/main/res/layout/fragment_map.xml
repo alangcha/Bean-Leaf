@@ -107,14 +107,14 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/map_shopImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="125dp"
-                    android:layout_marginEnd="20dp"
-                    android:src="@drawable/honey_green_milk_tea">
+<!--                <ImageView-->
+<!--                    android:id="@+id/map_shopImage"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="125dp"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:src="@drawable/honey_green_milk_tea">-->
 
-                </ImageView>
+<!--                </ImageView>-->
 
             </LinearLayout>
 
