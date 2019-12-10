@@ -460,7 +460,7 @@ public class MainActivity extends AppCompatActivity
                         user.setDisplayName(displayName != null ? displayName : "");
                         user.setGender(" ");
                         TextView merchant = findViewById(R.id.textViewMerchant);
-                        merchant.setText("Merchant");
+                        merchant.setText("User");
                         user.setMerchant(false);
                         userRef.child(id).setValue(user);
                         Singleton.get(MainActivity.this).setUserId(id);
